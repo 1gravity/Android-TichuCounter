@@ -3,45 +3,42 @@ package com.onegravity.tichucount
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.bluelinelabs.conductor.Conductor.attachRouter
+import com.bluelinelabs.conductor.Router
+import com.bluelinelabs.conductor.RouterTransaction
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class TichuActivity : AppCompatActivity() {
 
+    private lateinit var router: Router
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.tichu_content)
+
+        setContentView(R.layout.activity_main)
+        val container = findViewById<View>(R.id.controller_container) as ViewGroup
+        router = attachRouter(this, container, savedInstanceState)
+
+        if (!router.hasRootController()) {
+            router.setRoot(RouterTransaction.with(TichuController()))
+        }
 
         setSupportActionBar(findViewById(R.id.toolbar))
-
-        findViewById<CollapsingToolbarLayout>(R.id.toolbar_layout).title = title
 
         findViewById<CollapsingToolbarLayout>(R.id.toolbar_layout).title = title
 
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
             newEntry()
         }
+    }
 
-        val viewManager = LinearLayoutManager(this)
-        val entry1 = TichyEntry(true, "Count", "Team 1", "Team 2")
-        val entry2 = TichyEntry(true, "#1", "60", "40")
-
-        val entries = arrayListOf(entry1, entry2)
-        val viewAdapter = TichyEntryAdapter(entries)
-
-        val recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
-            // use this setting to improve performance if you know that changes
-            // in content do not change the layout size of the RecyclerView
-            setHasFixedSize(true)
-
-            // use a linear layout manager
-            layoutManager = viewManager
-
-            // specify an viewAdapter (see also next example)
-            adapter = viewAdapter
+    override fun onBackPressed() {
+        if (!router.handleBack()) {
+            super.onBackPressed()
         }
     }
 

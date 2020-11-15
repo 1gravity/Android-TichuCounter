@@ -31,7 +31,7 @@ class TichuDialog: DialogFragment() {
 
         nrPicker.setFormatter { value -> value.minus(5).times(5).toString() }
 
-        View
+//        View
     }
 
 }

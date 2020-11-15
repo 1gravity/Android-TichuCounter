@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nestedScrollView"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/entry_text_1"
@@ -17,10 +14,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:layout_weight="1"
-        android:text="@string/header_round"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/entry_text_2"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="@string/header_round"/>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/entry_text_2"
@@ -31,10 +25,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:layout_weight="1"
-        android:text="@string/header_team_1"
-        app:layout_constraintStart_toStartOf="@id/entry_text_1"
-        app:layout_constraintEnd_toEndOf="@+id/entry_text_3"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="@string/header_team_1"/>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/entry_text_3"
@@ -45,9 +36,6 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:layout_weight="1"
-        android:text="@string/header_team_2"
-        app:layout_constraintStart_toStartOf="@id/entry_text_2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="@string/header_team_2"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>
