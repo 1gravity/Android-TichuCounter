@@ -60,6 +60,7 @@ dependencies {
     implementation 'com.bluelinelabs:conductor-autodispose:3.0.0'
 
     implementation "io.reactivex.rxjava3:rxjava:3.0.7"
+    implementation "com.github.akarnokd:rxjava3-extensions:3.0.1"
     implementation 'com.jakewharton.rxbinding4:rxbinding:4.0.0'
     implementation 'com.jakewharton.rxbinding4:rxbinding-core:4.0.0'
     implementation 'com.jakewharton.rxbinding4:rxbinding-appcompat:4.0.0'

@@ -78,14 +78,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/score_big_tichu_title">
 
-        <androidx.appcompat.widget.AppCompatCheckBox
+        <androidx.appcompat.widget.AppCompatRadioButton
             android:id="@+id/score_big_tichu_win"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/score_win"
             style="@style/Theme.DialogText" />
 
-        <androidx.appcompat.widget.AppCompatCheckBox
+        <androidx.appcompat.widget.AppCompatRadioButton
             android:id="@+id/score_big_tichu_loss"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

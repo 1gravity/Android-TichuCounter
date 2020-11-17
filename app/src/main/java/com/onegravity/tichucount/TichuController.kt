@@ -16,7 +16,7 @@ class TichuController : Controller() {
             : View =
         TichuScoresBinding.inflate(inflater).run {
             binding = this
-            this.root
+            root
         }
 
     override fun onAttach(view: View) {

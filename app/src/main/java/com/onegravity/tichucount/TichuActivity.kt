@@ -1,39 +1,43 @@
 package com.onegravity.tichucount
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.bluelinelabs.conductor.Conductor.attachRouter
+import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
-import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
+import com.onegravity.tichucount.databinding.ActivityMainBinding
+import com.onegravity.tichucount.newentry.NewEntryController
 
 class TichuActivity : AppCompatActivity() {
 
     private lateinit var router: Router
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_main)
-        val container = findViewById<View>(R.id.controller_container) as ViewGroup
-        router = attachRouter(this, container, savedInstanceState)
+        ActivityMainBinding.inflate(LayoutInflater.from(this)).run {
+            binding = this
+            setContentView(root)
+        }
 
-        if (!router.hasRootController()) {
+        val container = binding.tichuMain.controllerContainer
+        router = attachRouter(this, container, savedInstanceState)
+        if (! router.hasRootController()) {
             router.setRoot(RouterTransaction.with(TichuController()))
         }
 
-        setSupportActionBar(findViewById(R.id.toolbar))
+        setSupportActionBar(binding.toolbar)
 
-        findViewById<CollapsingToolbarLayout>(R.id.toolbar_layout).title = title
+        binding.toolbarLayout.title = title
 
-        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
-            newEntry()
-        }
+        binding.fab.setOnClickListener { newEntry() }
     }
 
     override fun onBackPressed() {
@@ -61,8 +65,14 @@ class TichuActivity : AppCompatActivity() {
     private fun newGame() {}
 
     private fun newEntry() {
-        val fragment = TichuDialog()
-        fragment.show(supportFragmentManager, "new_entry")
+        val tx = createRouterTx(NewEntryController())
+        router.pushController(tx)
     }
+
+    private fun createRouterTx(controller: Controller) =
+        RouterTransaction.with(controller)
+            .tag(controller.javaClass.simpleName)
+            .pushChangeHandler(FadeChangeHandler())
+            .popChangeHandler(FadeChangeHandler())
 
 }
