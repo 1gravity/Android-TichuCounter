@@ -7,27 +7,6 @@
     android:padding="12dp">
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/score_team_1"
-        style="@style/Theme.DialogHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/header_team_1"
-        app:layout_constraintBottom_toTopOf="@+id/separator"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:id="@+id/separator"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/black"
-        app:layout_constraintBottom_toTopOf="@+id/score_tichu_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.6"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/score_team_1" />
-
-    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/score_tichu_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,7 +14,7 @@
         style="@style/Theme.DialogHeader"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/separator" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <RadioGroup
         android:id="@+id/score_tichu_win_loss"
@@ -45,14 +24,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/score_tichu_title">
 
-        <androidx.appcompat.widget.AppCompatRadioButton
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/score_tichu_win"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/score_win"
             style="@style/Theme.DialogText" />
 
-        <androidx.appcompat.widget.AppCompatRadioButton
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/score_tichu_loss"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -78,14 +57,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/score_big_tichu_title">
 
-        <androidx.appcompat.widget.AppCompatRadioButton
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/score_big_tichu_win"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/score_win"
             style="@style/Theme.DialogText" />
 
-        <androidx.appcompat.widget.AppCompatRadioButton
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/score_big_tichu_loss"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -135,28 +114,9 @@
         android:id="@+id/score_total"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="123"
         style="@style/Theme.DialogText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/score_total_title" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnPositive"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@android:string/ok"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/score_total" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnNegative"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@android:string/cancel"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btnPositive"
-        app:layout_constraintTop_toBottomOf="@+id/score_total" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,13 +1,21 @@
-package com.onegravity.tichucount.newentry
+package com.onegravity.tichucount.newentry.components
 
 import com.jakewharton.rxbinding4.view.clicks
-import com.onegravity.tichucount.databinding.NewEntryBinding
+import com.onegravity.tichucount.databinding.OneEntryBinding
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.Subject
 
-class DoubleWin(private val binding: NewEntryBinding, update: Subject<Boolean>) : Component(update) {
+class DoubleWin(
+    private val binding: OneEntryBinding,
+    update: Subject<Boolean>,
+    won: Boolean = false
+) : Component(update) {
 
-    override fun changes(): Observable<Unit> = binding.scoreDoubleWin.clicks()
+    init {
+        binding.scoreDoubleWin.isChecked = won
+    }
+
+    override fun changed(): Observable<Unit> = binding.scoreDoubleWin.clicks()
 
     override fun update() {
         if (binding.scoreTichuLoss.isChecked || binding.scoreBigTichuLoss.isChecked) {

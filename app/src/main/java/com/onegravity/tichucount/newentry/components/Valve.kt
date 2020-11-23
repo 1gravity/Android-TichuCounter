@@ -1,4 +1,4 @@
-package com.onegravity.tichucount.newentry
+package com.onegravity.tichucount.newentry.components
 
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.PublishSubject

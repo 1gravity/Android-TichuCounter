@@ -11,7 +11,7 @@ import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
 import com.onegravity.tichucount.databinding.ActivityMainBinding
-import com.onegravity.tichucount.newentry.NewEntryController
+import com.onegravity.tichucount.newentry.EntryController
 
 class TichuActivity : AppCompatActivity() {
 
@@ -65,7 +65,7 @@ class TichuActivity : AppCompatActivity() {
     private fun newGame() {}
 
     private fun newEntry() {
-        val tx = createRouterTx(NewEntryController())
+        val tx = createRouterTx(EntryController())
         router.pushController(tx)
     }
 

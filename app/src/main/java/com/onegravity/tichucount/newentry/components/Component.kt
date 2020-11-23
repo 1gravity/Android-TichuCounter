@@ -1,5 +1,6 @@
-package com.onegravity.tichucount.newentry
+package com.onegravity.tichucount.newentry.components
 
+import android.util.Log
 import hu.akarnokd.rxjava3.operators.ObservableTransformers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -15,12 +16,16 @@ abstract class Component(private val update: Subject<Boolean>) {
         update
             .compose(ObservableTransformers.valve(valve.isOpen()))
             .doOnSubscribe { disposable.add(it) }
-            .subscribe { update() }
+            .subscribe {
+                Log.i("TEST", "${javaClass.simpleName} update()")
+                update()
+            }
 
-        changes()
+        changed()
             .doOnSubscribe { disposable.add(it) }
             .subscribe {
                 valve.close()
+                Log.i("TEST", "${javaClass.simpleName} has changed")
                 update.onNext(true)
                 valve.open()
             }
@@ -30,7 +35,7 @@ abstract class Component(private val update: Subject<Boolean>) {
         disposable.clear()
     }
 
-    protected abstract fun changes(): Observable<Unit>
+    protected abstract fun changed(): Observable<Unit>
 
     protected abstract fun update()
 
