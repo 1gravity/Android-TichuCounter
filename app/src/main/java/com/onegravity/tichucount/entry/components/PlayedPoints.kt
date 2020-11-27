@@ -1,4 +1,4 @@
-package com.onegravity.tichucount.newentry.components
+package com.onegravity.tichucount.entry.components
 
 import com.onegravity.tichucount.databinding.OneEntryBinding
 import io.reactivex.rxjava3.core.Observable

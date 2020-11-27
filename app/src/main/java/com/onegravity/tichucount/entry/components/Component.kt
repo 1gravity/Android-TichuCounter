@@ -1,6 +1,6 @@
-package com.onegravity.tichucount.newentry.components
+package com.onegravity.tichucount.entry.components
 
-import android.util.Log
+import com.onegravity.tichucount.util.Valve
 import hu.akarnokd.rxjava3.operators.ObservableTransformers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -17,7 +17,6 @@ abstract class Component(private val update: Subject<Boolean>) {
             .compose(ObservableTransformers.valve(valve.isOpen()))
             .doOnSubscribe { disposable.add(it) }
             .subscribe {
-                Log.i("TEST", "${javaClass.simpleName} update()")
                 update()
             }
 
@@ -25,7 +24,6 @@ abstract class Component(private val update: Subject<Boolean>) {
             .doOnSubscribe { disposable.add(it) }
             .subscribe {
                 valve.close()
-                Log.i("TEST", "${javaClass.simpleName} has changed")
                 update.onNext(true)
                 valve.open()
             }

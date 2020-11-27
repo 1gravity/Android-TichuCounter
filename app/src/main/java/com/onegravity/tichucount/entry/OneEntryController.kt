@@ -1,4 +1,4 @@
-package com.onegravity.tichucount.newentry
+package com.onegravity.tichucount.entry
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import androidx.appcompat.widget.Toolbar
 import com.bluelinelabs.conductor.Controller
 import com.onegravity.tichucount.R
 import com.onegravity.tichucount.databinding.OneEntryBinding
-import com.onegravity.tichucount.newentry.components.*
+import com.onegravity.tichucount.entry.components.*
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 
 class OneEntryController(@Nullable args: Bundle): Controller(args) {

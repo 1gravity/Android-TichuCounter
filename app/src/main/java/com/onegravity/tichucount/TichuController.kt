@@ -5,7 +5,7 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.onegravity.tichucount.databinding.TichuMainBinding
-import com.onegravity.tichucount.newentry.EntryController
+import com.onegravity.tichucount.entry.EntryController
 
 class TichuController : BaseController() {
 

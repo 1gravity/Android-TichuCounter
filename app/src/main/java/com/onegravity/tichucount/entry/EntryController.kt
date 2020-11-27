@@ -1,4 +1,4 @@
-package com.onegravity.tichucount.newentry
+package com.onegravity.tichucount.entry
 
 import android.os.Bundle
 import android.view.LayoutInflater

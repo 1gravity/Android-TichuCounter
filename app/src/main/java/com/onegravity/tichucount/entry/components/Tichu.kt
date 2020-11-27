@@ -1,4 +1,4 @@
-package com.onegravity.tichucount.newentry.components
+package com.onegravity.tichucount.entry.components
 
 import com.jakewharton.rxbinding4.view.clicks
 import com.onegravity.tichucount.databinding.OneEntryBinding
