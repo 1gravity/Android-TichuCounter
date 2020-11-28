@@ -1,8 +1,16 @@
 package com.onegravity.tichucount.entry.viewmodel
 
-import com.onegravity.tichucount.util.CountdownValve
+import com.onegravity.tichucount.util.CountValve
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
+import java.io.Serializable
+
+enum class EntryType {
+    TICHU,
+    BIG_TICHU,
+    DOUBLE_WIN,
+    PLAYED_POINTS,
+}
 
 data class Entry(
     private val initialTichu: EntryState,
@@ -10,13 +18,13 @@ data class Entry(
     private val initialDoubleWin: Boolean,
     private val initialPlayedPoints: Int,
     val name: String = "unknown"
-) {
+) : Serializable {
 
-    private val valve = CountdownValve(1)
+    private val valve = CountValve(1)
 
-    private val changed = BehaviorSubject.create<Boolean>()
+    private val changed = BehaviorSubject.create<EntryType>()
 
-    fun changes(): Observable<Boolean> = changed
+    fun changes(): Observable<EntryType> = changed
 
     var tichu = initialTichu
         set(value) {
@@ -24,7 +32,7 @@ data class Entry(
                 changeStart()
                 field = value
                 validateTichu()
-                changeDone()
+                changeDone(EntryType.TICHU)
             }
         }
 
@@ -40,7 +48,7 @@ data class Entry(
                 changeStart()
                 field = value
                 validateBigTichu()
-                changeDone()
+                changeDone(EntryType.BIG_TICHU)
             }
         }
 
@@ -59,7 +67,7 @@ data class Entry(
                 changeStart()
                 field = value
                 validateDoubleWin()
-                changeDone()
+                changeDone(EntryType.DOUBLE_WIN)
             }
         }
 
@@ -77,7 +85,7 @@ data class Entry(
                 changeStart()
                 field = value
                 validatePlayedPoints()
-                changeDone()
+                changeDone(EntryType.PLAYED_POINTS)
             }
         }
 
@@ -91,10 +99,10 @@ data class Entry(
         valve.close()
     }
 
-    private fun changeDone() {
+    private fun changeDone(entryType: EntryType) {
         valve.open()
         if (valve.isOpen()) {
-            changed.onNext(true)
+            changed.onNext(entryType)
         }
     }
 

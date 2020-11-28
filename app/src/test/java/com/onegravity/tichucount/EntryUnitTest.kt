@@ -2,6 +2,7 @@ package com.onegravity.tichucount
 
 import com.onegravity.tichucount.entry.viewmodel.Entry
 import com.onegravity.tichucount.entry.viewmodel.EntryState
+import com.onegravity.tichucount.entry.viewmodel.EntryType
 import org.junit.Assert
 import org.junit.Test
 
@@ -62,19 +63,19 @@ class EntryUnitTest {
                 assertValueCount(0)
 
                 tichu = EntryState.WON
-                assertValues(true)
+                assertValues(EntryType.TICHU)
                 assertValueCount(1)
 
                 tichu = EntryState.LOST
-                assertValues(true, true)
+                assertValues(EntryType.TICHU, EntryType.TICHU)
                 assertValueCount(2)
 
                 tichu = EntryState.LOST
-                assertValues(true, true)
+                assertValues(EntryType.TICHU, EntryType.TICHU)
                 assertValueCount(2)
 
                 tichu = EntryState.WON
-                assertValues(true, true, true)
+                assertValues(EntryType.TICHU, EntryType.TICHU, EntryType.TICHU)
                 assertValueCount(3)
             }
         }
@@ -124,19 +125,19 @@ class EntryUnitTest {
                 assertValueCount(0)
 
                 bigTichu = EntryState.WON
-                assertValues(true)
+                assertValues(EntryType.BIG_TICHU)
                 assertValueCount(1)
 
                 bigTichu = EntryState.LOST
-                assertValues(true, true)
+                assertValues(EntryType.BIG_TICHU, EntryType.BIG_TICHU)
                 assertValueCount(2)
 
                 bigTichu = EntryState.LOST
-                assertValues(true, true)
+                assertValues(EntryType.BIG_TICHU, EntryType.BIG_TICHU)
                 assertValueCount(2)
 
                 bigTichu = EntryState.WON
-                assertValues(true, true, true)
+                assertValues(EntryType.BIG_TICHU, EntryType.BIG_TICHU, EntryType.BIG_TICHU)
                 assertValueCount(3)
             }
         }
@@ -200,19 +201,19 @@ class EntryUnitTest {
                 assertValueCount(0)
 
                 playedPoints = 30
-                assertValues(true)
+                assertValues(EntryType.PLAYED_POINTS)
                 assertValueCount(1)
 
                 playedPoints = 20
-                assertValues(true, true)
+                assertValues(EntryType.PLAYED_POINTS, EntryType.PLAYED_POINTS)
                 assertValueCount(2)
 
                 playedPoints = 20
-                assertValues(true, true)
+                assertValues(EntryType.PLAYED_POINTS, EntryType.PLAYED_POINTS)
                 assertValueCount(2)
 
                 playedPoints = 100
-                assertValues(true, true, true)
+                assertValues(EntryType.PLAYED_POINTS, EntryType.PLAYED_POINTS, EntryType.PLAYED_POINTS)
                 assertValueCount(3)
             }
         }

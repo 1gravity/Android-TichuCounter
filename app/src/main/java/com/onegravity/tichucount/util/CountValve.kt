@@ -4,7 +4,7 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import java.util.concurrent.atomic.AtomicInteger
 
-class CountdownValve(initialCount: Int = 0) {
+class CountValve(initialCount: Int = 0) {
 
     private val count = AtomicInteger(initialCount)
 
