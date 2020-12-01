@@ -25,10 +25,19 @@ class EntryUnitTest {
             Assert.assertEquals(playedPoints, 50)
             Assert.assertEquals(points(), -50)
         }
+
+        Entry(EntryState.NOT_PLAYED, EntryState.NOT_PLAYED, true, 50).run {
+            Assert.assertEquals(tichu, EntryState.NOT_PLAYED)
+            Assert.assertEquals(bigTichu, EntryState.NOT_PLAYED)
+            Assert.assertEquals(doubleWin, true)
+            Assert.assertEquals(playedPoints, 0)
+            Assert.assertEquals(points(), 200)
+        }
     }
 
     @Test
     fun testTiuchu() {
+        // check all Tichu states
         Entry(EntryState.NOT_PLAYED, EntryState.NOT_PLAYED, false, 0).run {
             tichu = EntryState.WON
 
@@ -37,6 +46,14 @@ class EntryUnitTest {
             Assert.assertEquals(doubleWin, false)
             Assert.assertEquals(playedPoints, 0)
             Assert.assertEquals(points(), 100)
+
+            tichu = EntryState.NOT_PLAYED
+
+            Assert.assertEquals(tichu, EntryState.NOT_PLAYED)
+            Assert.assertEquals(bigTichu, EntryState.NOT_PLAYED)
+            Assert.assertEquals(doubleWin, false)
+            Assert.assertEquals(playedPoints, 0)
+            Assert.assertEquals(points(),   0)
 
             tichu = EntryState.LOST
 
@@ -47,16 +64,19 @@ class EntryUnitTest {
             Assert.assertEquals(points(),   -100)
         }
 
+        // won Tichu -> 100 points
         Entry(EntryState.WON, EntryState.NOT_PLAYED, false, 0).run {
             Assert.assertEquals(tichu, EntryState.WON)
             Assert.assertEquals(points(),   100)
         }
 
+        // lost Tichu -> -100 points
         Entry(EntryState.LOST, EntryState.NOT_PLAYED, false, 0).run {
             Assert.assertEquals(tichu, EntryState.LOST)
             Assert.assertEquals(points(),   -100)
         }
 
+        // check the event stream for the Tichu field
         Entry(EntryState.NOT_PLAYED, EntryState.NOT_PLAYED, false, 0).run {
             changes().test().run {
                 assertEmpty()
@@ -83,6 +103,7 @@ class EntryUnitTest {
 
     @Test
     fun testBigTiuchu() {
+        // test all BigTichu states
         Entry(EntryState.NOT_PLAYED, EntryState.NOT_PLAYED, false, 0).run {
             bigTichu = EntryState.WON
 
@@ -91,6 +112,14 @@ class EntryUnitTest {
             Assert.assertEquals(doubleWin, false)
             Assert.assertEquals(playedPoints, 0)
             Assert.assertEquals(points(), 200)
+
+            bigTichu = EntryState.NOT_PLAYED
+
+            Assert.assertEquals(tichu, EntryState.NOT_PLAYED)
+            Assert.assertEquals(bigTichu, EntryState.NOT_PLAYED)
+            Assert.assertEquals(doubleWin, false)
+            Assert.assertEquals(playedPoints, 0)
+            Assert.assertEquals(points(),   0)
 
             bigTichu = EntryState.LOST
 
@@ -101,24 +130,19 @@ class EntryUnitTest {
             Assert.assertEquals(points(),   -200)
         }
 
+        // won BigTichu -> 200 points
         Entry(EntryState.NOT_PLAYED, EntryState.WON, false, 0).run {
             Assert.assertEquals(bigTichu, EntryState.WON)
             Assert.assertEquals(points(),   200)
         }
 
+        // lost BigTichu -> -200 points
         Entry(EntryState.NOT_PLAYED, EntryState.LOST, false, 0).run {
             Assert.assertEquals(bigTichu, EntryState.LOST)
             Assert.assertEquals(points(),   -200)
         }
 
-        Entry(EntryState.WON, EntryState.WON, false, 100).run {
-            Assert.assertEquals(tichu, EntryState.WON)
-            Assert.assertEquals(bigTichu, EntryState.WON)
-            Assert.assertEquals(doubleWin, true)
-            Assert.assertEquals(playedPoints, 0)
-            Assert.assertEquals(points(), 500)
-        }
-
+        // check the event stream for the BigTichu field
         Entry(EntryState.NOT_PLAYED, EntryState.NOT_PLAYED, false, 0).run {
             changes().test().run {
                 assertEmpty()
@@ -140,6 +164,128 @@ class EntryUnitTest {
                 assertValues(EntryType.BIG_TICHU, EntryType.BIG_TICHU, EntryType.BIG_TICHU)
                 assertValueCount(3)
             }
+        }
+    }
+
+    @Test
+    fun testDoubleWin() {
+        Entry(EntryState.WON, EntryState.WON, true, 0).run {
+            // maximum points (tichu, big tichu, double win)
+            Assert.assertEquals(tichu, EntryState.WON)
+            Assert.assertEquals(bigTichu, EntryState.WON)
+            Assert.assertEquals(doubleWin, true)
+            Assert.assertEquals(playedPoints, 0)
+            Assert.assertEquals(points(), 500)
+
+            // tichu and double win
+            bigTichu = EntryState.NOT_PLAYED
+            Assert.assertEquals(tichu, EntryState.WON)
+            Assert.assertEquals(bigTichu, EntryState.NOT_PLAYED)
+            Assert.assertEquals(doubleWin, true)
+            Assert.assertEquals(playedPoints, 0)
+            Assert.assertEquals(points(),   300)
+
+            // lost big tichu -> can't be double win
+            bigTichu = EntryState.LOST
+            Assert.assertEquals(tichu, EntryState.WON)
+            Assert.assertEquals(bigTichu, EntryState.LOST)
+            Assert.assertEquals(doubleWin, false)
+            Assert.assertEquals(playedPoints, 0)
+            Assert.assertEquals(points(),   -100)
+
+            // back to winning big tichu -> must be double win
+            bigTichu = EntryState.WON
+            Assert.assertEquals(tichu, EntryState.WON)
+            Assert.assertEquals(bigTichu, EntryState.WON)
+            Assert.assertEquals(doubleWin, true)
+            Assert.assertEquals(playedPoints, 0)
+            Assert.assertEquals(points(),   500)
+
+            // big tichu and double win
+            tichu = EntryState.NOT_PLAYED
+            Assert.assertEquals(tichu, EntryState.NOT_PLAYED)
+            Assert.assertEquals(bigTichu, EntryState.WON)
+            Assert.assertEquals(doubleWin, true)
+            Assert.assertEquals(playedPoints, 0)
+            Assert.assertEquals(points(),   400)
+
+            // lost tichu -> can't be double win
+            tichu = EntryState.LOST
+            Assert.assertEquals(tichu, EntryState.LOST)
+            Assert.assertEquals(bigTichu, EntryState.WON)
+            Assert.assertEquals(doubleWin, false)
+            Assert.assertEquals(playedPoints, 0)
+            Assert.assertEquals(points(),   100)
+
+            // back to winning tichu -> again max points
+            tichu = EntryState.WON
+            Assert.assertEquals(tichu, EntryState.WON)
+            Assert.assertEquals(bigTichu, EntryState.WON)
+            Assert.assertEquals(doubleWin, true)
+            Assert.assertEquals(playedPoints, 0)
+            Assert.assertEquals(points(),   500)
+        }
+
+        // check double win event stream for big tichu state changes
+        Entry(EntryState.WON, EntryState.NOT_PLAYED, false, 0).run {
+            changes().test().run {
+                assertEmpty()
+                assertValueCount(0)
+
+                bigTichu = EntryState.WON
+                assertValues(EntryType.DOUBLE_WIN, EntryType.BIG_TICHU)
+                assertValueCount(2)
+
+                bigTichu = EntryState.NOT_PLAYED
+                assertValues(EntryType.DOUBLE_WIN, EntryType.BIG_TICHU, EntryType.BIG_TICHU)
+                assertValueCount(3)
+
+                bigTichu = EntryState.LOST
+                assertValues(EntryType.DOUBLE_WIN, EntryType.BIG_TICHU, EntryType.BIG_TICHU, EntryType.DOUBLE_WIN, EntryType.BIG_TICHU)
+                assertValueCount(5)
+
+                bigTichu = EntryState.WON
+                assertValues(EntryType.DOUBLE_WIN, EntryType.BIG_TICHU, EntryType.BIG_TICHU, EntryType.DOUBLE_WIN, EntryType.BIG_TICHU, EntryType.DOUBLE_WIN, EntryType.BIG_TICHU)
+                assertValueCount(7)
+            }
+        }
+
+        // check double win event stream for tichu state changes
+        Entry(EntryState.NOT_PLAYED, EntryState.WON, false, 0).run {
+            changes().test().run {
+                assertEmpty()
+                assertValueCount(0)
+
+                tichu = EntryState.WON
+                assertValues(EntryType.DOUBLE_WIN, EntryType.TICHU)
+                assertValueCount(2)
+
+                tichu = EntryState.NOT_PLAYED
+                assertValues(EntryType.DOUBLE_WIN, EntryType.TICHU, EntryType.TICHU)
+                assertValueCount(3)
+
+                tichu = EntryState.LOST
+                assertValues(EntryType.DOUBLE_WIN, EntryType.TICHU, EntryType.TICHU, EntryType.DOUBLE_WIN, EntryType.TICHU)
+                assertValueCount(5)
+
+                tichu = EntryState.WON
+                assertValues(EntryType.DOUBLE_WIN, EntryType.TICHU, EntryType.TICHU, EntryType.DOUBLE_WIN, EntryType.TICHU, EntryType.DOUBLE_WIN, EntryType.TICHU)
+                assertValueCount(7)
+            }
+        }
+
+        // if we have a tichu and a big tichu -> double win cannot be altered!
+        Entry(EntryState.WON, EntryState.WON, true, 0).run {
+            Assert.assertEquals(tichu, EntryState.WON)
+            Assert.assertEquals(bigTichu, EntryState.WON)
+            Assert.assertEquals(doubleWin, true)
+            Assert.assertEquals(points(),   500)
+
+            doubleWin = false
+            Assert.assertEquals(tichu, EntryState.WON)
+            Assert.assertEquals(bigTichu, EntryState.WON)
+            Assert.assertEquals(doubleWin, true)
+            Assert.assertEquals(points(),   500)
         }
     }
 

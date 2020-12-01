@@ -31,14 +31,17 @@ data class Entry(
             if (field != value) {
                 changeStart()
                 field = value
-                validateTichu()
+                validateTichu(value)
                 changeDone(EntryType.TICHU)
             }
         }
 
-    private fun validateTichu() {
-        if (tichu == EntryState.LOST) {
+    private fun validateTichu(value: EntryState) {
+        if (value == EntryState.LOST) {
             doubleWin = false
+        }
+        if (value == EntryState.WON && bigTichu == EntryState.WON) {
+            doubleWin = true
         }
     }
 
@@ -47,32 +50,36 @@ data class Entry(
             if (field != value) {
                 changeStart()
                 field = value
-                validateBigTichu()
+                validateBigTichu(value)
                 changeDone(EntryType.BIG_TICHU)
             }
         }
 
-    private fun validateBigTichu() {
-        if (bigTichu == EntryState.LOST) {
+    private fun validateBigTichu(value: EntryState) {
+        if (value == EntryState.LOST) {
             doubleWin = false
         }
-        if (bigTichu == EntryState.WON && tichu == EntryState.WON) {
+        if (value == EntryState.WON && tichu == EntryState.WON) {
             doubleWin = true
         }
     }
 
     var doubleWin = initialDoubleWin
         set(value) {
-            if (field != value) {
+            val newValue = when (tichu == EntryState.WON && bigTichu == EntryState.WON) {
+                true -> true
+                false -> value
+            }
+            if (field != newValue) {
                 changeStart()
-                field = value
-                validateDoubleWin()
+                field = newValue
+                validateDoubleWin(newValue)
                 changeDone(EntryType.DOUBLE_WIN)
             }
         }
 
-    private fun validateDoubleWin() {
-        if (doubleWin) {
+    private fun validateDoubleWin(value: Boolean) {
+        if (value) {
             if (tichu == EntryState.LOST) tichu = EntryState.NOT_PLAYED
             if (bigTichu == EntryState.LOST) bigTichu = EntryState.NOT_PLAYED
             playedPoints = 0
@@ -84,13 +91,13 @@ data class Entry(
             if (field != value) {
                 changeStart()
                 field = value
-                validatePlayedPoints()
+                validatePlayedPoints(value)
                 changeDone(EntryType.PLAYED_POINTS)
             }
         }
 
-    private fun validatePlayedPoints() {
-        if (playedPoints != 0) {
+    private fun validatePlayedPoints(value: Int) {
+        if (value != 0) {
             doubleWin = false
         }
     }
@@ -100,10 +107,8 @@ data class Entry(
     }
 
     private fun changeDone(entryType: EntryType) {
+        changed.onNext(entryType)
         valve.open()
-        if (valve.isOpen()) {
-            changed.onNext(entryType)
-        }
     }
 
     fun points() = let {
@@ -119,10 +124,10 @@ data class Entry(
     }
 
     init {
-        validateTichu()
-        validateBigTichu()
-        validateDoubleWin()
-        validatePlayedPoints()
+        validateTichu(tichu)
+        validateBigTichu(bigTichu)
+        validateDoubleWin(doubleWin)
+        validatePlayedPoints(playedPoints)
     }
 
 }

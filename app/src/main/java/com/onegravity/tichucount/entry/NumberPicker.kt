@@ -1,4 +1,4 @@
-package com.onegravity.tichucount.entry.components
+package com.onegravity.tichucount.entry
 
 import com.onegravity.tichucount.databinding.OneEntryBinding
 import io.reactivex.rxjava3.subjects.BehaviorSubject
