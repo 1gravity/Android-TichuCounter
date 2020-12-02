@@ -25,13 +25,14 @@ open class EntryController: Controller() {
         savedViewState: Bundle?
     ) = EntryBinding.inflate(inflater).run {
         binding = this
-        viewModel = EntryViewModel(container.context)
+        viewModel = EntryViewModel()
         bindView(container.context, this)
         root
     }
 
     private fun bindView(context: Context, binding: EntryBinding) {
         binding.viewpager.adapter = EntryAdapter(viewModel, this@EntryController)
+        binding.viewpager.offscreenPageLimit = 1
 
         TabLayoutMediator(
             binding.tabLayout, binding.viewpager

@@ -1,27 +1,39 @@
 package com.onegravity.tichucount.entry.viewmodel
 
+import com.onegravity.tichucount.APP_SCOPE
+import com.onegravity.tichucount.util.LOGGER_TAG
+import com.onegravity.tichucount.util.Logger
 import com.onegravity.tichucount.util.Valve
 import com.onegravity.tichucount.util.ValveState
 import hu.akarnokd.rxjava3.operators.ObservableTransformers
+import toothpick.ktp.KTP
+import toothpick.ktp.delegate.inject
 
 data class Game(val team1: Entry, val team2: Entry) {
 
     private val valve1 = Valve(ValveState.OPENED)
     private val valve2 = Valve(ValveState.OPENED)
 
+    private val logger: Logger by inject()
+
     init {
+        KTP.openRootScope().openSubScope(APP_SCOPE).inject(this)
+
         team1.changes()
             .compose(ObservableTransformers.valve(valve1.isOpen()))
             .subscribe {
-                resolveDependencies(valve1, team1, team2)
+                logger.d(LOGGER_TAG, "${team1.name}: $it changed")
+                resolveDependencies(valve2, team1, team2)
             }
 
         team2.changes()
-            .compose(ObservableTransformers.valve(valve1.isOpen()))
+            .compose(ObservableTransformers.valve(valve2.isOpen()))
             .subscribe {
-                resolveDependencies(valve2, team2, team1)
+                logger.d(LOGGER_TAG, "${team2.name}: $it changed")
+                resolveDependencies(valve1, team2, team1)
             }
 
+        // initial/one-time dependency resolution
         resolveDependencies(valve1, team1, team2)
     }
 
@@ -41,4 +53,5 @@ data class Game(val team1: Entry, val team2: Entry) {
 
         sourceValve.open()
     }
+
 }

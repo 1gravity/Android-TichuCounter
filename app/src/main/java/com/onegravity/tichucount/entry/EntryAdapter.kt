@@ -7,14 +7,15 @@ import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.viewpager2.RouterStateAdapter
 import com.onegravity.tichucount.entry.viewmodel.EntryViewModel
 
-class EntryAdapter(private val viewModel: EntryViewModel, controller: Controller) : RouterStateAdapter(controller) {
+class EntryAdapter(private val viewModel: EntryViewModel, controller: Controller)
+    : RouterStateAdapter(controller) {
 
     override fun configureRouter(router: Router, position: Int) {
         if (!router.hasRootController()) {
             val args = Bundle()
             val team = when (position) {
-                0 -> viewModel.team1
-                else -> viewModel.team2
+                0 -> viewModel.game.team1
+                else -> viewModel.game.team2
             }
             args.putSerializable(TEAM_ARG, team)
             val page = OneEntryController(args)

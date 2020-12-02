@@ -1,11 +1,20 @@
 package com.onegravity.tichucount.entry.viewmodel
 
 import android.content.Context
+import com.onegravity.tichucount.APP_SCOPE
 import com.onegravity.tichucount.R
+import toothpick.ktp.KTP
+import toothpick.ktp.delegate.inject
 
-class EntryViewModel(context: Context) {
+class EntryViewModel {
 
-    val team1 = Entry(
+    private val context: Context by inject()
+
+    init {
+        KTP.openRootScope().openSubScope(APP_SCOPE).inject(this)
+    }
+
+    private val team1 = Entry(
         EntryState.NOT_PLAYED,
         EntryState.NOT_PLAYED,
         false,
@@ -13,7 +22,7 @@ class EntryViewModel(context: Context) {
         context.getString(R.string.header_team_1)
     )
 
-    val team2 = Entry(
+    private val team2 = Entry(
         EntryState.NOT_PLAYED,
         EntryState.NOT_PLAYED,
         false,

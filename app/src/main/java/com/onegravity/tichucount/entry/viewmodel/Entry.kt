@@ -1,8 +1,12 @@
 package com.onegravity.tichucount.entry.viewmodel
 
-import com.onegravity.tichucount.util.CountValve
+import com.onegravity.tichucount.APP_SCOPE
+import com.onegravity.tichucount.util.LOGGER_TAG
+import com.onegravity.tichucount.util.Logger
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
+import toothpick.ktp.KTP
+import toothpick.ktp.delegate.inject
 import java.io.Serializable
 
 enum class EntryType {
@@ -20,7 +24,11 @@ data class Entry(
     val name: String = "unknown"
 ) : Serializable {
 
-    private val valve = CountValve(1)
+    private val logger: Logger by inject()
+
+    init {
+        KTP.openRootScope().openSubScope(APP_SCOPE).inject(this)
+    }
 
     private val changed = BehaviorSubject.create<EntryType>()
 
@@ -29,8 +37,8 @@ data class Entry(
     var tichu = initialTichu
         set(value) {
             if (field != value) {
-                changeStart()
                 field = value
+                logger.d(LOGGER_TAG, "${name}: TICHU changed to $value")
                 validateTichu(value)
                 changeDone(EntryType.TICHU)
             }
@@ -48,8 +56,8 @@ data class Entry(
     var bigTichu = initialBigTichu
         set(value) {
             if (field != value) {
-                changeStart()
                 field = value
+                logger.d(LOGGER_TAG, "${name}: BIG_TICHU changed to $value")
                 validateBigTichu(value)
                 changeDone(EntryType.BIG_TICHU)
             }
@@ -71,8 +79,8 @@ data class Entry(
                 false -> value
             }
             if (field != newValue) {
-                changeStart()
                 field = newValue
+                logger.d(LOGGER_TAG, "${name}: DOUBLE_WIN changed to $value")
                 validateDoubleWin(newValue)
                 changeDone(EntryType.DOUBLE_WIN)
             }
@@ -89,8 +97,8 @@ data class Entry(
     var playedPoints = initialPlayedPoints
         set(value) {
             if (field != value) {
-                changeStart()
                 field = value
+                logger.d(LOGGER_TAG, "${name}: PLAYED_POINTS changed to $value")
                 validatePlayedPoints(value)
                 changeDone(EntryType.PLAYED_POINTS)
             }
@@ -102,13 +110,8 @@ data class Entry(
         }
     }
 
-    private fun changeStart() {
-        valve.close()
-    }
-
     private fun changeDone(entryType: EntryType) {
         changed.onNext(entryType)
-        valve.open()
     }
 
     fun points() = let {

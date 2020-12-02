@@ -4,9 +4,18 @@ import com.onegravity.tichucount.entry.viewmodel.Entry
 import com.onegravity.tichucount.entry.viewmodel.EntryState
 import com.onegravity.tichucount.entry.viewmodel.EntryType
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
+import toothpick.ktp.KTP
 
 class EntryUnitTest {
+
+    @Before
+    fun prepare() {
+        if (! KTP.isScopeOpen(APP_SCOPE)) {
+            KTP.openScope(APP_SCOPE).installTestModules(AppTestModule).inject(this)
+        }
+    }
 
     @Test
     fun testBasic() {

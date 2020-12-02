@@ -6,9 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.Toolbar
-import com.bluelinelabs.conductor.Controller
-import com.bluelinelabs.conductor.ControllerChangeHandler
-import com.bluelinelabs.conductor.ControllerChangeType
+import com.onegravity.tichucount.BaseController
 import com.onegravity.tichucount.R
 import com.onegravity.tichucount.databinding.OneEntryBinding
 import com.onegravity.tichucount.entry.viewmodel.Entry
@@ -17,7 +15,7 @@ import com.onegravity.tichucount.entry.viewmodel.EntryType
 
 const val TEAM_ARG = "TEAM_ARG"
 
-class OneEntryController(args: Bundle): Controller() {
+class OneEntryController(args: Bundle): BaseController() {
 
     private val team = args.getSerializable(TEAM_ARG) as Entry
 
@@ -35,9 +33,8 @@ class OneEntryController(args: Bundle): Controller() {
         root
     }
 
-    override fun onChangeStarted(changeHandler: ControllerChangeHandler, changeType: ControllerChangeType) {
-        super.onChangeStarted(changeHandler, changeType)
-
+    override fun onEnterStarted(view: View?) {
+        super.onEnterStarted(view)
         bindView(binding)
     }
 
