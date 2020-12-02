@@ -283,7 +283,7 @@ class EntryUnitTest {
             }
         }
 
-        // if we have a tichu and a big tichu -> double win cannot be altered!
+        // double win + if we have a tichu and a big tichu -> tichu will change state!
         Entry(EntryState.WON, EntryState.WON, true, 0).run {
             Assert.assertEquals(tichu, EntryState.WON)
             Assert.assertEquals(bigTichu, EntryState.WON)
@@ -291,10 +291,10 @@ class EntryUnitTest {
             Assert.assertEquals(points(),   500)
 
             doubleWin = false
-            Assert.assertEquals(tichu, EntryState.WON)
+            Assert.assertEquals(tichu, EntryState.NOT_PLAYED)
             Assert.assertEquals(bigTichu, EntryState.WON)
-            Assert.assertEquals(doubleWin, true)
-            Assert.assertEquals(points(),   500)
+            Assert.assertEquals(doubleWin, false)
+            Assert.assertEquals(points(),   200)
         }
     }
 
@@ -399,8 +399,15 @@ class EntryUnitTest {
             Assert.assertEquals(points(), 250)
         }
 
-        Entry(EntryState.NOT_PLAYED, EntryState.WON, true, -25).run {
-            Assert.assertEquals(points(), 400 )
+        Entry(EntryState.WON, EntryState.WON, true, -25).run {
+            Assert.assertEquals(points(), 500)
+
+            playedPoints = 50
+            Assert.assertEquals(tichu, EntryState.NOT_PLAYED)
+            Assert.assertEquals(bigTichu, EntryState.WON)
+            Assert.assertEquals(doubleWin, false)
+            Assert.assertEquals(playedPoints, 50)
+            Assert.assertEquals(points(), 250)
         }
 
         Entry(EntryState.WON, EntryState.WON, false, 100).run {

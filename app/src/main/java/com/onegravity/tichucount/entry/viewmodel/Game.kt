@@ -3,31 +3,27 @@ package com.onegravity.tichucount.entry.viewmodel
 import com.onegravity.tichucount.APP_SCOPE
 import com.onegravity.tichucount.util.LOGGER_TAG
 import com.onegravity.tichucount.util.Logger
-import com.onegravity.tichucount.util.Valve
-import com.onegravity.tichucount.util.ValveState
-import hu.akarnokd.rxjava3.operators.ObservableTransformers
 import toothpick.ktp.KTP
 import toothpick.ktp.delegate.inject
+import java.util.concurrent.atomic.AtomicBoolean
 
 data class Game(val team1: Entry, val team2: Entry) {
 
-    private val valve1 = Valve(ValveState.OPENED)
-    private val valve2 = Valve(ValveState.OPENED)
+    private var valve1 = AtomicBoolean(true)
+    private var valve2 = AtomicBoolean(true)
 
     private val logger: Logger by inject()
 
     init {
         KTP.openRootScope().openSubScope(APP_SCOPE).inject(this)
 
-        team1.changes()
-            .compose(ObservableTransformers.valve(valve1.isOpen()))
+        team1.changes().filter { valve1.get() }
             .subscribe {
                 logger.d(LOGGER_TAG, "${team1.name}: $it changed")
                 resolveDependencies(valve2, team1, team2)
             }
 
-        team2.changes()
-            .compose(ObservableTransformers.valve(valve2.isOpen()))
+        team2.changes().filter { valve2.get() }
             .subscribe {
                 logger.d(LOGGER_TAG, "${team2.name}: $it changed")
                 resolveDependencies(valve1, team2, team1)
@@ -37,8 +33,8 @@ data class Game(val team1: Entry, val team2: Entry) {
         resolveDependencies(valve1, team1, team2)
     }
 
-    private fun resolveDependencies(sourceValve: Valve, source: Entry, dest: Entry) {
-        sourceValve.close()
+    private fun resolveDependencies(sourceValve: AtomicBoolean, source: Entry, dest: Entry) {
+        sourceValve.set(false)
 
         if (source.tichu == EntryState.WON || source.bigTichu == EntryState.WON || source.doubleWin) {
             if (dest.tichu == EntryState.WON) dest.tichu = EntryState.NOT_PLAYED
@@ -46,12 +42,12 @@ data class Game(val team1: Entry, val team2: Entry) {
             dest.doubleWin = false
         }
 
-        when (source.doubleWin || dest.doubleWin) {
-            true -> dest.playedPoints = 0
-            false -> dest.playedPoints = 100 - source.playedPoints
+        dest.playedPoints = when (source.doubleWin) {
+            true ->  0
+            false -> 100 - source.playedPoints
         }
 
-        sourceValve.open()
+        sourceValve.set(true)
     }
 
 }

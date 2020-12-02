@@ -59,14 +59,12 @@ class OneEntryController(args: Bundle): BaseController() {
                     }
                     EntryType.DOUBLE_WIN -> {
                         binding.scoreDoubleWin.isChecked = team.doubleWin
-                        numberPicker.setEnable(! binding.scoreDoubleWin.isChecked)
                     }
                     EntryType.PLAYED_POINTS -> {
                         numberPicker.setValue(team.playedPoints)
                     }
                     else -> { }
                 }
-                binding.scoreDoubleWin.isEnabled = team.tichu != EntryState.WON || team.bigTichu != EntryState.WON
                 binding.scoreTotal.text = team.points().toString()
             }
 
@@ -94,11 +92,13 @@ class OneEntryController(args: Bundle): BaseController() {
 
     private fun bindDoubleWin(binding: OneEntryBinding) =
         binding.scoreDoubleWin.setOnClickListener {
-             team.doubleWin = binding.scoreDoubleWin.isChecked
+            team.doubleWin = binding.scoreDoubleWin.isChecked
         }
 
     private fun bindPlayedPoints() =
         numberPicker.changed()
-            .subscribe { team.playedPoints = numberPicker.getValue() }
+            .subscribe {
+                team.playedPoints = numberPicker.getValue()
+            }
 
 }

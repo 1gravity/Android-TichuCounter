@@ -74,14 +74,10 @@ data class Entry(
 
     var doubleWin = initialDoubleWin
         set(value) {
-            val newValue = when (tichu == EntryState.WON && bigTichu == EntryState.WON) {
-                true -> true
-                false -> value
-            }
-            if (field != newValue) {
-                field = newValue
+            if (field != value) {
+                field = value
                 logger.d(LOGGER_TAG, "${name}: DOUBLE_WIN changed to $value")
-                validateDoubleWin(newValue)
+                validateDoubleWin(value)
                 changeDone(EntryType.DOUBLE_WIN)
             }
         }
@@ -91,6 +87,8 @@ data class Entry(
             if (tichu == EntryState.LOST) tichu = EntryState.NOT_PLAYED
             if (bigTichu == EntryState.LOST) bigTichu = EntryState.NOT_PLAYED
             playedPoints = 0
+        } else {
+            if (tichu == EntryState.WON && bigTichu == EntryState.WON) tichu = EntryState.NOT_PLAYED
         }
     }
 

@@ -12,12 +12,11 @@ class EntryAdapter(private val viewModel: EntryViewModel, controller: Controller
 
     override fun configureRouter(router: Router, position: Int) {
         if (!router.hasRootController()) {
+            val team1 = if (position == 0) viewModel.game.team1 else viewModel.game.team2
+
             val args = Bundle()
-            val team = when (position) {
-                0 -> viewModel.game.team1
-                else -> viewModel.game.team2
-            }
-            args.putSerializable(TEAM_ARG, team)
+            args.putSerializable(TEAM_ARG, team1)
+
             val page = OneEntryController(args)
             router.setRoot(RouterTransaction.with(page))
         }
