@@ -38,8 +38,8 @@ open class EntryController: Controller() {
             binding.tabLayout, binding.viewpager
         ) { tab: TabLayout.Tab, position: Int ->
             tab.text = when (position) {
-                0 -> context.getString(R.string.header_team_1)
-                else -> context.getString(R.string.header_team_2)
+                0 -> context.getString(R.string.name_team_1)
+                else -> context.getString(R.string.name_team_2)
             }
         }.attach()
     }
@@ -49,6 +49,14 @@ open class EntryController: Controller() {
 
         activity?.findViewById<Toolbar>(R.id.toolbar)
             ?.setNavigationOnClickListener { router.handleBack() }
+
+        binding.btnNegative.setOnClickListener {
+            router.popCurrentController()
+        }
+
+        binding.btnPositive.setOnClickListener {
+            viewModel.game
+        }
     }
 
     override fun onDetach(view: View) {

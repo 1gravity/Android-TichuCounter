@@ -2,8 +2,8 @@
     <string name="app_name">Tichu Count</string>
 
     <string name="header_round">Round</string>
-    <string name="header_team_1">Team 1</string>
-    <string name="header_team_2">Team 2</string>
+    <string name="name_team_1">Team 1</string>
+    <string name="name_team_2">Team 2</string>
 
     <string name="action_new_game">New Game</string>
 
