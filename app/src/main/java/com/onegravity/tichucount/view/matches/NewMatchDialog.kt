@@ -24,13 +24,13 @@ class NewMatchDialog : DialogFragment() {
         KTP.openRootScope().openSubScope(APP_SCOPE).inject(this@NewMatchDialog)
 
         val layout = LayoutInflater.from(this).inflate(R.layout.match_names, null)
-        val name1 = layout.findViewById<EditText>(R.id.team_name_1).text.toString()
-        val name2 = layout.findViewById<EditText>(R.id.team_name_2).text.toString()
 
         AlertDialog.Builder(this)
             .setTitle(R.string.new_match_title)
             .setView(layout)
             .setPositiveButton(android.R.string.ok) { _, _ ->
+                val name1 = layout.findViewById<EditText>(R.id.team_name_1).text.toString()
+                val name2 = layout.findViewById<EditText>(R.id.team_name_2).text.toString()
                 viewModel.createMatch(name1, name2)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(

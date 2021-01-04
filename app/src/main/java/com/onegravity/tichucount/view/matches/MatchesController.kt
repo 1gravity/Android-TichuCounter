@@ -1,23 +1,17 @@
 package com.onegravity.tichucount.view.matches
 
-import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.*
-import android.widget.EditText
-import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.DialogFragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.onegravity.tichucount.APP_SCOPE
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.onegravity.tichucount.R
 import com.onegravity.tichucount.databinding.MatchesBinding
 import com.onegravity.tichucount.db.MatchWithGames
 import com.onegravity.tichucount.util.LOGGER_TAG
-import com.onegravity.tichucount.util.Logger
 import com.onegravity.tichucount.view.BaseController
 import com.onegravity.tichucount.viewmodel.MatchViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import toothpick.ktp.KTP
 import toothpick.ktp.delegate.inject
 
 class MatchesController : BaseController() {
@@ -71,7 +65,7 @@ class MatchesController : BaseController() {
         }
 
         val viewAdapter = MatchesAdapter(entries)
-        val viewManager = LinearLayoutManager(context)
+        val viewManager = GridLayoutManager(context, 5, RecyclerView.VERTICAL, false)
 
         binding.matchList.recyclerView.apply {
             // use this setting to improve performance if you know that changes
