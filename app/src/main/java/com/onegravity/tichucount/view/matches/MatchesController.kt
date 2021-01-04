@@ -10,7 +10,10 @@ import com.onegravity.tichucount.databinding.MatchesBinding
 import com.onegravity.tichucount.db.MatchWithGames
 import com.onegravity.tichucount.util.LOGGER_TAG
 import com.onegravity.tichucount.view.BaseController
+import com.onegravity.tichucount.view.match.MatchController
+import com.onegravity.tichucount.viewmodel.MatchOpen
 import com.onegravity.tichucount.viewmodel.MatchViewModel
+import com.onegravity.tichucount.viewmodel.MatchViewModelEvent
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import toothpick.ktp.delegate.inject
 
@@ -43,10 +46,25 @@ class MatchesController : BaseController() {
                 { bind(view.context, it) },
                 { logger.e(LOGGER_TAG, "Failed to load matches", it) }
             )
+
+        viewModel.events()
+            .doOnSubscribe { disposables.add(it) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { dispatchEvents(it) },
+                { logger.e(LOGGER_TAG, "Failed to process events", it) }
+            )
+    }
+
+    private fun dispatchEvents(event: MatchViewModelEvent) {
+        when (event) {
+            is MatchOpen -> goToMatch((event as MatchOpen).matchUid)
+            else -> { /* do nothing */ }
+        }
     }
 
     private fun bind(context: Context, games: List<MatchWithGames>) {
-        val title = MatchEntry(true,
+        val title = MatchEntry(viewModel, true, 0,
             getString(R.string.match_nr),
             getString(R.string.name_team_1),
             getString(R.string.score),
@@ -55,7 +73,7 @@ class MatchesController : BaseController() {
         )
         val entries = games.foldIndexed(arrayListOf(title)) { pos, list, match ->
             list.apply {
-                val entry = MatchEntry(false, pos.inc().toString(),
+                val entry = MatchEntry(viewModel, false, match.match.uid, pos.inc().toString(),
                     match.match.team1,
                     match.match.score1.toString(),
                     match.match.team2,
@@ -96,6 +114,11 @@ class MatchesController : BaseController() {
     }
 
     private fun newEntry() = shoWDialog(NewMatchDialog())
+
+    private fun goToMatch(matchUid: Int) {
+        val tx = createRouterTx(MatchController())
+        router.pushController(tx)
+    }
 
     private fun deleteMatches() =
         viewModel.deleteMatches()
