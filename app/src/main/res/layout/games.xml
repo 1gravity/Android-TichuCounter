@@ -35,7 +35,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include android:id="@+id/tichuScores" layout="@layout/tichu_scores" />
+    <include android:id="@+id/gameList" layout="@layout/game_list" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"

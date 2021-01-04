@@ -1,9 +1,9 @@
-package com.onegravity.tichucount.view.match
+package com.onegravity.tichucount.view.game
 
-import com.onegravity.tichucount.databinding.OneEntryBinding
+import com.onegravity.tichucount.databinding.TeamScoreBinding
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 
-class NumberPicker(binding: OneEntryBinding) {
+class NumberPicker(binding: TeamScoreBinding) {
 
     private val nrPicker = binding.scoreNumber
 

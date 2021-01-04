@@ -33,7 +33,7 @@
             "notNull": true
           },
           {
-            "fieldPath": "score12",
+            "fieldPath": "score2",
             "columnName": "score_team_2",
             "affinity": "INTEGER",
             "notNull": true

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.onegravity.tichucount.TichuActivity">
     <item
-        android:id="@+id/action_new_game"
+        android:id="@+id/action_new_match"
         android:orderInCategory="100"
         android:title="@string/action_new_match"
         app:showAsAction="never" />

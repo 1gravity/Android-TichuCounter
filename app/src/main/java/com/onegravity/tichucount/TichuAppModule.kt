@@ -19,11 +19,9 @@ class TichuAppModule(application: Application) : Module() {
             TichuDatabase::class.java, "tichu-db"
         ).build()
 
-        bind(Application::class.java).toInstance(application)
         bind(Context::class.java).toInstance(context)
         bind(Logger::class.java).toInstance(LoggerImpl)
         bind(TichuDatabase::class.java).toInstance(tichuDB)
-        bind(MatchRepository::class.java).singleton()
     }
 
 }

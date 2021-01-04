@@ -1,17 +1,23 @@
 <resources>
     <string name="app_name">Tichu Count</string>
 
-    <string name="header_round">Round</string>
+    <!-- Matches Screen -->
+    <string name="matches_title">Tichu Spiele</string>
+    <string name="match_nr">Spiel #</string>
     <string name="name_team_1">Team 1</string>
+    <string name="score">Punkte</string>
     <string name="name_team_2">Team 2</string>
+    <string name="action_delete_all">Alle löschen</string>
+    <string name="new_match_title">Teamnamen</string>
 
-    <string name="action_new_match">New Match</string>
+    <string name="header_round">Runde</string>
+
+    <string name="action_new_match">Neues Spiel</string>
 
     <string name="score_ticku">Tichu</string>
     <string name="score_big_ticku">Grosses Tichu</string>
     <string name="score_double_win">Doppelsieg</string>
     <string name="score_win">Gewonnen</string>
     <string name="score_loss">Verloren</string>
-    <string name="score">Gespielte Punkte</string>
     <string name="score_total">Total Punkte</string>
 </resources>

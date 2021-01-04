@@ -10,8 +10,11 @@ interface MatchDao {
     @Query("SELECT * FROM 'match'")
     fun getMatchesWithGames(): Flowable<List<MatchWithGames>>
 
-    @Query("SELECT * FROM 'match' WHERE uid IN (:matchIds)")
-    fun loadAllByIds(matchIds: IntArray): List<Match>
+    @Query("DELETE FROM 'match'")
+    fun deleteMatches()
+
+    @Query("DELETE FROM 'game'")
+    fun deleteGames()
 
     @Insert
     fun insert(vararg match: Match)
