@@ -1,4 +1,4 @@
-package com.onegravity.tichucount.entry
+package com.onegravity.tichucount.view.match
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,18 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.Toolbar
-import com.onegravity.tichucount.BaseController
+import com.onegravity.tichucount.view.BaseController
 import com.onegravity.tichucount.R
 import com.onegravity.tichucount.databinding.OneEntryBinding
-import com.onegravity.tichucount.entry.viewmodel.Entry
-import com.onegravity.tichucount.entry.viewmodel.EntryState
-import com.onegravity.tichucount.entry.viewmodel.EntryType
+import com.onegravity.tichucount.model.Score
+import com.onegravity.tichucount.model.ScoreState
+import com.onegravity.tichucount.model.ScoreType
 
 const val TEAM_ARG = "TEAM_ARG"
 
-class OneEntryController(args: Bundle): BaseController() {
+class TeamScoreController(args: Bundle): BaseController() {
 
-    private val team = args.getSerializable(TEAM_ARG) as Entry
+    private val team = args.getSerializable(TEAM_ARG) as Score
 
     private lateinit var binding: OneEntryBinding
 
@@ -49,18 +49,18 @@ class OneEntryController(args: Bundle): BaseController() {
         team.changes()
             .subscribe { type ->
                 when (type) {
-                    EntryType.TICHU -> {
-                        binding.scoreTichuWin.isChecked = team.tichu == EntryState.WON
-                        binding.scoreTichuLoss.isChecked = team.tichu == EntryState.LOST
+                    ScoreType.TICHU -> {
+                        binding.scoreTichuWin.isChecked = team.tichu == ScoreState.WON
+                        binding.scoreTichuLoss.isChecked = team.tichu == ScoreState.LOST
                     }
-                    EntryType.BIG_TICHU -> {
-                        binding.scoreBigTichuWin.isChecked = team.bigTichu == EntryState.WON
-                        binding.scoreBigTichuLoss.isChecked = team.bigTichu == EntryState.LOST
+                    ScoreType.BIG_TICHU -> {
+                        binding.scoreBigTichuWin.isChecked = team.bigTichu == ScoreState.WON
+                        binding.scoreBigTichuLoss.isChecked = team.bigTichu == ScoreState.LOST
                     }
-                    EntryType.DOUBLE_WIN -> {
+                    ScoreType.DOUBLE_WIN -> {
                         binding.scoreDoubleWin.isChecked = team.doubleWin
                     }
-                    EntryType.PLAYED_POINTS -> {
+                    ScoreType.PLAYED_POINTS -> {
                         numberPicker.setValue(team.playedPoints)
                     }
                     else -> { }
@@ -74,18 +74,18 @@ class OneEntryController(args: Bundle): BaseController() {
         bindPlayedPoints()
     }
 
-    private fun bindTichu(win: AppCompatCheckBox, loss: AppCompatCheckBox, assign: (state: EntryState) -> Unit) {
+    private fun bindTichu(win: AppCompatCheckBox, loss: AppCompatCheckBox, assign: (state: ScoreState) -> Unit) {
         win.setOnClickListener {
             when(win.isChecked) {
-                true -> EntryState.WON
-                else -> EntryState.NOT_PLAYED
+                true -> ScoreState.WON
+                else -> ScoreState.NOT_PLAYED
             }.run { assign(this) }
         }
 
         loss.setOnClickListener {
             when(loss.isChecked) {
-                true -> EntryState.LOST
-                else -> EntryState.NOT_PLAYED
+                true -> ScoreState.LOST
+                else -> ScoreState.NOT_PLAYED
             }.run { assign(this) }
         }
     }

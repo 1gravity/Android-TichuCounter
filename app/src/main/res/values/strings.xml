@@ -5,7 +5,7 @@
     <string name="name_team_1">Team 1</string>
     <string name="name_team_2">Team 2</string>
 
-    <string name="action_new_game">New Game</string>
+    <string name="action_new_match">New Match</string>
 
     <string name="score_ticku">Tichu</string>
     <string name="score_big_ticku">Grosses Tichu</string>

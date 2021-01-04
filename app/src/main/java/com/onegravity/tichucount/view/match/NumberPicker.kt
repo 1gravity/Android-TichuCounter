@@ -1,4 +1,4 @@
-package com.onegravity.tichucount.entry
+package com.onegravity.tichucount.view.match
 
 import com.onegravity.tichucount.databinding.OneEntryBinding
 import io.reactivex.rxjava3.subjects.BehaviorSubject

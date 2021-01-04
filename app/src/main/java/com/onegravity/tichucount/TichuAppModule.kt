@@ -3,8 +3,8 @@ package com.onegravity.tichucount
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
-import com.onegravity.tichucount.data.MatchRepository
-import com.onegravity.tichucount.data.TichuDatabase
+import com.onegravity.tichucount.db.MatchRepository
+import com.onegravity.tichucount.db.TichuDatabase
 import com.onegravity.tichucount.util.Logger
 import com.onegravity.tichucount.util.LoggerImpl
 import toothpick.config.Module

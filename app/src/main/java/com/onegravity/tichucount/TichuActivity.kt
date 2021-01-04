@@ -7,6 +7,7 @@ import com.bluelinelabs.conductor.Conductor.attachRouter
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.onegravity.tichucount.databinding.ActivityMainBinding
+import com.onegravity.tichucount.view.main.TichuMainController
 
 class TichuActivity : AppCompatActivity() {
 
@@ -25,7 +26,7 @@ class TichuActivity : AppCompatActivity() {
         val container = binding.controllerContainer
         router = attachRouter(this, container, savedInstanceState)
         if (! router.hasRootController()) {
-            router.setRoot(RouterTransaction.with(TichuController()))
+            router.setRoot(RouterTransaction.with(TichuMainController()))
         }
     }
 

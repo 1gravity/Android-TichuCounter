@@ -19,6 +19,12 @@ android {
 
         multiDexEnabled true
 
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas")
+            }
+        }
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -65,6 +71,7 @@ dependencies {
 
     // RxJava
     implementation "io.reactivex.rxjava3:rxjava:3.0.7"
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     implementation "com.github.akarnokd:rxjava3-extensions:3.0.1"
 
     // Toothpick
@@ -73,9 +80,10 @@ dependencies {
     testImplementation 'com.github.stephanenicolas.toothpick:toothpick-testing-junit5:3.1.0'
 
     // Room
-    implementation "androidx.room:room-runtime:2.2.5"
-    kapt "androidx.room:room-compiler:2.2.5"
-    implementation "androidx.room:room-ktx:2.2.5"
+    implementation "androidx.room:room-runtime:2.3.0-alpha04"
+    implementation "androidx.room:room-ktx:2.3.0-alpha04"
+    implementation 'androidx.room:room-rxjava3:2.3.0-alpha04'
+    kapt "androidx.room:room-compiler:2.3.0-alpha04"
 
     // Stetho
     debugImplementation "com.facebook.stetho:stetho:1.5.1"

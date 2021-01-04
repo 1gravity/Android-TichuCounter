@@ -1,4 +1,4 @@
-package com.onegravity.tichucount.data
+package com.onegravity.tichucount.db
 
 import androidx.room.Embedded
 import androidx.room.Relation

@@ -1,13 +1,11 @@
-package com.onegravity.tichucount.data
+package com.onegravity.tichucount.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import com.onegravity.tichucount.entry.viewmodel.EntryState
 
 @Database(
-    entities = [Match::class, Game::class, Entry::class],
+    entities = [Match::class, Game::class, Score::class],
     version = 1
 )
 @TypeConverters(TichuDatabaseConverters::class)

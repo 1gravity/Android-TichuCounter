@@ -1,4 +1,4 @@
-package com.onegravity.tichucount.entry.viewmodel
+package com.onegravity.tichucount.model
 
 import com.onegravity.tichucount.APP_SCOPE
 import com.onegravity.tichucount.util.LOGGER_TAG
@@ -9,16 +9,9 @@ import toothpick.ktp.KTP
 import toothpick.ktp.delegate.inject
 import java.io.Serializable
 
-enum class EntryType {
-    TICHU,
-    BIG_TICHU,
-    DOUBLE_WIN,
-    PLAYED_POINTS,
-}
-
-data class Entry(
-    private val initialTichu: EntryState,
-    private val initialBigTichu: EntryState,
+data class Score(
+    private val initialTichu: ScoreState,
+    private val initialBigTichu: ScoreState,
     private val initialDoubleWin: Boolean,
     private val initialPlayedPoints: Int,
     val name: String = "unknown"
@@ -30,9 +23,9 @@ data class Entry(
         KTP.openRootScope().openSubScope(APP_SCOPE).inject(this)
     }
 
-    private val changed = BehaviorSubject.create<EntryType>()
+    private val changed = BehaviorSubject.create<ScoreType>()
 
-    fun changes(): Observable<EntryType> = changed
+    fun changes(): Observable<ScoreType> = changed
 
     var tichu = initialTichu
         set(value) {
@@ -40,15 +33,15 @@ data class Entry(
                 field = value
                 logger.d(LOGGER_TAG, "${name}: TICHU changed to $value")
                 validateTichu(value)
-                changeDone(EntryType.TICHU)
+                changeDone(ScoreType.TICHU)
             }
         }
 
-    private fun validateTichu(value: EntryState) {
-        if (value == EntryState.LOST) {
+    private fun validateTichu(value: ScoreState) {
+        if (value == ScoreState.LOST) {
             doubleWin = false
         }
-        if (value == EntryState.WON && bigTichu == EntryState.WON) {
+        if (value == ScoreState.WON && bigTichu == ScoreState.WON) {
             doubleWin = true
         }
     }
@@ -59,15 +52,15 @@ data class Entry(
                 field = value
                 logger.d(LOGGER_TAG, "${name}: BIG_TICHU changed to $value")
                 validateBigTichu(value)
-                changeDone(EntryType.BIG_TICHU)
+                changeDone(ScoreType.BIG_TICHU)
             }
         }
 
-    private fun validateBigTichu(value: EntryState) {
-        if (value == EntryState.LOST) {
+    private fun validateBigTichu(value: ScoreState) {
+        if (value == ScoreState.LOST) {
             doubleWin = false
         }
-        if (value == EntryState.WON && tichu == EntryState.WON) {
+        if (value == ScoreState.WON && tichu == ScoreState.WON) {
             doubleWin = true
         }
     }
@@ -78,17 +71,17 @@ data class Entry(
                 field = value
                 logger.d(LOGGER_TAG, "${name}: DOUBLE_WIN changed to $value")
                 validateDoubleWin(value)
-                changeDone(EntryType.DOUBLE_WIN)
+                changeDone(ScoreType.DOUBLE_WIN)
             }
         }
 
     private fun validateDoubleWin(value: Boolean) {
         if (value) {
-            if (tichu == EntryState.LOST) tichu = EntryState.NOT_PLAYED
-            if (bigTichu == EntryState.LOST) bigTichu = EntryState.NOT_PLAYED
+            if (tichu == ScoreState.LOST) tichu = ScoreState.NOT_PLAYED
+            if (bigTichu == ScoreState.LOST) bigTichu = ScoreState.NOT_PLAYED
             playedPoints = 0
         } else {
-            if (tichu == EntryState.WON && bigTichu == EntryState.WON) tichu = EntryState.NOT_PLAYED
+            if (tichu == ScoreState.WON && bigTichu == ScoreState.WON) tichu = ScoreState.NOT_PLAYED
         }
     }
 
@@ -98,7 +91,7 @@ data class Entry(
                 field = value
                 logger.d(LOGGER_TAG, "${name}: PLAYED_POINTS changed to $value")
                 validatePlayedPoints(value)
-                changeDone(EntryType.PLAYED_POINTS)
+                changeDone(ScoreType.PLAYED_POINTS)
             }
         }
 
@@ -108,17 +101,17 @@ data class Entry(
         }
     }
 
-    private fun changeDone(entryType: EntryType) {
-        changed.onNext(entryType)
+    private fun changeDone(scoreType: ScoreType) {
+        changed.onNext(scoreType)
     }
 
     fun points() = let {
         var points = 0
 
-        if (tichu == EntryState.WON) points += 100
-        if (tichu == EntryState.LOST) points -= 100
-        if (bigTichu == EntryState.WON) points += 200
-        if (bigTichu == EntryState.LOST) points -= 200
+        if (tichu == ScoreState.WON) points += 100
+        if (tichu == ScoreState.LOST) points -= 100
+        if (bigTichu == ScoreState.WON) points += 200
+        if (bigTichu == ScoreState.LOST) points -= 200
         if (doubleWin) points += 200
 
         points + playedPoints

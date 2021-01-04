@@ -1,4 +1,4 @@
-package com.onegravity.tichucount.entry
+package com.onegravity.tichucount.view.match
 
 import android.content.Context
 import android.os.Bundle
@@ -11,27 +11,29 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.onegravity.tichucount.R
 import com.onegravity.tichucount.databinding.EntryBinding
-import com.onegravity.tichucount.entry.viewmodel.EntryViewModel
+import com.onegravity.tichucount.viewmodel.MatchViewModel
+import toothpick.ktp.KTP
+import toothpick.ktp.delegate.inject
 
-open class EntryController: Controller() {
+open class MatchController: Controller() {
 
     private lateinit var binding: EntryBinding
 
-    private lateinit var viewModel: EntryViewModel
+    private val viewModel: MatchViewModel by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup,
         savedViewState: Bundle?
     ) = EntryBinding.inflate(inflater).run {
+        KTP.openRootScope().openSubScope(com.onegravity.tichucount.APP_SCOPE).inject(this@MatchController)
         binding = this
-        viewModel = EntryViewModel()
         bindView(container.context, this)
         root
     }
 
     private fun bindView(context: Context, binding: EntryBinding) {
-        binding.viewpager.adapter = EntryAdapter(viewModel, this@EntryController)
+        binding.viewpager.adapter = TeamScoreAdapter(viewModel, this@MatchController)
         binding.viewpager.offscreenPageLimit = 1
 
         TabLayoutMediator(

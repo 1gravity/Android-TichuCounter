@@ -1,4 +1,4 @@
-package com.onegravity.tichucount
+package com.onegravity.tichucount.view
 
 import android.view.View
 import androidx.annotation.CallSuper
@@ -7,8 +7,14 @@ import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeType
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
+import hu.akarnokd.rxjava3.util.CompositeSubscription
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 
+@Suppress("LeakingThis")
 abstract class BaseController : Controller() {
+
+    protected val disposables by lazy { CompositeDisposable() }
+    protected val subscriptions by lazy { CompositeSubscription() }
 
     override fun onChangeStarted(
         changeHandler: ControllerChangeHandler,
@@ -48,6 +54,12 @@ abstract class BaseController : Controller() {
 
     @CallSuper
     protected open fun onExitEnded(view: View?) {}
+
+    @CallSuper
+    override fun onDestroy() {
+        disposables.clear()
+        subscriptions.cancel()
+    }
 
     protected fun createRouterTx(controller: Controller) =
         RouterTransaction.with(controller)

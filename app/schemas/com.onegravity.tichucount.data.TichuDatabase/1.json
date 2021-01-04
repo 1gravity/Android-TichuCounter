@@ -1,0 +1,206 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "fffccd533d579c94fabb9625d9563fe6",
+    "entities": [
+      {
+        "tableName": "match",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER NOT NULL, `name_team_1` TEXT NOT NULL, `name_team_2` TEXT NOT NULL, `score_team_1` INTEGER NOT NULL, `score_team_2` INTEGER NOT NULL, PRIMARY KEY(`uid`))",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "team1",
+            "columnName": "name_team_1",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "team2",
+            "columnName": "name_team_2",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "score1",
+            "columnName": "score_team_1",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "score12",
+            "columnName": "score_team_2",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "uid"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "game",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `matchUid` INTEGER NOT NULL, `team_1_uid` INTEGER NOT NULL, `team_1_tichu` TEXT NOT NULL, `team_1_big_tichu` TEXT NOT NULL, `team_1_double_win` INTEGER NOT NULL, `team_1_played_points` INTEGER NOT NULL, `team_1_total_points` INTEGER NOT NULL, `team_2_uid` INTEGER NOT NULL, `team_2_tichu` TEXT NOT NULL, `team_2_big_tichu` TEXT NOT NULL, `team_2_double_win` INTEGER NOT NULL, `team_2_played_points` INTEGER NOT NULL, `team_2_total_points` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "matchUid",
+            "columnName": "matchUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "score_1.uid",
+            "columnName": "team_1_uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "score_1.tichu",
+            "columnName": "team_1_tichu",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "score_1.bigTichu",
+            "columnName": "team_1_big_tichu",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "score_1.doubleWin",
+            "columnName": "team_1_double_win",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "score_1.playedPoints",
+            "columnName": "team_1_played_points",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "score_1.totalPoints",
+            "columnName": "team_1_total_points",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "score_2.uid",
+            "columnName": "team_2_uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "score_2.tichu",
+            "columnName": "team_2_tichu",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "score_2.bigTichu",
+            "columnName": "team_2_big_tichu",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "score_2.doubleWin",
+            "columnName": "team_2_double_win",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "score_2.playedPoints",
+            "columnName": "team_2_played_points",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "score_2.totalPoints",
+            "columnName": "team_2_total_points",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "uid"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "score",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER NOT NULL, `tichu` TEXT NOT NULL, `big_tichu` TEXT NOT NULL, `double_win` INTEGER NOT NULL, `played_points` INTEGER NOT NULL, `total_points` INTEGER NOT NULL, PRIMARY KEY(`uid`))",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tichu",
+            "columnName": "tichu",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bigTichu",
+            "columnName": "big_tichu",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "doubleWin",
+            "columnName": "double_win",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playedPoints",
+            "columnName": "played_points",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalPoints",
+            "columnName": "total_points",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "uid"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fffccd533d579c94fabb9625d9563fe6')"
+    ]
+  }
+}

@@ -1,17 +1,17 @@
-package com.onegravity.tichucount
+package com.onegravity.tichucount.view.main
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.onegravity.tichucount.databinding.TichuEntryBinding
 
-data class TichyEntry(val header: Boolean, val text1: String, val text2: String, val text3: String)
+data class TichuEntry(val header: Boolean, val text1: String, val text2: String, val text3: String)
 
 class TichuEntryViewHolder(
     val binding: TichuEntryBinding,
 ) : RecyclerView.ViewHolder(binding.root)
 
-class TichyEntryAdapter(private val entries: List<TichyEntry>) :
+class TichuEntryAdapter(private val entries: List<TichuEntry>) :
     RecyclerView.Adapter<TichuEntryViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
