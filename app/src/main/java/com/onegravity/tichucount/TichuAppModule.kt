@@ -7,6 +7,7 @@ import com.onegravity.tichucount.db.MatchRepository
 import com.onegravity.tichucount.db.TichuDatabase
 import com.onegravity.tichucount.util.Logger
 import com.onegravity.tichucount.util.LoggerImpl
+import com.onegravity.tichucount.viewmodel.MatchViewModel
 import toothpick.config.Module
 
 class TichuAppModule(application: Application) : Module() {
@@ -22,6 +23,8 @@ class TichuAppModule(application: Application) : Module() {
         bind(Context::class.java).toInstance(context)
         bind(Logger::class.java).toInstance(LoggerImpl)
         bind(TichuDatabase::class.java).toInstance(tichuDB)
+        bind(MatchRepository::class.java).to(MatchRepository::class.java).singleton()
+        bind(MatchViewModel::class.java).to(MatchViewModel::class.java).singleton()
     }
 
 }

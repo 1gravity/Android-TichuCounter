@@ -10,9 +10,9 @@
     <string name="action_delete_all">Alle löschen</string>
     <string name="new_match_title">Teamnamen</string>
 
+    <!-- Match Screen -->
+    <string name="match_title">%s vs %s</string>
     <string name="header_round">Runde</string>
-
-    <string name="action_new_match">Neues Spiel</string>
 
     <string name="score_ticku">Tichu</string>
     <string name="score_big_ticku">Grosses Tichu</string>

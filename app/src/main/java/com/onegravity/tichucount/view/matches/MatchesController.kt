@@ -9,7 +9,9 @@ import com.onegravity.tichucount.R
 import com.onegravity.tichucount.databinding.MatchesBinding
 import com.onegravity.tichucount.db.MatchWithGames
 import com.onegravity.tichucount.util.LOGGER_TAG
+import com.onegravity.tichucount.util.Logger
 import com.onegravity.tichucount.view.BaseController
+import com.onegravity.tichucount.view.match.MATCH_UID
 import com.onegravity.tichucount.view.match.MatchController
 import com.onegravity.tichucount.viewmodel.MatchOpen
 import com.onegravity.tichucount.viewmodel.MatchViewModel
@@ -34,13 +36,14 @@ class MatchesController : BaseController() {
         }
 
     override fun onAttach(view: View) {
+        logger.e(LOGGER_TAG, "onAttach ${javaClass.simpleName}")
         super.onAttach(view)
 
         binding.toolbarLayout.title = appContext.getString((R.string.matches_title))
         binding.fab.setOnClickListener { newEntry() }
 
         viewModel.matches()
-            .doOnSubscribe { subscriptions.add(it) }
+            .doOnSubscribe { disposables.add(it) }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { bind(view.context, it) },
@@ -56,11 +59,8 @@ class MatchesController : BaseController() {
             )
     }
 
-    private fun dispatchEvents(event: MatchViewModelEvent) {
-        when (event) {
-            is MatchOpen -> goToMatch((event as MatchOpen).matchUid)
-            else -> { /* do nothing */ }
-        }
+    private fun dispatchEvents(event: MatchViewModelEvent) = when (event) {
+        is MatchOpen -> goToMatch(event.matchUid)
     }
 
     private fun bind(context: Context, games: List<MatchWithGames>) {
@@ -116,8 +116,9 @@ class MatchesController : BaseController() {
     private fun newEntry() = shoWDialog(NewMatchDialog())
 
     private fun goToMatch(matchUid: Int) {
-        val tx = createRouterTx(MatchController())
-        router.pushController(tx)
+        val args = Bundle()
+        args.putInt(MATCH_UID, matchUid)
+        push(MatchController(args))
     }
 
     private fun deleteMatches() =

@@ -9,18 +9,21 @@ import com.onegravity.tichucount.R
 import com.onegravity.tichucount.databinding.GamesBinding
 import com.onegravity.tichucount.db.Game
 import com.onegravity.tichucount.util.LOGGER_TAG
-import com.onegravity.tichucount.util.Logger
 import com.onegravity.tichucount.view.BaseController
 import com.onegravity.tichucount.view.game.GameController
 import com.onegravity.tichucount.viewmodel.MatchViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import toothpick.ktp.delegate.inject
 
-class MatchController : BaseController() {
+const val MATCH_UID = "MATCH_UID"
+
+class MatchController(args: Bundle) : BaseController() {
 
     private lateinit var binding: GamesBinding
 
     private val viewModel: MatchViewModel by inject()
+
+    private val matchUid = args.getInt(MATCH_UID)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?)
             : View =
@@ -36,20 +39,21 @@ class MatchController : BaseController() {
     override fun onAttach(view: View) {
         super.onAttach(view)
 
-        binding.toolbarLayout.title = view.context.getString((R.string.app_name))
-        binding.fab.setOnClickListener { newEntry() }
-
-        viewModel.lastMatch()
+        viewModel.matches()
             .doOnSubscribe { disposables.add(it) }
+            .map { matches -> matches.first { it.match.uid == matchUid } }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe( {
-                bind(view.context, it.match.team1, it.match.team2, it.games)
+            .subscribe( { match ->
+                bind(view.context, match.match.team1, match.match.team2, match.games)
             }, {
                 logger.e(LOGGER_TAG, "Failed to load last match", it)
             } )
     }
 
     private fun bind(context: Context, teamName1: String, teamName2: String, games: List<Game>) {
+        binding.toolbarLayout.title = appContext.getString(R.string.match_title, teamName1, teamName2)
+        binding.fab.setOnClickListener { newGame() }
+
         val entries = arrayListOf(GameEntry(true, context.getString(R.string.header_round), teamName1, teamName2))
         games.foldIndexed(entries) { pos, list, match ->
             list.apply {
@@ -75,31 +79,8 @@ class MatchController : BaseController() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_matches, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_new_match -> {
-                newMatch()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    private fun newMatch() {
-        viewModel.createMatch(appContext.getString(R.string.name_team_1), appContext.getString(R.string.name_team_2))
-            .doOnSubscribe { disposables.add(it) }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe()
-    }
-
-    private fun newEntry() {
-        val tx = createRouterTx(GameController())
-        router.pushController(tx)
+    private fun newGame() {
+        push(GameController())
     }
 
 }

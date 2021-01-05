@@ -24,7 +24,7 @@ import toothpick.ktp.delegate.inject
 @Suppress("LeakingThis")
 abstract class BaseController : Controller() {
 
-    protected val scope: Scope = KTP.openRootScope().openSubScope(APP_SCOPE)
+    protected val scope: Scope = KTP.openScope(APP_SCOPE)
     protected val disposables by lazy { CompositeDisposable() }
     protected val subscriptions by lazy { CompositeSubscription() }
 
@@ -71,7 +71,8 @@ abstract class BaseController : Controller() {
     protected open fun onExitEnded(view: View?) {}
 
     @CallSuper
-    override fun onDestroy() {
+    override fun onDetach(view: View) {
+        super.onDetach(view)
         disposables.clear()
         subscriptions.cancel()
     }
@@ -90,10 +91,12 @@ abstract class BaseController : Controller() {
         }
     }
 
-    protected fun createRouterTx(controller: Controller) =
+    protected fun push(controller: Controller) {
         RouterTransaction.with(controller)
             .tag(controller.javaClass.simpleName)
             .pushChangeHandler(FadeChangeHandler())
             .popChangeHandler(FadeChangeHandler())
+            .also { router.pushController(it) }
+    }
 
 }
