@@ -14,7 +14,7 @@ data class Score(
     private val initialBigTichu: ScoreState,
     private val initialDoubleWin: Boolean,
     private val initialPlayedPoints: Int,
-    val name: String = "unknown"
+    val teamName: String
 ) : Serializable {
 
     private val logger: Logger by inject()
@@ -31,7 +31,7 @@ data class Score(
         set(value) {
             if (field != value) {
                 field = value
-                logger.d(LOGGER_TAG, "${name}: TICHU changed to $value")
+                logger.d(LOGGER_TAG, "${teamName}: TICHU changed to $value")
                 validateTichu(value)
                 changeDone(ScoreType.TICHU)
             }
@@ -50,7 +50,7 @@ data class Score(
         set(value) {
             if (field != value) {
                 field = value
-                logger.d(LOGGER_TAG, "${name}: BIG_TICHU changed to $value")
+                logger.d(LOGGER_TAG, "${teamName}: BIG_TICHU changed to $value")
                 validateBigTichu(value)
                 changeDone(ScoreType.BIG_TICHU)
             }
@@ -69,7 +69,7 @@ data class Score(
         set(value) {
             if (field != value) {
                 field = value
-                logger.d(LOGGER_TAG, "${name}: DOUBLE_WIN changed to $value")
+                logger.d(LOGGER_TAG, "${teamName}: DOUBLE_WIN changed to $value")
                 validateDoubleWin(value)
                 changeDone(ScoreType.DOUBLE_WIN)
             }
@@ -89,7 +89,7 @@ data class Score(
         set(value) {
             if (field != value) {
                 field = value
-                logger.d(LOGGER_TAG, "${name}: PLAYED_POINTS changed to $value")
+                logger.d(LOGGER_TAG, "${teamName}: PLAYED_POINTS changed to $value")
                 validatePlayedPoints(value)
                 changeDone(ScoreType.PLAYED_POINTS)
             }

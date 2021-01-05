@@ -6,20 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.Toolbar
-import com.onegravity.tichucount.view.BaseController
 import com.onegravity.tichucount.R
 import com.onegravity.tichucount.databinding.TeamScoreBinding
+import com.onegravity.tichucount.model.Score
 import com.onegravity.tichucount.model.ScoreState
-import com.onegravity.tichucount.viewmodel.GameViewModel
-import toothpick.ktp.delegate.inject
+import com.onegravity.tichucount.model.ScoreType
+import com.onegravity.tichucount.view.BaseController
 
-const val TEAM_ARG = "TEAM_ARG"
+const val SCORE_ARG = "SCORE_ARG"
 
 class ScoreController(args: Bundle): BaseController() {
 
-    private val team = args.getInt(TEAM_ARG)
-
-    private val viewModel: GameViewModel by inject()
+    private val score = args.getSerializable(SCORE_ARG) as Score
 
     private lateinit var binding: TeamScoreBinding
 
@@ -49,34 +47,28 @@ class ScoreController(args: Bundle): BaseController() {
     }
 
     private fun bindView(binding: TeamScoreBinding) {
-        viewModel.game()
+        score.changes()
+            .subscribe { type ->
+                when (type) {
+                    ScoreType.TICHU -> {
+                        binding.scoreTichuWin.isChecked = score.tichu == ScoreState.WON
+                        binding.scoreTichuLoss.isChecked = score.tichu == ScoreState.LOST
+                    }
+                    ScoreType.BIG_TICHU -> {
+                        binding.scoreBigTichuWin.isChecked = score.bigTichu == ScoreState.WON
+                        binding.scoreBigTichuLoss.isChecked = score.bigTichu == ScoreState.LOST
+                    }
+                    ScoreType.DOUBLE_WIN -> binding.scoreDoubleWin.isChecked = score.doubleWin
+                    ScoreType.PLAYED_POINTS -> numberPicker.setValue(score.playedPoints)
+                    else -> { }
+                }
+                binding.scoreTotal.text = score.points().toString()
+            }
 
-//        team.changes()
-//            .subscribe { type ->
-//                when (type) {
-//                    ScoreType.TICHU -> {
-//                        binding.scoreTichuWin.isChecked = team.tichu == ScoreState.WON
-//                        binding.scoreTichuLoss.isChecked = team.tichu == ScoreState.LOST
-//                    }
-//                    ScoreType.BIG_TICHU -> {
-//                        binding.scoreBigTichuWin.isChecked = team.bigTichu == ScoreState.WON
-//                        binding.scoreBigTichuLoss.isChecked = team.bigTichu == ScoreState.LOST
-//                    }
-//                    ScoreType.DOUBLE_WIN -> {
-//                        binding.scoreDoubleWin.isChecked = team.doubleWin
-//                    }
-//                    ScoreType.PLAYED_POINTS -> {
-//                        numberPicker.setValue(team.playedPoints)
-//                    }
-//                    else -> { }
-//                }
-//                binding.scoreTotal.text = team.points().toString()
-//            }
-
-//        bindTichu(binding.scoreTichuWin, binding.scoreTichuLoss) { team.tichu = it }
-//        bindTichu(binding.scoreBigTichuWin, binding.scoreBigTichuLoss) { team.bigTichu = it }
-//        bindDoubleWin(binding)
-//        bindPlayedPoints()
+        bindTichu(binding.scoreTichuWin, binding.scoreTichuLoss) { score.tichu = it }
+        bindTichu(binding.scoreBigTichuWin, binding.scoreBigTichuLoss) { score.bigTichu = it }
+        bindDoubleWin(binding)
+        bindPlayedPoints()
     }
 
     private fun bindTichu(win: AppCompatCheckBox, loss: AppCompatCheckBox, assign: (state: ScoreState) -> Unit) {
@@ -97,13 +89,13 @@ class ScoreController(args: Bundle): BaseController() {
 
     private fun bindDoubleWin(binding: TeamScoreBinding) =
         binding.scoreDoubleWin.setOnClickListener {
-//            team.doubleWin = binding.scoreDoubleWin.isChecked
+            score.doubleWin = binding.scoreDoubleWin.isChecked
         }
 
     private fun bindPlayedPoints() =
         numberPicker.changed()
             .subscribe {
-//                team.playedPoints = numberPicker.getValue()
+                score.playedPoints = numberPicker.getValue()
             }
 
 }

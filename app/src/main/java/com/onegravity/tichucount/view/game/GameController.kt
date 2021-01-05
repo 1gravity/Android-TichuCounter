@@ -1,6 +1,5 @@
 package com.onegravity.tichucount.view.game
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,20 +9,25 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.onegravity.tichucount.R
 import com.onegravity.tichucount.databinding.ScoresBinding
+import com.onegravity.tichucount.model.Game
+
+import com.onegravity.tichucount.util.LOGGER_TAG
 import com.onegravity.tichucount.view.BaseController
 import com.onegravity.tichucount.view.match.MATCH_UID
 import com.onegravity.tichucount.viewmodel.GameViewModel
-import com.onegravity.tichucount.viewmodel.MatchViewModel
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import toothpick.ktp.delegate.inject
+
+const val GAME_UID = "GAME_UID"
 
 open class GameController(args: Bundle): BaseController() {
 
     private lateinit var binding: ScoresBinding
 
-    private val matchViewModel: MatchViewModel by inject()
     private val gameViewModel: GameViewModel by inject()
 
     private val matchUid = args.getInt(MATCH_UID)
+    private val gameUid = args.getInt(GAME_UID)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,22 +36,7 @@ open class GameController(args: Bundle): BaseController() {
     ) = ScoresBinding.inflate(inflater).run {
         scope.inject(this@GameController)
         binding = this
-        bindView(container.context, this)
         root
-    }
-
-    private fun bindView(context: Context, binding: ScoresBinding) {
-        binding.viewpager.adapter = ScoreAdapter(this@GameController)
-        binding.viewpager.offscreenPageLimit = 1
-
-        TabLayoutMediator(
-            binding.tabLayout, binding.viewpager
-        ) { tab: TabLayout.Tab, position: Int ->
-            tab.text = when (position) {
-                0 -> context.getString(R.string.name_team_1)
-                else -> context.getString(R.string.name_team_2)
-            }
-        }.attach()
     }
 
     override fun onAttach(view: View) {
@@ -56,13 +45,37 @@ open class GameController(args: Bundle): BaseController() {
         activity?.findViewById<Toolbar>(R.id.toolbar)
             ?.setNavigationOnClickListener { router.handleBack() }
 
+        gameViewModel.game(matchUid, gameUid)
+            .doOnSubscribe { disposables.add(it) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { game -> bind(game) },
+                { gameLoadError(it) }
+            )
+
         binding.btnNegative.setOnClickListener {
             router.popCurrentController()
         }
 
         binding.btnPositive.setOnClickListener {
-//            viewModel.game
+            // to do
         }
+    }
+
+    private fun gameLoadError(error: Throwable) {
+        logger.e(LOGGER_TAG, "Failed to load match: ${error.message}")
+        router.popCurrentController()
+    }
+
+    private fun bind(game: Game) {
+        binding.viewpager.adapter = ScoreAdapter(this@GameController, game)
+        binding.viewpager.offscreenPageLimit = 1
+
+        TabLayoutMediator(
+            binding.tabLayout, binding.viewpager
+        ) { tab: TabLayout.Tab, position: Int ->
+            tab.text = if (position == 0) game.name1 else game.name2
+        }.attach()
     }
 
     override fun onDetach(view: View) {

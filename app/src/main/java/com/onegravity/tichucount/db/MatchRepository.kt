@@ -19,21 +19,12 @@ class MatchRepository @Inject constructor(
 
     private val matchesByUid = HashMap<Int, MatchWithGames>()
 
-    private val lastMatch = BehaviorSubject.create<MatchWithGames>()
-
-    private val lastGame = BehaviorSubject.create<Game>()
-
     init {
         db.match().getMatchesWithGames()
             .doOnNext { listOfMatches ->
                 matchesByUid.clear()
                 listOfMatches.forEach { matchesByUid[it.match.uid] = it }
-
                 matches.onNext(listOfMatches)
-                listOfMatches.lastOrNull()?.run {
-                    lastMatch.onNext(this)
-                    games.lastOrNull()?.run { lastGame.onNext(this) }
-                }
             }
             .subscribeOn(Schedulers.io())
             .doOnError {
@@ -44,9 +35,13 @@ class MatchRepository @Inject constructor(
 
     fun matches(): Observable<List<MatchWithGames>> = matches
 
-    fun lastMatch(): Observable<MatchWithGames> = lastMatch
-
-    fun lastGame(): Observable<Game> = lastGame
+    fun match(matchUid: Int): Single<MatchWithGames> = Single.create { emitter ->
+        matchesByUid[matchUid]?.run {
+            emitter.onSuccess(this)
+        } ?:run {
+            emitter.onError(NoSuchElementException("Didn't find match with uid $matchUid"))
+        }
+    }
 
     fun createMatch(team1: String, team2: String): Single<Int> =
         Single.create { emitter ->

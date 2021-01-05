@@ -5,12 +5,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import com.onegravity.tichucount.R
 import com.onegravity.tichucount.databinding.MainBinding
 import com.onegravity.tichucount.db.MatchWithGames
 import com.onegravity.tichucount.util.LOGGER_TAG
 import com.onegravity.tichucount.view.BaseController
+import com.onegravity.tichucount.view.game.GAME_UID
 import com.onegravity.tichucount.view.game.GameController
 import com.onegravity.tichucount.viewmodel.*
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -32,7 +32,6 @@ class MatchController(args: Bundle) : BaseController() {
             scope.inject(this@MatchController)
             binding = this
             setToolbar(binding.toolbar)
-            setOptionsMenuHidden(false)
             setHasOptionsMenu(true)
             root
         }
@@ -47,7 +46,7 @@ class MatchController(args: Bundle) : BaseController() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { bind(view.context, it) },
-                { gameLoadError(view.context, it) }
+                { gameLoadError(it) }
             )
 
         viewModel.events()
@@ -59,7 +58,7 @@ class MatchController(args: Bundle) : BaseController() {
             )
     }
 
-    private fun gameLoadError(context: Context, error: Throwable) {
+    private fun gameLoadError(error: Throwable) {
         logger.e(LOGGER_TAG, "Failed to load match: ${error.message}")
         router.popCurrentController()
     }
@@ -67,7 +66,7 @@ class MatchController(args: Bundle) : BaseController() {
     private fun dispatchEvents(event: MatchViewModelEvent) {
         when (event) {
             is NewGame -> newGame()
-            is OpenGame -> { /* todo */ }
+            is OpenGame -> openGame(event.gameUid)
             is DeleteGame -> { /* todo */ }
         }
     }
@@ -128,6 +127,14 @@ class MatchController(args: Bundle) : BaseController() {
                 { /* do nothing because the bind operation will terminate the Controller when it can't find the match */ },
                 { logger.e(LOGGER_TAG, "Failed to delete match", it) }
             )
+
+    private fun openGame(gameUid: Int) {
+        val args = Bundle().apply {
+            putInt(MATCH_UID, matchUid)
+            putInt(GAME_UID, gameUid)
+        }
+        push(GameController(args))
+    }
 
     private fun newGame() {
         val args = Bundle().apply { putInt(MATCH_UID, matchUid) }

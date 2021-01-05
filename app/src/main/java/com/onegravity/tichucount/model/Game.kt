@@ -7,7 +7,7 @@ import toothpick.ktp.KTP
 import toothpick.ktp.delegate.inject
 import java.util.concurrent.atomic.AtomicBoolean
 
-data class Game(val score1: Score, val score2: Score) {
+data class Game(val name1: String, val name2: String, val score1: Score, val score2: Score) {
 
     private var valve1 = AtomicBoolean(true)
     private var valve2 = AtomicBoolean(true)
@@ -19,13 +19,13 @@ data class Game(val score1: Score, val score2: Score) {
 
         score1.changes().filter { valve1.get() }
             .subscribe {
-                logger.d(LOGGER_TAG, "${score1.name}: $it changed")
+                logger.d(LOGGER_TAG, "${score1.teamName}: $it changed")
                 resolveDependencies(valve2, score1, score2)
             }
 
         score2.changes().filter { valve2.get() }
             .subscribe {
-                logger.d(LOGGER_TAG, "${score2.name}: $it changed")
+                logger.d(LOGGER_TAG, "${score2.teamName}: $it changed")
                 resolveDependencies(valve1, score2, score1)
             }
 
