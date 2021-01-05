@@ -13,6 +13,7 @@ import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeType
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
+import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import com.onegravity.tichucount.APP_SCOPE
 import com.onegravity.tichucount.util.Logger
 import hu.akarnokd.rxjava3.util.CompositeSubscription
@@ -21,7 +22,7 @@ import toothpick.Scope
 import toothpick.ktp.KTP
 import toothpick.ktp.delegate.inject
 
-@Suppress("LeakingThis")
+@Suppress("LeakingThis", "MemberVisibilityCanBePrivate")
 abstract class BaseController : Controller() {
 
     protected val scope: Scope = KTP.openScope(APP_SCOPE)
@@ -94,7 +95,7 @@ abstract class BaseController : Controller() {
     protected fun push(controller: Controller) {
         RouterTransaction.with(controller)
             .tag(controller.javaClass.simpleName)
-            .pushChangeHandler(FadeChangeHandler())
+            .pushChangeHandler(SimpleSwapChangeHandler())
             .popChangeHandler(FadeChangeHandler())
             .also { router.pushController(it) }
     }

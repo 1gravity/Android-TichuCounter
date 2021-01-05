@@ -10,14 +10,14 @@ import com.onegravity.tichucount.APP_SCOPE
 import com.onegravity.tichucount.R
 import com.onegravity.tichucount.util.LOGGER_TAG
 import com.onegravity.tichucount.util.Logger
-import com.onegravity.tichucount.viewmodel.MatchViewModel
+import com.onegravity.tichucount.viewmodel.MatchesViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import toothpick.ktp.KTP
 import toothpick.ktp.delegate.inject
 
 class NewMatchDialog : DialogFragment() {
 
-    private val viewModel: MatchViewModel by inject()
+    private val viewModel: MatchesViewModel by inject()
     private val logger: Logger by inject()
 
     override fun onCreateDialog(savedInstanceState: Bundle?) = context?.run {

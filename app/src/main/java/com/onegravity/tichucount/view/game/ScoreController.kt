@@ -15,7 +15,7 @@ import toothpick.ktp.delegate.inject
 
 const val TEAM_ARG = "TEAM_ARG"
 
-class TeamScoreController(args: Bundle): BaseController() {
+class ScoreController(args: Bundle): BaseController() {
 
     private val team = args.getInt(TEAM_ARG)
 
@@ -30,7 +30,7 @@ class TeamScoreController(args: Bundle): BaseController() {
         container: ViewGroup,
         savedViewState: Bundle?
     ) = TeamScoreBinding.inflate(inflater).run {
-        scope.inject(this@TeamScoreController)
+        scope.inject(this@ScoreController)
         binding = this
         numberPicker = NumberPicker(binding)
         root

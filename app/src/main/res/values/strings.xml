@@ -11,9 +11,12 @@
     <string name="new_match_title">Teamnamen</string>
 
     <!-- Match Screen -->
+    <string name="game_load_error">Failed to load match with uid %s</string>
     <string name="match_title">%s vs %s</string>
-    <string name="header_round">Runde</string>
+    <string name="game_nr">Runde</string>
+    <string name="action_delete_game">Spiel löschen</string>
 
+    <!-- Game Screen -->
     <string name="score_ticku">Tichu</string>
     <string name="score_big_ticku">Grosses Tichu</string>
     <string name="score_double_win">Doppelsieg</string>

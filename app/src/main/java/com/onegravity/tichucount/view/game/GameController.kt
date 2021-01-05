@@ -11,14 +11,19 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.onegravity.tichucount.R
 import com.onegravity.tichucount.databinding.ScoresBinding
 import com.onegravity.tichucount.view.BaseController
+import com.onegravity.tichucount.view.match.MATCH_UID
 import com.onegravity.tichucount.viewmodel.GameViewModel
+import com.onegravity.tichucount.viewmodel.MatchViewModel
 import toothpick.ktp.delegate.inject
 
-open class GameController: BaseController() {
+open class GameController(args: Bundle): BaseController() {
 
     private lateinit var binding: ScoresBinding
 
-    private val viewModel: GameViewModel by inject()
+    private val matchViewModel: MatchViewModel by inject()
+    private val gameViewModel: GameViewModel by inject()
+
+    private val matchUid = args.getInt(MATCH_UID)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,7 +37,7 @@ open class GameController: BaseController() {
     }
 
     private fun bindView(context: Context, binding: ScoresBinding) {
-        binding.viewpager.adapter = TeamScoreAdapter(this@GameController)
+        binding.viewpager.adapter = ScoreAdapter(this@GameController)
         binding.viewpager.offscreenPageLimit = 1
 
         TabLayoutMediator(

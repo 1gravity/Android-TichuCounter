@@ -13,13 +13,16 @@ interface MatchDao {
     @Query("DELETE FROM 'match'")
     fun deleteMatches()
 
+    @Query("DELETE FROM 'match' where uid = :matchUid")
+    fun deleteMatch(matchUid: Int)
+
+    @Query("DELETE FROM 'game' where uid = :matchUid")
+    fun deleteGames(matchUid: Int)
+
     @Query("DELETE FROM 'game'")
     fun deleteGames()
 
     @Insert
-    fun insert(vararg match: Match)
-
-    @Delete
-    fun delete(match: Match)
+    fun insert(match: Match): Long
 
 }

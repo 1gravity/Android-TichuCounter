@@ -7,6 +7,7 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.BehaviorSubject
+import java.lang.Exception
 import javax.inject.Inject
 
 class MatchRepository @Inject constructor(
@@ -16,15 +17,20 @@ class MatchRepository @Inject constructor(
 
     private val matches = BehaviorSubject.create<List<MatchWithGames>>()
 
+    private val matchesByUid = HashMap<Int, MatchWithGames>()
+
     private val lastMatch = BehaviorSubject.create<MatchWithGames>()
 
     private val lastGame = BehaviorSubject.create<Game>()
 
     init {
         db.match().getMatchesWithGames()
-            .doOnNext {
-                matches.onNext(it)
-                it.lastOrNull()?.run {
+            .doOnNext { listOfMatches ->
+                matchesByUid.clear()
+                listOfMatches.forEach { matchesByUid[it.match.uid] = it }
+
+                matches.onNext(listOfMatches)
+                listOfMatches.lastOrNull()?.run {
                     lastMatch.onNext(this)
                     games.lastOrNull()?.run { lastGame.onNext(this) }
                 }
@@ -42,17 +48,27 @@ class MatchRepository @Inject constructor(
 
     fun lastGame(): Observable<Game> = lastGame
 
-    fun createMatch(team1: String, team2: String): Single<Match> =
+    fun createMatch(team1: String, team2: String): Single<Int> =
         Single.create { emitter ->
             val match = Match(0, team1, team2, 0, 0)
-            db.match().insert(match)
-            emitter.onSuccess(match)
+            val uid = db.match().insert(match)
+            emitter.onSuccess(uid.toInt())
         }
 
     fun deleteMatches(): Completable = Completable.create { emitter ->
         db.match().deleteGames()
         db.match().deleteMatches()
         emitter.onComplete()
+    }
+
+    fun deleteMatch(matchUid: Int): Completable = Completable.create { emitter ->
+        matchesByUid[matchUid]?.run {
+            db.match().deleteGames(matchUid)
+            db.match().deleteMatch(matchUid)
+            emitter.onComplete()
+        } ?: run {
+            emitter.onError(Exception("match with $matchUid not found"))
+        }
     }
 
 }

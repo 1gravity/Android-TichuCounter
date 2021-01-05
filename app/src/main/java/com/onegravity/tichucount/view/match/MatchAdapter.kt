@@ -1,33 +1,32 @@
 package com.onegravity.tichucount.view.match
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import com.onegravity.tichucount.databinding.GameEntryBinding
+import com.onegravity.tichucount.view.ListAdapter
+import com.onegravity.tichucount.view.ListEntry
+import com.onegravity.tichucount.viewmodel.MatchViewModel
 
-data class GameEntry(val header: Boolean, val text1: String, val text2: String, val text3: String)
-
-class GameEntryViewHolder(
-    val binding: GameEntryBinding,
-) : RecyclerView.ViewHolder(binding.root)
-
-class MatchAdapter(private val entries: List<GameEntry>) :
-    RecyclerView.Adapter<GameEntryViewHolder>() {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        GameEntryBinding.inflate(LayoutInflater.from(parent.context)).run {
-            GameEntryViewHolder(this)
-        }
-
-    // Replace the contents of a view (invoked by the layout manager)
-    override fun onBindViewHolder(holder: GameEntryViewHolder, position: Int) {
-        entries[position].run {
-            holder.binding.entryText1.text = text1
-            holder.binding.entryText2.text = text2
-            holder.binding.entryText3.text = text3
+class GameEntry(
+    val viewModel: MatchViewModel,
+    header: Boolean,
+    val gameUid: Int,
+    val gameNr: String,
+    val team1Score: String,
+    val team2Score: String
+) : ListEntry(header) {
+    override fun onClick() {
+        if (! header) {
+            viewModel.gameSelected(gameUid)
         }
     }
+}
 
-    override fun getItemCount() = entries.size
+class MatchAdapter(entries: List<GameEntry>) : ListAdapter<GameEntry>(entries) {
+
+    override fun nrOfColumns() = 3
+
+    override fun itemText(entry: GameEntry, pos: Int) = when (pos) {
+        0 -> entry.gameNr
+        1 -> entry.team1Score
+        else -> entry.team2Score
+    }
 
 }

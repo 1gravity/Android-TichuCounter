@@ -6,28 +6,26 @@ import android.view.*
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.onegravity.tichucount.R
-import com.onegravity.tichucount.databinding.MatchesBinding
+import com.onegravity.tichucount.databinding.MainBinding
 import com.onegravity.tichucount.db.MatchWithGames
 import com.onegravity.tichucount.util.LOGGER_TAG
-import com.onegravity.tichucount.util.Logger
 import com.onegravity.tichucount.view.BaseController
 import com.onegravity.tichucount.view.match.MATCH_UID
 import com.onegravity.tichucount.view.match.MatchController
-import com.onegravity.tichucount.viewmodel.MatchOpen
-import com.onegravity.tichucount.viewmodel.MatchViewModel
-import com.onegravity.tichucount.viewmodel.MatchViewModelEvent
+import com.onegravity.tichucount.viewmodel.*
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import kotlinx.android.synthetic.main.main.view.*
 import toothpick.ktp.delegate.inject
 
 class MatchesController : BaseController() {
 
-    private lateinit var binding: MatchesBinding
+    private lateinit var binding: MainBinding
 
-    private val viewModel: MatchViewModel by inject()
+    private val viewModel: MatchesViewModel by inject()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?)
             : View =
-        MatchesBinding.inflate(inflater).run {
+        MainBinding.inflate(inflater).run {
             scope.inject(this@MatchesController)
             binding = this
             setToolbar(binding.toolbar)
@@ -36,11 +34,10 @@ class MatchesController : BaseController() {
         }
 
     override fun onAttach(view: View) {
-        logger.e(LOGGER_TAG, "onAttach ${javaClass.simpleName}")
         super.onAttach(view)
 
         binding.toolbarLayout.title = appContext.getString((R.string.matches_title))
-        binding.fab.setOnClickListener { newEntry() }
+        binding.fab.setOnClickListener { newMatch() }
 
         viewModel.matches()
             .doOnSubscribe { disposables.add(it) }
@@ -59,8 +56,12 @@ class MatchesController : BaseController() {
             )
     }
 
-    private fun dispatchEvents(event: MatchViewModelEvent) = when (event) {
-        is MatchOpen -> goToMatch(event.matchUid)
+    private fun dispatchEvents(event: MatchesViewModelEvent) {
+        when (event) {
+            is DeleteMatches -> deleteMatches()
+            is NewMatch -> newMatch()
+            is OpenMatch -> openMatch(event.matchUid)
+        }
     }
 
     private fun bind(context: Context, games: List<MatchWithGames>) {
@@ -72,20 +73,21 @@ class MatchesController : BaseController() {
             getString(R.string.score)
         )
         val entries = games.foldIndexed(arrayListOf(title)) { pos, list, match ->
-            list.apply {
-                val entry = MatchEntry(viewModel, false, match.match.uid, pos.inc().toString(),
-                    match.match.team1,
-                    match.match.score1.toString(),
-                    match.match.team2,
-                    match.match.score2.toString())
-                add(entry)
-            }
+            val entry = MatchEntry(viewModel, false,
+                match.match.uid,
+                pos.inc().toString(),
+                match.match.team1,
+                match.match.score1.toString(),
+                match.match.team2,
+                match.match.score2.toString()
+            )
+            list.apply { add(entry) }
         }
 
         val viewAdapter = MatchesAdapter(entries)
         val viewManager = GridLayoutManager(context, 5, RecyclerView.VERTICAL, false)
 
-        binding.matchList.recyclerView.apply {
+        binding.list.recyclerView.apply {
             // use this setting to improve performance if you know that changes
             // in content do not change the layout size of the RecyclerView
             setHasFixedSize(true)
@@ -113,18 +115,20 @@ class MatchesController : BaseController() {
         }
     }
 
-    private fun newEntry() = shoWDialog(NewMatchDialog())
-
-    private fun goToMatch(matchUid: Int) {
-        val args = Bundle()
-        args.putInt(MATCH_UID, matchUid)
-        push(MatchController(args))
-    }
-
     private fun deleteMatches() =
         viewModel.deleteMatches()
             .doOnSubscribe { disposables.add(it) }
-            .subscribe()
+            .subscribe(
+                { /* do nothing */ },
+                { logger.e(LOGGER_TAG, "Failed to delete matches", it) }
+            )
+
+    private fun newMatch() = shoWDialog(NewMatchDialog())
+
+    private fun openMatch(matchUid: Int) {
+        val args = Bundle().apply { putInt(MATCH_UID, matchUid) }
+        push(MatchController(args))
+    }
 
 }
 
