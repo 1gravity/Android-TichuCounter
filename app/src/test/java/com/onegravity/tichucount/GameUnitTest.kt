@@ -19,7 +19,7 @@ class GameUnitTest {
 
     @Test
     fun basicTests() {
-        val game = Game(
+        val game = Game(0, "Team 1", "Team 2",
             Score(ScoreState.WON, ScoreState.NOT_PLAYED, false, 0, "Team 1"),
             Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "Team 2")
         )
@@ -141,7 +141,7 @@ class GameUnitTest {
 
     @Test
     fun complexTests() {
-        Game(
+        Game(0, "Team 1", "Team 2",
             Score(ScoreState.WON, ScoreState.WON, true, 0, "Team 1"),
             Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "Team 2")
         ).run {
@@ -180,7 +180,7 @@ class GameUnitTest {
             }
         }
 
-        Game(
+        Game(0, "Team 1", "Team 2",
             Score(ScoreState.WON, ScoreState.WON, true, 0, "Team 1"),
             Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "Team 2")
         ).run {
@@ -203,7 +203,7 @@ class GameUnitTest {
             }
         }
 
-        Game(
+        Game(0, "Team 1", "Team 2",
             Score(ScoreState.WON, ScoreState.WON, true, 0, "Team 1"),
             Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "Team 2")
         ).run {
@@ -229,7 +229,7 @@ class GameUnitTest {
 
     @Test
     fun pointTests() {
-        Game(
+        Game(0, "Team 1", "Team 2",
             Score(ScoreState.WON, ScoreState.WON, true, 0, "Team 1"),
             Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "Team 2")
         ).run {
@@ -270,7 +270,7 @@ class GameUnitTest {
             }
         }
 
-        Game(
+        Game(0, "Team 1", "Team 2",
             Score(ScoreState.WON, ScoreState.WON, true, 0, "Team 1"),
             Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "Team 2")
         ).run {
