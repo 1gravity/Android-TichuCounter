@@ -14,7 +14,6 @@ import com.onegravity.tichucount.view.match.MATCH_UID
 import com.onegravity.tichucount.view.match.MatchController
 import com.onegravity.tichucount.viewmodel.*
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.main.view.*
 import toothpick.ktp.delegate.inject
 
 class MatchesController : BaseController() {

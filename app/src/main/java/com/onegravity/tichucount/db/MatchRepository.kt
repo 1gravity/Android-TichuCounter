@@ -24,6 +24,7 @@ class MatchRepository @Inject constructor(
             .doOnNext { listOfMatches ->
                 matchesByUid.clear()
                 listOfMatches.forEach { matchesByUid[it.match.uid] = it }
+
                 matches.onNext(listOfMatches)
             }
             .subscribeOn(Schedulers.io())
@@ -33,9 +34,9 @@ class MatchRepository @Inject constructor(
             .subscribe()
     }
 
-    fun matches(): Observable<List<MatchWithGames>> = matches
+    fun getMatches(): Observable<List<MatchWithGames>> = matches
 
-    fun match(matchUid: Int): Single<MatchWithGames> = Single.create { emitter ->
+    fun getMatch(matchUid: Int): Single<MatchWithGames> = Single.create { emitter ->
         matchesByUid[matchUid]?.run {
             emitter.onSuccess(this)
         } ?:run {
@@ -43,26 +44,51 @@ class MatchRepository @Inject constructor(
         }
     }
 
-    fun createMatch(team1: String, team2: String): Single<Int> =
-        Single.create { emitter ->
+    fun createMatch(team1: String, team2: String): Single<Int> = Single.create { emitter ->
+        try {
             val match = Match(0, team1, team2, 0, 0)
-            val uid = db.match().insert(match)
+            val uid = db.match().upsert(match)
             emitter.onSuccess(uid.toInt())
+        } catch (e: Exception) {
+            emitter.onError(e)
         }
+    }
 
     fun deleteMatches(): Completable = Completable.create { emitter ->
-        db.match().deleteGames()
-        db.match().deleteMatches()
-        emitter.onComplete()
+        try {
+            db.match().deleteGames()
+            db.match().deleteMatches()
+            emitter.onComplete()
+        } catch (e: Exception) {
+            emitter.onError(e)
+        }
     }
 
     fun deleteMatch(matchUid: Int): Completable = Completable.create { emitter ->
-        matchesByUid[matchUid]?.run {
+        try {
             db.match().deleteGames(matchUid)
             db.match().deleteMatch(matchUid)
             emitter.onComplete()
-        } ?: run {
-            emitter.onError(Exception("match with $matchUid not found"))
+        } catch (e: Exception) {
+            emitter.onError(e)
+        }
+    }
+
+    fun deleteGame(gameUid: Int): Completable = Completable.create { emitter ->
+        try {
+            db.match().deleteGame(gameUid)
+            emitter.onComplete()
+        } catch (e: Exception) {
+            emitter.onError(e)
+        }
+    }
+
+    fun saveGame(game: Game): Completable = Completable.create { emitter ->
+        try {
+            db.match().upsert(game)
+            emitter.onComplete()
+        } catch (e: Exception) {
+            emitter.onError(e)
         }
     }
 

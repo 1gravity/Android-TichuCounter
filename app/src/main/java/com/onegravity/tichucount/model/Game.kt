@@ -7,7 +7,13 @@ import toothpick.ktp.KTP
 import toothpick.ktp.delegate.inject
 import java.util.concurrent.atomic.AtomicBoolean
 
-data class Game(val name1: String, val name2: String, val score1: Score, val score2: Score) {
+data class Game(
+    val matchUid: Int,
+    val name1: String,
+    val name2: String,
+    val score1: Score,
+    val score2: Score
+) {
 
     private var valve1 = AtomicBoolean(true)
     private var valve2 = AtomicBoolean(true)

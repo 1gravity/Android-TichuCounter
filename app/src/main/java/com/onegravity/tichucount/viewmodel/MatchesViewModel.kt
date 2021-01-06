@@ -21,7 +21,7 @@ class MatchesViewModel @Inject constructor(private val repository: MatchReposito
 
     fun events(): Observable<MatchesViewModelEvent> = events
 
-    fun matches(): Observable<List<MatchWithGames>> = repository.matches()
+    fun matches(): Observable<List<MatchWithGames>> = repository.getMatches()
         .subscribeOn(Schedulers.io())
 
     fun createMatch(team1: String, team2: String): Single<Int> =

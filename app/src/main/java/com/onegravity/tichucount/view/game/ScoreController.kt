@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatCheckBox
-import androidx.appcompat.widget.Toolbar
-import com.onegravity.tichucount.R
+import android.widget.CheckBox
 import com.onegravity.tichucount.databinding.TeamScoreBinding
 import com.onegravity.tichucount.model.Score
 import com.onegravity.tichucount.model.ScoreState
@@ -36,58 +34,53 @@ class ScoreController(args: Bundle): BaseController() {
 
     override fun onEnterStarted(view: View?) {
         super.onEnterStarted(view)
-        bindView(binding)
+        bindView()
     }
 
-    override fun onAttach(view: View) {
-        super.onAttach(view)
+    private fun bindView() {
+        // initialization of the ui
+        update(ScoreType.TICHU)
+        update(ScoreType.BIG_TICHU)
+        update(ScoreType.DOUBLE_WIN)
+        update(ScoreType.PLAYED_POINTS)
 
-        activity?.findViewById<Toolbar>(R.id.toolbar)
-            ?.setNavigationOnClickListener { router.handleBack() }
-    }
-
-    private fun bindView(binding: TeamScoreBinding) {
-        score.changes()
-            .subscribe { type ->
-                when (type) {
-                    ScoreType.TICHU -> {
-                        binding.scoreTichuWin.isChecked = score.tichu == ScoreState.WON
-                        binding.scoreTichuLoss.isChecked = score.tichu == ScoreState.LOST
-                    }
-                    ScoreType.BIG_TICHU -> {
-                        binding.scoreBigTichuWin.isChecked = score.bigTichu == ScoreState.WON
-                        binding.scoreBigTichuLoss.isChecked = score.bigTichu == ScoreState.LOST
-                    }
-                    ScoreType.DOUBLE_WIN -> binding.scoreDoubleWin.isChecked = score.doubleWin
-                    ScoreType.PLAYED_POINTS -> numberPicker.setValue(score.playedPoints)
-                    else -> { }
-                }
-                binding.scoreTotal.text = score.points().toString()
-            }
+        score.changes().subscribe { update(it) }
 
         bindTichu(binding.scoreTichuWin, binding.scoreTichuLoss) { score.tichu = it }
         bindTichu(binding.scoreBigTichuWin, binding.scoreBigTichuLoss) { score.bigTichu = it }
-        bindDoubleWin(binding)
+        bindDoubleWin()
         bindPlayedPoints()
     }
 
-    private fun bindTichu(win: AppCompatCheckBox, loss: AppCompatCheckBox, assign: (state: ScoreState) -> Unit) {
+    private fun update(type: ScoreType) {
+        when (type) {
+            ScoreType.TICHU -> {
+                binding.scoreTichuWin.isChecked = score.tichu == ScoreState.WON
+                binding.scoreTichuLoss.isChecked = score.tichu == ScoreState.LOST
+            }
+            ScoreType.BIG_TICHU -> {
+                binding.scoreBigTichuWin.isChecked = score.bigTichu == ScoreState.WON
+                binding.scoreBigTichuLoss.isChecked = score.bigTichu == ScoreState.LOST
+            }
+            ScoreType.DOUBLE_WIN -> binding.scoreDoubleWin.isChecked = score.doubleWin
+            ScoreType.PLAYED_POINTS -> numberPicker.setValue(score.playedPoints)
+        }
+        binding.scoreTotal.text = score.points().toString()
+    }
+
+    private fun bindTichu(win: CheckBox, loss: CheckBox, assign: (state: ScoreState) -> Unit) {
         win.setOnClickListener {
-            when(win.isChecked) {
-                true -> ScoreState.WON
-                else -> ScoreState.NOT_PLAYED
-            }.run { assign(this) }
+            val state = if (win.isChecked) ScoreState.WON else ScoreState.NOT_PLAYED
+            assign(state)
         }
 
         loss.setOnClickListener {
-            when(loss.isChecked) {
-                true -> ScoreState.LOST
-                else -> ScoreState.NOT_PLAYED
-            }.run { assign(this) }
+            val state = if (loss.isChecked) ScoreState.LOST else ScoreState.NOT_PLAYED
+            assign(state)
         }
     }
 
-    private fun bindDoubleWin(binding: TeamScoreBinding) =
+    private fun bindDoubleWin() =
         binding.scoreDoubleWin.setOnClickListener {
             score.doubleWin = binding.scoreDoubleWin.isChecked
         }

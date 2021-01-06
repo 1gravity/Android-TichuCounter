@@ -16,7 +16,7 @@ class NumberPicker(binding: TeamScoreBinding) {
         nrPicker.maxValue = 30
         nrPicker.value = 5
         nrPicker.wrapSelectorWheel = false
-        nrPicker.setOnValueChangedListener { npPicker, oldValue, newValue ->
+        nrPicker.setOnValueChangedListener { _, _, newValue ->
             lastValue = newValue.minus(5).times(5)
             changed.onNext(true)
         }
@@ -28,9 +28,9 @@ class NumberPicker(binding: TeamScoreBinding) {
         nrPicker.value = newValue.div(5).plus(5)
     }
 
-    fun setEnable(enabled: Boolean) {
-        nrPicker.isEnabled = enabled
-    }
+//    fun setEnable(enabled: Boolean) {
+//        nrPicker.isEnabled = enabled
+//    }
 
     fun changed(): BehaviorSubject<Boolean> = changed
 

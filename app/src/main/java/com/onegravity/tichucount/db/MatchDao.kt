@@ -16,13 +16,19 @@ interface MatchDao {
     @Query("DELETE FROM 'match' where uid = :matchUid")
     fun deleteMatch(matchUid: Int)
 
-    @Query("DELETE FROM 'game' where uid = :matchUid")
-    fun deleteGames(matchUid: Int)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun upsert(match: Match): Long
 
     @Query("DELETE FROM 'game'")
     fun deleteGames()
 
-    @Insert
-    fun insert(match: Match): Long
+    @Query("DELETE FROM 'game' where matchUid = :matchUid")
+    fun deleteGames(matchUid: Int)
+
+    @Query("DELETE FROM 'game' where uid = :gameUid")
+    fun deleteGame(gameUid: Int)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun upsert(game: Game): Long
 
 }

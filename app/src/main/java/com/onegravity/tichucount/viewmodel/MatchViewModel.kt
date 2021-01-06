@@ -22,7 +22,7 @@ class MatchViewModel @Inject constructor(
 
     fun events(): Observable<MatchViewModelEvent> = events
 
-    fun match(matchUid: Int): Observable<MatchWithGames> = repository.matches()
+    fun match(matchUid: Int): Observable<MatchWithGames> = repository.getMatches()
         .map { matches -> matches.first { it.match.uid == matchUid } }
         .subscribeOn(Schedulers.io())
 

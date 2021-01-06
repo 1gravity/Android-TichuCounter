@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -24,7 +25,7 @@ open class GameController(args: Bundle): BaseController() {
 
     private lateinit var binding: ScoresBinding
 
-    private val gameViewModel: GameViewModel by inject()
+    private val viewModel: GameViewModel by inject()
 
     private val matchUid = args.getInt(MATCH_UID)
     private val gameUid = args.getInt(GAME_UID)
@@ -45,25 +46,17 @@ open class GameController(args: Bundle): BaseController() {
         activity?.findViewById<Toolbar>(R.id.toolbar)
             ?.setNavigationOnClickListener { router.handleBack() }
 
-        gameViewModel.game(matchUid, gameUid)
+        viewModel.getGame(matchUid, gameUid)
             .doOnSubscribe { disposables.add(it) }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { game -> bind(game) },
                 { gameLoadError(it) }
             )
-
-        binding.btnNegative.setOnClickListener {
-            router.popCurrentController()
-        }
-
-        binding.btnPositive.setOnClickListener {
-            // to do
-        }
     }
 
     private fun gameLoadError(error: Throwable) {
-        logger.e(LOGGER_TAG, "Failed to load match: ${error.message}")
+        logger.e(LOGGER_TAG, "Failed to load game: ${error.message}")
         router.popCurrentController()
     }
 
@@ -76,6 +69,23 @@ open class GameController(args: Bundle): BaseController() {
         ) { tab: TabLayout.Tab, position: Int ->
             tab.text = if (position == 0) game.name1 else game.name2
         }.attach()
+
+        binding.btnNegative.setOnClickListener { router.popCurrentController() }
+
+        binding.btnPositive.setOnClickListener { saveGame(game) }
+    }
+
+    private fun saveGame(game: Game) {
+        viewModel.saveGame(game)
+            .doOnSubscribe { disposables.add(it) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { router.popCurrentController() },
+                {
+                    logger.e(LOGGER_TAG, "Failed to save game", it)
+                    Toast.makeText(binding.btnNegative.context, "", Toast.LENGTH_SHORT).show()
+                }
+            )
     }
 
     override fun onDetach(view: View) {
