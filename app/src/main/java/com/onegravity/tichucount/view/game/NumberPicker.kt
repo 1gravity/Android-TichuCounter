@@ -1,7 +1,10 @@
 package com.onegravity.tichucount.view.game
 
+import android.widget.EditText
+import androidx.core.view.children
 import com.onegravity.tichucount.databinding.ScoreBinding
 import io.reactivex.rxjava3.subjects.BehaviorSubject
+
 
 class NumberPicker(binding: ScoreBinding) {
 
@@ -21,6 +24,7 @@ class NumberPicker(binding: ScoreBinding) {
             changed.onNext(true)
         }
         nrPicker.setFormatter { value -> value.minus(5).times(5).toString() }
+        initNumberPicker()
     }
 
     fun setValue(newValue: Int) {
@@ -31,6 +35,12 @@ class NumberPicker(binding: ScoreBinding) {
 //    fun setEnable(enabled: Boolean) {
 //        nrPicker.isEnabled = enabled
 //    }
+
+    private fun initNumberPicker() {
+        nrPicker.children.iterator().forEach {
+            if (it is EditText) it.filters = arrayOfNulls(0)    // remove default input filter
+        }
+    }
 
     fun changed(): BehaviorSubject<Boolean> = changed
 

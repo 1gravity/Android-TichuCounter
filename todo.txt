@@ -1,2 +1,3 @@
 - allow Doublewin with Tichu or Bigtichu lost...
 - set up build pipeline
+- create app + release

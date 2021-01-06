@@ -32,8 +32,8 @@ class ScoreController(args: Bundle): BaseController() {
         root
     }
 
-    override fun onEnterStarted(view: View?) {
-        super.onEnterStarted(view)
+    override fun onAttach(view: View) {
+        super.onAttach(view)
         bindView()
     }
 
