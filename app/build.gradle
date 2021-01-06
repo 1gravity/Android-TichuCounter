@@ -28,10 +28,30 @@ android {
     }
 
     buildTypes {
+        debug {
+            debuggable true
+            minifyEnabled false
+            shrinkResources false
+        }
         release {
+            debuggable false
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions "process"
+
+    productFlavors {
+        // The actual release version
+        production {
+            dimension "process"
+        }
+
+        // The development version
+        development {
+            dimension "process"
         }
     }
 
@@ -50,6 +70,30 @@ android {
 
     buildFeatures {
         viewBinding true
+    }
+
+    // let's put the variant name and the version number into the generated apk
+    android.applicationVariants.all { variant ->
+        project.logger.lifecycle('  processing variant: ' + variant.versionName)
+
+        def appName
+        //Check if an applicationName property is supplied; if not use the name of the parent project.
+        if (project.hasProperty("applicationName")) {
+            appName = applicationName
+        } else {
+            appName = parent.name
+        }
+
+        variant.outputs.all { output ->
+            def lintTask = tasks["lint${variant.name.capitalize()}"]
+            output.assemble.dependsOn lintTask
+
+            def newApkName
+
+            //If there's no ZipAlign task it means that our artifact will be unaligned and we need to mark it as such.
+            newApkName = "${appName}-wallet-${variant.versionName}.apk"
+            outputFileName = new File(newApkName)
+        }
     }
 }
 
@@ -85,8 +129,8 @@ dependencies {
     kapt "androidx.room:room-compiler:2.3.0-alpha04"
 
     // Stetho
-    debugImplementation "com.facebook.stetho:stetho:1.5.1"
-    debugImplementation("com.facebook.stetho:stetho-js-rhino:1.5.1")
+    developmentApi "com.facebook.stetho:stetho:1.5.1"
+    developmentImplementation("com.facebook.stetho:stetho-js-rhino:1.5.1")
 
     // Testing
     testImplementation 'junit:junit:4.13.1'

@@ -1,22 +1,26 @@
 package com.onegravity.tichucount
 
 import android.app.Application
-import com.facebook.stetho.Stetho
+import toothpick.config.Module
 import toothpick.ktp.KTP
 
 const val APP_SCOPE = "APP_SCOPE"
 
-class TichuApplication: Application() {
+abstract class TichuApplicationBase: Application() {
 
     override fun onCreate() {
         super.onCreate()
 
-        Stetho.initializeWithDefaults(this)
+        initSDKs(this)
 
         KTP.openRootScope()
             .openSubScope(APP_SCOPE)
-            .installModules(TichuAppModule(this))
+            .installModules(appModule(this))
             .inject(this)
     }
+
+    abstract fun initSDKs(application: Application)
+
+    abstract fun appModule(application: Application): Module
 
 }
