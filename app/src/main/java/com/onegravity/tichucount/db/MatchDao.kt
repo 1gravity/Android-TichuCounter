@@ -60,9 +60,9 @@ interface MatchDao {
         updateTotal1(matchUid)
         updateTotal2(matchUid)
     }
-    @Query("UPDATE 'match' SET score_team_1 = (SELECT SUM(team_1_total_points) FROM 'game' WHERE matchUid = :matchUid) WHERE uid = :matchUid")
+    @Query("UPDATE 'match' SET score_team_1 = (SELECT COALESCE(SUM(team_1_total_points), 0) FROM 'game' WHERE matchUid = :matchUid) WHERE uid = :matchUid")
     fun updateTotal1(matchUid: Int): Int
-    @Query("UPDATE 'match' SET score_team_2 = (SELECT SUM(team_2_total_points) FROM 'game' WHERE matchUid = :matchUid) WHERE uid = :matchUid")
+    @Query("UPDATE 'match' SET score_team_2 = (SELECT COALESCE(SUM(team_2_total_points), 0) FROM 'game' WHERE matchUid = :matchUid) WHERE uid = :matchUid")
     fun updateTotal2(matchUid: Int): Int
 
 }
