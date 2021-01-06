@@ -1,7 +1,6 @@
 package com.onegravity.tichucount
 
 import android.app.Application
-import com.facebook.stetho.Stetho
 
 class TichuApplication: TichuApplicationBase() {
 

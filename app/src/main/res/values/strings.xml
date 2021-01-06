@@ -3,7 +3,7 @@
 
     <!-- Matches Screen -->
     <string name="matches_title">Tichu Matches</string>
-    <string name="match_nr">Game #</string>
+    <string name="match_nr">#</string>
     <string name="name_team_1">Team 1</string>
     <string name="score">Score</string>
     <string name="name_team_2">Team 2</string>
