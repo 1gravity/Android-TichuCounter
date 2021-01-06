@@ -2,13 +2,14 @@ package com.onegravity.tichucount.db
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 /**
  * A Match is the top level entity.
  * I consists of multiple Games with Scores for each team.
  */
-@Entity(tableName = "match")
+@Entity(tableName = "match", indices = [Index(value = ["uid"])])
 data class Match(
     @PrimaryKey(autoGenerate = true) val uid: Int,
     @ColumnInfo(name = "name_team_1") val team1: String,

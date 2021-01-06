@@ -56,7 +56,6 @@ class MatchRepository @Inject constructor(
 
     fun deleteMatches(): Completable = Completable.create { emitter ->
         try {
-            db.match().deleteGames()
             db.match().deleteMatches()
             emitter.onComplete()
         } catch (e: Exception) {
@@ -66,7 +65,6 @@ class MatchRepository @Inject constructor(
 
     fun deleteMatch(matchUid: Int): Completable = Completable.create { emitter ->
         try {
-            db.match().deleteGames(matchUid)
             db.match().deleteMatch(matchUid)
             emitter.onComplete()
         } catch (e: Exception) {
@@ -74,9 +72,9 @@ class MatchRepository @Inject constructor(
         }
     }
 
-    fun deleteGame(gameUid: Int): Completable = Completable.create { emitter ->
+    fun deleteGame(matchUid: Int, gameUid: Int): Completable = Completable.create { emitter ->
         try {
-            db.match().deleteGame(gameUid)
+            db.match().deleteGame(matchUid, gameUid)
             emitter.onComplete()
         } catch (e: Exception) {
             emitter.onError(e)

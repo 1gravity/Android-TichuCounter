@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "2cf7c15d8ef88672677815e05ca17c5c",
+    "identityHash": "3f6d7bf5c12a166545f588b0d5ac7917",
     "entities": [
       {
         "tableName": "match",
@@ -45,7 +45,16 @@
           ],
           "autoGenerate": true
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_match_uid",
+            "unique": false,
+            "columnNames": [
+              "uid"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_match_uid` ON `${TABLE_NAME}` (`uid`)"
+          }
+        ],
         "foreignKeys": []
       },
       {
@@ -143,7 +152,24 @@
           ],
           "autoGenerate": true
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_game_uid",
+            "unique": false,
+            "columnNames": [
+              "uid"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_game_uid` ON `${TABLE_NAME}` (`uid`)"
+          },
+          {
+            "name": "index_game_matchUid",
+            "unique": false,
+            "columnNames": [
+              "matchUid"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_game_matchUid` ON `${TABLE_NAME}` (`matchUid`)"
+          }
+        ],
         "foreignKeys": []
       },
       {
@@ -200,7 +226,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2cf7c15d8ef88672677815e05ca17c5c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3f6d7bf5c12a166545f588b0d5ac7917')"
     ]
   }
 }

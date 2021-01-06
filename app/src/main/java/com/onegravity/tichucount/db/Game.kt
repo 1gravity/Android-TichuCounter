@@ -2,9 +2,10 @@ package com.onegravity.tichucount.db
 
 import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "game")
+@Entity(tableName = "game", indices = [Index(value = ["uid"]), Index(value = ["matchUid"])])
 data class Game(
     @PrimaryKey(autoGenerate = true) val uid: Int,
     val matchUid: Int,

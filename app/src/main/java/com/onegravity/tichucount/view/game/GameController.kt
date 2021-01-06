@@ -94,7 +94,7 @@ open class GameController(args: Bundle): BaseController() {
     }
 
     private fun deleteGame() {
-        viewModel.deleteGame(gameUid)
+        viewModel.deleteGame(matchUid, gameUid)
             .doOnSubscribe { disposables.add(it) }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(

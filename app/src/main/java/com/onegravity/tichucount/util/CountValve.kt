@@ -22,7 +22,7 @@ class CountValve(initialCount: Int = 0) {
 
     fun isOpenEvents(): Observable<Boolean> = valve.map { it == ValveState.OPENED }
 
-    fun isOpen() = currentState == ValveState.OPENED
+//    fun isOpen() = currentState == ValveState.OPENED
 
     @Synchronized
     fun open() = this.also {

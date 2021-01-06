@@ -10,25 +10,59 @@ interface MatchDao {
     @Query("SELECT * FROM 'match'")
     fun getMatchesWithGames(): Flowable<List<MatchWithGames>>
 
+    /**
+     * Delete all matches + games
+     */
+    @Transaction
+    fun deleteMatches() {
+        deleteGamesInternal()
+        deleteMatchesInternal()
+    }
     @Query("DELETE FROM 'match'")
-    fun deleteMatches()
+    fun deleteMatchesInternal()
+    @Query("DELETE FROM 'game'")
+    fun deleteGamesInternal()
 
+    /**
+     * Delete one match + games
+     */
+    @Transaction
+    fun deleteMatch(matchUid: Int) {
+        deleteGamesInternal(matchUid)
+        deleteMatchInternal(matchUid)
+        updateTotals(matchUid)
+    }
     @Query("DELETE FROM 'match' where uid = :matchUid")
-    fun deleteMatch(matchUid: Int)
+    fun deleteMatchInternal(matchUid: Int)
+    @Query("DELETE FROM 'game' where matchUid = :matchUid")
+    fun deleteGamesInternal(matchUid: Int)
+
+    /**
+     * Delete one game
+     */
+    @Transaction
+    fun deleteGame(matchUid: Int, gameUid: Int) {
+        deleteGameInternal(gameUid)
+        updateTotals(matchUid)
+    }
+    @Query("DELETE FROM 'game' where uid = :gameUid")
+    fun deleteGameInternal(gameUid: Int)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsert(match: Match): Long
 
-    @Query("DELETE FROM 'game'")
-    fun deleteGames()
-
-    @Query("DELETE FROM 'game' where matchUid = :matchUid")
-    fun deleteGames(matchUid: Int)
-
-    @Query("DELETE FROM 'game' where uid = :gameUid")
-    fun deleteGame(gameUid: Int)
-
+    @Transaction
+    fun upsert(game: Game) = upsertInternal(game).apply { updateTotals(game.matchUid) }
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun upsert(game: Game): Long
+    fun upsertInternal(game: Game): Long
+
+    private fun updateTotals(matchUid: Int) {
+        updateTotal1(matchUid)
+        updateTotal2(matchUid)
+    }
+    @Query("UPDATE 'match' SET score_team_1 = (SELECT SUM(team_1_total_points) FROM 'game' WHERE matchUid = :matchUid) WHERE uid = :matchUid")
+    fun updateTotal1(matchUid: Int): Int
+    @Query("UPDATE 'match' SET score_team_2 = (SELECT SUM(team_2_total_points) FROM 'game' WHERE matchUid = :matchUid) WHERE uid = :matchUid")
+    fun updateTotal2(matchUid: Int): Int
 
 }

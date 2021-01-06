@@ -117,15 +117,11 @@ data class Score(
         points + playedPoints
     }
 
-    fun reset() {
+    init {
         validateTichu(tichu)
         validateBigTichu(bigTichu)
         validateDoubleWin(doubleWin)
         validatePlayedPoints(playedPoints)
-    }
-
-    init {
-        reset()
     }
 
 }

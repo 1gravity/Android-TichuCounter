@@ -45,11 +45,11 @@ class GameViewModel @Inject constructor(private val repository: MatchRepository)
 
         return repository.saveGame(game2Save)
             .subscribeOn(Schedulers.io())
-            .doOnComplete() { theGame = game2Save }
+            .doOnComplete { theGame = game2Save }
     }
 
-    fun deleteGame(gameUid: Int): Completable =
-        repository.deleteGame(gameUid)
+    fun deleteGame(matchUid: Int, gameUid: Int): Completable =
+        repository.deleteGame(matchUid, gameUid)
             .subscribeOn(Schedulers.io())
 
     private fun getScore(scoreUid: Int, score: Score) =

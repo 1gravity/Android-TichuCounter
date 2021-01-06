@@ -5,9 +5,9 @@ import com.onegravity.tichucount.view.ListEntry
 import com.onegravity.tichucount.viewmodel.MatchViewModel
 
 class GameEntry(
-    val viewModel: MatchViewModel,
+    private val viewModel: MatchViewModel,
     header: Boolean,
-    val gameUid: Int,
+    private val gameUid: Int,
     val gameNr: String,
     val team1Score: String,
     val team2Score: String
