@@ -7,15 +7,14 @@ import com.onegravity.tichucount.viewmodel.MatchViewModel
 class GameEntry(
     private val viewModel: MatchViewModel,
     header: Boolean,
+    footer: Boolean,
     private val gameUid: Int,
     val gameNr: String,
     val team1Score: String,
     val team2Score: String
-) : ListEntry(header) {
+) : ListEntry(header, footer) {
     override fun onClick() {
-        if (! header) {
-            viewModel.gameSelected(gameUid)
-        }
+        viewModel.gameSelected(gameUid)
     }
 }
 

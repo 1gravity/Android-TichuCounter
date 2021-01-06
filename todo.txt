@@ -1,3 +1,2 @@
 - allow Doublewin with Tichu or Bigtichu lost...
-- total points for match needs to update
 - set up build pipeline

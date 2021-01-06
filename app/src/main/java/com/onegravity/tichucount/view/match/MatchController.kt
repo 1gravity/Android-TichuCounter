@@ -76,18 +76,24 @@ class MatchController(args: Bundle) : BaseController() {
             .run { binding.toolbarLayout.title = this }
         binding.fab.setOnClickListener { newGame() }
 
-        val title = GameEntry(viewModel, true, 0,
-            context.getString(R.string.game_nr), match.match.team1, match.match.team2
+        val header = GameEntry(viewModel, header = true, footer = false, gameUid = 0,
+            gameNr = context.getString(R.string.game_nr), team1Score = match.match.team1, team2Score = match.match.team2
         )
 
-        val entries =  match.games.foldIndexed(arrayListOf(title)) { pos, list, game ->
-            val entry = GameEntry(viewModel, false,
-                game.uid,
-                pos.inc().toString(),
-                game.score_1.totalPoints.toString(),
-                game.score_2.totalPoints.toString())
+        val entries =  match.games.foldIndexed(arrayListOf(header)) { pos, list, game ->
+            val entry = GameEntry(viewModel, header = false, footer = false,
+                gameUid = game.uid,
+                gameNr = pos.inc().toString(),
+                team1Score = game.score_1.totalPoints.toString(),
+                team2Score = game.score_2.totalPoints.toString()
+            )
             list.apply { add(entry) }
         }
+
+        GameEntry(viewModel, header = false, footer = true, gameUid = 0,
+            gameNr = "", team1Score = match.match.score1.toString(), team2Score = match.match.score2.toString()
+        ).also { entries.add(it) }
+
         val viewAdapter = MatchAdapter(entries)
         val viewManager = GridLayoutManager(context, 3, RecyclerView.VERTICAL, false)
 

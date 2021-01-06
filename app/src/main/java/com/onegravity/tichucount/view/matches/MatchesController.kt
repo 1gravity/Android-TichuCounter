@@ -64,14 +64,14 @@ class MatchesController : BaseController() {
     }
 
     private fun bind(context: Context, games: List<MatchWithGames>) {
-        val title = MatchEntry(viewModel, true, 0,
+        val header = MatchEntry(viewModel, true, 0,
             getString(R.string.match_nr),
             getString(R.string.name_team_1),
             getString(R.string.score),
             getString(R.string.name_team_2),
             getString(R.string.score)
         )
-        val entries = games.foldIndexed(arrayListOf(title)) { pos, list, match ->
+        val entries = games.foldIndexed(arrayListOf(header)) { pos, list, match ->
             val entry = MatchEntry(viewModel, false,
                 match.match.uid,
                 pos.inc().toString(),

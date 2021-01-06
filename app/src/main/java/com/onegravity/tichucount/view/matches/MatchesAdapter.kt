@@ -13,11 +13,9 @@ class MatchEntry(
     val team1Score: String,
     val team2Name: String,
     val team2Score: String
-) : ListEntry(header) {
+) : ListEntry(header, false) {
     override fun onClick() {
-        if (! header) {
-            viewModel.matchSelected(matchUid)
-        }
+        viewModel.matchSelected(matchUid)
     }
 }
 

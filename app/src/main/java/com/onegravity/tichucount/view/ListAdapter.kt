@@ -4,13 +4,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.onegravity.tichucount.databinding.ListEntryBinding
+import com.onegravity.tichucount.databinding.ListEntryFooterBinding
 import com.onegravity.tichucount.databinding.ListEntryHeaderBinding
+import java.util.*
 
-abstract class ListEntry(val header: Boolean) {
+abstract class ListEntry(val header: Boolean, val footer: Boolean) {
     abstract fun onClick()
 }
 
 class EntryViewHolderHeader(val binding: ListEntryHeaderBinding) : RecyclerView.ViewHolder(binding.root)
+
+class EntryViewHolderFooter(val binding: ListEntryFooterBinding) : RecyclerView.ViewHolder(binding.root)
 
 class EntryViewHolder(val binding: ListEntryBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -21,13 +25,18 @@ abstract class ListAdapter<E : ListEntry>(private val entries: List<E>) :
 
     override fun getItemViewType(position: Int) =
         entries[position.div(nrOfColumns())].run {
-            if (this.header) 0 else 1
+            when {
+                header -> 0
+                footer -> 1
+                else -> 2
+            }
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return when (viewType == 0) {
-            true -> ListEntryHeaderBinding.inflate(inflater).run { EntryViewHolderHeader(this) }
+        return when (viewType) {
+            0 -> ListEntryHeaderBinding.inflate(inflater).run { EntryViewHolderHeader(this) }
+            1 -> ListEntryFooterBinding.inflate(inflater).run { EntryViewHolderFooter(this) }
             else -> ListEntryBinding.inflate(inflater).run { EntryViewHolder(this) }
         }
     }
@@ -35,14 +44,17 @@ abstract class ListAdapter<E : ListEntry>(private val entries: List<E>) :
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val row = position.div(nrOfColumns())
         entries[row].let { entry ->
-            val text = itemText(entry, position.rem(nrOfColumns())).capitalize()
+            val text = itemText(entry, position.rem(nrOfColumns())).capitalize(Locale.ROOT)
             when (holder) {
                 is EntryViewHolderHeader -> holder.binding.entryText
+                is EntryViewHolderFooter -> holder.binding.entryText
                 is EntryViewHolder -> holder.binding.entryText
                 else -> null
             }?.run {
                 this.text = text
-                this.setOnClickListener { entry.onClick() }
+                if (! entry.header && ! entry.footer) {
+                    setOnClickListener { entry.onClick() }
+                }
             }
         }
     }
