@@ -29,6 +29,7 @@ open class GameController(args: Bundle): BaseController() {
 
     private val matchUid = args.getInt(MATCH_UID)
     private val gameUid = args.getInt(GAME_UID)
+    private val isNewGame = gameUid == 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,6 +46,8 @@ open class GameController(args: Bundle): BaseController() {
 
         activity?.findViewById<Toolbar>(R.id.toolbar)
             ?.setNavigationOnClickListener { router.handleBack() }
+
+        binding.btnDelete.visibility = if (isNewGame) View.GONE else View.VISIBLE
 
         viewModel.getGame(matchUid, gameUid)
             .doOnSubscribe { disposables.add(it) }
@@ -73,6 +76,8 @@ open class GameController(args: Bundle): BaseController() {
         binding.btnNegative.setOnClickListener { router.popCurrentController() }
 
         binding.btnPositive.setOnClickListener { saveGame(game) }
+
+        binding.btnDelete.setOnClickListener { deleteGame() }
     }
 
     private fun saveGame(game: Game) {
@@ -83,6 +88,19 @@ open class GameController(args: Bundle): BaseController() {
                 { router.popCurrentController() },
                 {
                     logger.e(LOGGER_TAG, "Failed to save game", it)
+                    Toast.makeText(binding.btnNegative.context, "", Toast.LENGTH_SHORT).show()
+                }
+            )
+    }
+
+    private fun deleteGame() {
+        viewModel.deleteGame(gameUid)
+            .doOnSubscribe { disposables.add(it) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { router.popCurrentController() },
+                {
+                    logger.e(LOGGER_TAG, "Failed to delete game", it)
                     Toast.makeText(binding.btnNegative.context, "", Toast.LENGTH_SHORT).show()
                 }
             )

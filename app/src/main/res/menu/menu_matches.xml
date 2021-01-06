@@ -5,7 +5,7 @@
     <item
         android:id="@+id/action_delete_matches"
         android:orderInCategory="100"
-        android:title="@string/action_delete_all"
+        android:title="@string/action_delete_matches"
         android:icon="@android:drawable/ic_menu_delete"
         app:showAsAction="never" />
 </menu>

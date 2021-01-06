@@ -48,12 +48,18 @@ class GameViewModel @Inject constructor(private val repository: MatchRepository)
             .doOnComplete() { theGame = game2Save }
     }
 
-    private fun getScore(scoreUid: Int, score: Score) = com.onegravity.tichucount.db.Score(
-        scoreUid,
-        score.tichu,
-        score.bigTichu,
-        score.doubleWin,
-        score.playedPoints,
-        score.points())
+    fun deleteGame(gameUid: Int): Completable =
+        repository.deleteGame(gameUid)
+            .subscribeOn(Schedulers.io())
+
+    private fun getScore(scoreUid: Int, score: Score) =
+        com.onegravity.tichucount.db.Score(
+            scoreUid,
+            score.tichu,
+            score.bigTichu,
+            score.doubleWin,
+            score.playedPoints,
+            score.points()
+        )
 
 }

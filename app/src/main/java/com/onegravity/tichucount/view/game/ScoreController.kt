@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import com.onegravity.tichucount.databinding.TeamScoreBinding
+import com.onegravity.tichucount.databinding.ScoreBinding
 import com.onegravity.tichucount.model.Score
 import com.onegravity.tichucount.model.ScoreState
 import com.onegravity.tichucount.model.ScoreType
@@ -17,7 +17,7 @@ class ScoreController(args: Bundle): BaseController() {
 
     private val score = args.getSerializable(SCORE_ARG) as Score
 
-    private lateinit var binding: TeamScoreBinding
+    private lateinit var binding: ScoreBinding
 
     private lateinit var numberPicker: NumberPicker
 
@@ -25,7 +25,7 @@ class ScoreController(args: Bundle): BaseController() {
         inflater: LayoutInflater,
         container: ViewGroup,
         savedViewState: Bundle?
-    ) = TeamScoreBinding.inflate(inflater).run {
+    ) = ScoreBinding.inflate(inflater).run {
         scope.inject(this@ScoreController)
         binding = this
         numberPicker = NumberPicker(binding)
