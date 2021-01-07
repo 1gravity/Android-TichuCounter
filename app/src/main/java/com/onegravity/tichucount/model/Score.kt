@@ -38,11 +38,13 @@ data class Score(
         }
 
     private fun validateTichu(value: ScoreState) {
-        if (value == ScoreState.LOST) {
-            doubleWin = false
+        // a team can't win both the Tichu and the Big Tichu
+        if (value == ScoreState.WON &&  bigTichu == ScoreState.WON) {
+            bigTichu = ScoreState.NOT_PLAYED
         }
-        if (value == ScoreState.WON && bigTichu == ScoreState.WON) {
-            doubleWin = true
+        // if a team loses the Tichu and the Big Tichu it can't have a double win
+        if (value == ScoreState.LOST &&  bigTichu == ScoreState.LOST) {
+            doubleWin = false
         }
     }
 
@@ -57,11 +59,13 @@ data class Score(
         }
 
     private fun validateBigTichu(value: ScoreState) {
-        if (value == ScoreState.LOST) {
-            doubleWin = false
+        // a team can't win both the Tichu and the Big Tichu
+        if (value == ScoreState.WON &&  tichu == ScoreState.WON) {
+            tichu = ScoreState.NOT_PLAYED
         }
-        if (value == ScoreState.WON && tichu == ScoreState.WON) {
-            doubleWin = true
+        // if a team loses the Tichu and the Big Tichu it can't have a double win
+        if (value == ScoreState.LOST &&  tichu == ScoreState.LOST) {
+            doubleWin = false
         }
     }
 
@@ -77,8 +81,7 @@ data class Score(
 
     private fun validateDoubleWin(value: Boolean) {
         if (value) {
-            if (tichu == ScoreState.LOST) tichu = ScoreState.NOT_PLAYED
-            if (bigTichu == ScoreState.LOST) bigTichu = ScoreState.NOT_PLAYED
+            if (tichu == ScoreState.LOST && bigTichu == ScoreState.LOST) tichu = ScoreState.NOT_PLAYED
             playedPoints = 0
         } else {
             if (tichu == ScoreState.WON && bigTichu == ScoreState.WON) tichu = ScoreState.NOT_PLAYED

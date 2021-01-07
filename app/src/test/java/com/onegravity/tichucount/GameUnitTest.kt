@@ -147,10 +147,10 @@ class GameUnitTest {
         ).run {
             score1.run {
                 Assert.assertEquals(tichu, ScoreState.WON)
-                Assert.assertEquals(bigTichu, ScoreState.WON)
+                Assert.assertEquals(bigTichu, ScoreState.NOT_PLAYED)
                 Assert.assertEquals(doubleWin, true)
                 Assert.assertEquals(playedPoints, 0)
-                Assert.assertEquals(points(), 500)
+                Assert.assertEquals(points(), 300)
             }
 
             score2.run {
@@ -233,22 +233,22 @@ class GameUnitTest {
             Score(ScoreState.WON, ScoreState.WON, true, 0, "Team 1"),
             Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "Team 2")
         ).run {
-            score1.playedPoints = 100
+            score1.playedPoints = 45
 
             score1.run {
-                Assert.assertEquals(tichu, ScoreState.NOT_PLAYED)
-                Assert.assertEquals(bigTichu, ScoreState.WON)
+                Assert.assertEquals(tichu, ScoreState.WON)
+                Assert.assertEquals(bigTichu, ScoreState.NOT_PLAYED)
                 Assert.assertEquals(doubleWin, false)
-                Assert.assertEquals(playedPoints, 100)
-                Assert.assertEquals(points(), 300)
+                Assert.assertEquals(playedPoints, 45)
+                Assert.assertEquals(points(), 145)
             }
 
             score2.run {
                 Assert.assertEquals(tichu, ScoreState.NOT_PLAYED)
                 Assert.assertEquals(bigTichu, ScoreState.NOT_PLAYED)
                 Assert.assertEquals(doubleWin, false)
-                Assert.assertEquals(playedPoints, 0)
-                Assert.assertEquals(points(), 0)
+                Assert.assertEquals(playedPoints, 55)
+                Assert.assertEquals(points(), 55)
             }
 
             score2.doubleWin = true
@@ -277,11 +277,11 @@ class GameUnitTest {
             score2.playedPoints = 40
 
             score1.run {
-                Assert.assertEquals(tichu, ScoreState.NOT_PLAYED)
-                Assert.assertEquals(bigTichu, ScoreState.WON)
+                Assert.assertEquals(tichu, ScoreState.WON)
+                Assert.assertEquals(bigTichu, ScoreState.NOT_PLAYED)
                 Assert.assertEquals(doubleWin, false)
                 Assert.assertEquals(playedPoints, 60)
-                Assert.assertEquals(points(), 260)
+                Assert.assertEquals(points(), 160)
             }
 
             score2.run {

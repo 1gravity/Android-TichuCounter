@@ -178,61 +178,88 @@ class ScoreUnitTest {
 
     @Test
     fun testDoubleWin() {
-        Score(ScoreState.WON, ScoreState.WON, true, 0, "team").run {
-            // maximum points (tichu, big tichu, double win)
+        Score(ScoreState.WON, ScoreState.WON, true, 100, "team").run {
+            // maximum points (big tichu, double win)
             Assert.assertEquals(tichu, ScoreState.WON)
+            Assert.assertEquals(bigTichu, ScoreState.NOT_PLAYED)
+            Assert.assertEquals(doubleWin, true)
+            Assert.assertEquals(playedPoints, 0)
+            Assert.assertEquals(points(), 300)
+        }
+
+        Score(ScoreState.NOT_PLAYED, ScoreState.WON, true, 0, "team").run {
+            // maximum points (big tichu, double win)
+            Assert.assertEquals(tichu, ScoreState.NOT_PLAYED)
             Assert.assertEquals(bigTichu, ScoreState.WON)
             Assert.assertEquals(doubleWin, true)
             Assert.assertEquals(playedPoints, 0)
-            Assert.assertEquals(points(), 500)
+            Assert.assertEquals(points(), 400)
 
             // tichu and double win
             bigTichu = ScoreState.NOT_PLAYED
+            tichu = ScoreState.WON
             Assert.assertEquals(tichu, ScoreState.WON)
             Assert.assertEquals(bigTichu, ScoreState.NOT_PLAYED)
             Assert.assertEquals(doubleWin, true)
             Assert.assertEquals(playedPoints, 0)
             Assert.assertEquals(points(),   300)
 
-            // lost big tichu -> can't be double win
-            bigTichu = ScoreState.LOST
-            Assert.assertEquals(tichu, ScoreState.WON)
-            Assert.assertEquals(bigTichu, ScoreState.LOST)
-            Assert.assertEquals(doubleWin, false)
-            Assert.assertEquals(playedPoints, 0)
-            Assert.assertEquals(points(),   -100)
-
-            // back to winning big tichu -> must be double win
+            // tichu, big tichu and double win is NOT possible
             bigTichu = ScoreState.WON
-            Assert.assertEquals(tichu, ScoreState.WON)
-            Assert.assertEquals(bigTichu, ScoreState.WON)
-            Assert.assertEquals(doubleWin, true)
-            Assert.assertEquals(playedPoints, 0)
-            Assert.assertEquals(points(),   500)
-
-            // big tichu and double win
-            tichu = ScoreState.NOT_PLAYED
             Assert.assertEquals(tichu, ScoreState.NOT_PLAYED)
             Assert.assertEquals(bigTichu, ScoreState.WON)
             Assert.assertEquals(doubleWin, true)
             Assert.assertEquals(playedPoints, 0)
             Assert.assertEquals(points(),   400)
 
-            // lost tichu -> can't be double win
-            tichu = ScoreState.LOST
-            Assert.assertEquals(tichu, ScoreState.LOST)
-            Assert.assertEquals(bigTichu, ScoreState.WON)
-            Assert.assertEquals(doubleWin, false)
-            Assert.assertEquals(playedPoints, 0)
-            Assert.assertEquals(points(),   100)
-
-            // back to winning tichu -> again max points
+            // tichu, big tichu and double win is NOT possible
             tichu = ScoreState.WON
             Assert.assertEquals(tichu, ScoreState.WON)
+            Assert.assertEquals(bigTichu, ScoreState.NOT_PLAYED)
+            Assert.assertEquals(doubleWin, true)
+            Assert.assertEquals(playedPoints, 0)
+            Assert.assertEquals(points(),   300)
+
+            // lost tichu AND big tichu -> can't be double win
+            tichu = ScoreState.LOST
+            bigTichu = ScoreState.LOST
+            Assert.assertEquals(tichu, ScoreState.LOST)
+            Assert.assertEquals(bigTichu, ScoreState.LOST)
+            Assert.assertEquals(doubleWin, false)
+            Assert.assertEquals(playedPoints, 0)
+            Assert.assertEquals(points(),   -300)
+
+            // lost tichu AND big tichu + double win -> one loss needs to go away
+            doubleWin = true
+            Assert.assertEquals(tichu, ScoreState.NOT_PLAYED)
+            Assert.assertEquals(bigTichu, ScoreState.LOST)
+            Assert.assertEquals(doubleWin, true)
+            Assert.assertEquals(playedPoints, 0)
+            Assert.assertEquals(points(),   0)
+
+            // back to winning big tichu
+            bigTichu = ScoreState.WON
+            Assert.assertEquals(tichu, ScoreState.NOT_PLAYED)
             Assert.assertEquals(bigTichu, ScoreState.WON)
             Assert.assertEquals(doubleWin, true)
             Assert.assertEquals(playedPoints, 0)
-            Assert.assertEquals(points(),   500)
+            Assert.assertEquals(points(), 400)
+
+            // lost tichu
+            tichu = ScoreState.LOST
+            Assert.assertEquals(tichu, ScoreState.LOST)
+            Assert.assertEquals(bigTichu, ScoreState.WON)
+            Assert.assertEquals(doubleWin, true)
+            Assert.assertEquals(playedPoints, 0)
+            Assert.assertEquals(points(),   300)
+
+            // lost big tichu -> can't be double win
+            bigTichu = ScoreState.LOST
+            Assert.assertEquals(tichu, ScoreState.LOST)
+            Assert.assertEquals(bigTichu, ScoreState.LOST)
+            Assert.assertEquals(doubleWin, false)
+            Assert.assertEquals(playedPoints, 0)
+            Assert.assertEquals(points(),   -300)
         }
 
         // check double win event stream for big tichu state changes
@@ -242,20 +269,20 @@ class ScoreUnitTest {
                 assertValueCount(0)
 
                 bigTichu = ScoreState.WON
-                assertValues(ScoreType.DOUBLE_WIN, ScoreType.BIG_TICHU)
+                assertValues(ScoreType.TICHU, ScoreType.BIG_TICHU)
                 assertValueCount(2)
 
                 bigTichu = ScoreState.NOT_PLAYED
-                assertValues(ScoreType.DOUBLE_WIN, ScoreType.BIG_TICHU, ScoreType.BIG_TICHU)
+                assertValues(ScoreType.TICHU, ScoreType.BIG_TICHU, ScoreType.BIG_TICHU)
                 assertValueCount(3)
 
                 bigTichu = ScoreState.LOST
-                assertValues(ScoreType.DOUBLE_WIN, ScoreType.BIG_TICHU, ScoreType.BIG_TICHU, ScoreType.DOUBLE_WIN, ScoreType.BIG_TICHU)
-                assertValueCount(5)
+                assertValues(ScoreType.TICHU, ScoreType.BIG_TICHU, ScoreType.BIG_TICHU, ScoreType.BIG_TICHU)
+                assertValueCount(4)
 
                 bigTichu = ScoreState.WON
-                assertValues(ScoreType.DOUBLE_WIN, ScoreType.BIG_TICHU, ScoreType.BIG_TICHU, ScoreType.DOUBLE_WIN, ScoreType.BIG_TICHU, ScoreType.DOUBLE_WIN, ScoreType.BIG_TICHU)
-                assertValueCount(7)
+                assertValues(ScoreType.TICHU, ScoreType.BIG_TICHU, ScoreType.BIG_TICHU, ScoreType.BIG_TICHU, ScoreType.BIG_TICHU)
+                assertValueCount(5)
             }
         }
 
@@ -266,35 +293,41 @@ class ScoreUnitTest {
                 assertValueCount(0)
 
                 tichu = ScoreState.WON
-                assertValues(ScoreType.DOUBLE_WIN, ScoreType.TICHU)
+                assertValues(ScoreType.BIG_TICHU, ScoreType.TICHU)
                 assertValueCount(2)
 
                 tichu = ScoreState.NOT_PLAYED
-                assertValues(ScoreType.DOUBLE_WIN, ScoreType.TICHU, ScoreType.TICHU)
+                assertValues(ScoreType.BIG_TICHU, ScoreType.TICHU, ScoreType.TICHU)
                 assertValueCount(3)
 
                 tichu = ScoreState.LOST
-                assertValues(ScoreType.DOUBLE_WIN, ScoreType.TICHU, ScoreType.TICHU, ScoreType.DOUBLE_WIN, ScoreType.TICHU)
-                assertValueCount(5)
+                assertValues(ScoreType.BIG_TICHU, ScoreType.TICHU, ScoreType.TICHU, ScoreType.TICHU)
+                assertValueCount(4)
 
                 tichu = ScoreState.WON
-                assertValues(ScoreType.DOUBLE_WIN, ScoreType.TICHU, ScoreType.TICHU, ScoreType.DOUBLE_WIN, ScoreType.TICHU, ScoreType.DOUBLE_WIN, ScoreType.TICHU)
-                assertValueCount(7)
+                assertValues(ScoreType.BIG_TICHU, ScoreType.TICHU, ScoreType.TICHU, ScoreType.TICHU, ScoreType.TICHU)
+                assertValueCount(5)
             }
         }
 
-        // double win + if we have a tichu and a big tichu -> tichu will change state!
-        Score(ScoreState.WON, ScoreState.WON, true, 0, "team").run {
-            Assert.assertEquals(tichu, ScoreState.WON)
-            Assert.assertEquals(bigTichu, ScoreState.WON)
-            Assert.assertEquals(doubleWin, true)
-            Assert.assertEquals(points(),   500)
+        // check double win event stream for tichu and big tichu  state changes
+        Score(ScoreState.NOT_PLAYED, ScoreState.WON, true, 0, "team").run {
+            changes().test().run {
+                assertEmpty()
+                assertValueCount(0)
 
-            doubleWin = false
-            Assert.assertEquals(tichu, ScoreState.NOT_PLAYED)
-            Assert.assertEquals(bigTichu, ScoreState.WON)
-            Assert.assertEquals(doubleWin, false)
-            Assert.assertEquals(points(),   200)
+                tichu = ScoreState.WON
+                assertValues(ScoreType.BIG_TICHU, ScoreType.TICHU)
+                assertValueCount(2)
+
+                tichu = ScoreState.LOST
+                assertValues(ScoreType.BIG_TICHU, ScoreType.TICHU, ScoreType.TICHU)
+                assertValueCount(3)
+
+                bigTichu = ScoreState.LOST
+                assertValues(ScoreType.BIG_TICHU, ScoreType.TICHU, ScoreType.TICHU, ScoreType.DOUBLE_WIN, ScoreType.BIG_TICHU)
+                assertValueCount(5)
+            }
         }
     }
 
@@ -336,10 +369,10 @@ class ScoreUnitTest {
 
         Score(ScoreState.WON, ScoreState.WON, false, 100, "team").run {
             Assert.assertEquals(tichu, ScoreState.WON)
-            Assert.assertEquals(bigTichu, ScoreState.WON)
-            Assert.assertEquals(doubleWin, true)
-            Assert.assertEquals(playedPoints, 0)
-            Assert.assertEquals(points(), 500)
+            Assert.assertEquals(bigTichu, ScoreState.NOT_PLAYED)
+            Assert.assertEquals(doubleWin, false)
+            Assert.assertEquals(playedPoints, 100)
+            Assert.assertEquals(points(), 200)
         }
 
         Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, true, 100, "team").run {
@@ -400,18 +433,18 @@ class ScoreUnitTest {
         }
 
         Score(ScoreState.WON, ScoreState.WON, true, -25, "team").run {
-            Assert.assertEquals(points(), 500)
+            Assert.assertEquals(points(), 300)
 
             playedPoints = 50
-            Assert.assertEquals(tichu, ScoreState.NOT_PLAYED)
-            Assert.assertEquals(bigTichu, ScoreState.WON)
+            Assert.assertEquals(tichu, ScoreState.WON)
+            Assert.assertEquals(bigTichu, ScoreState.NOT_PLAYED)
             Assert.assertEquals(doubleWin, false)
             Assert.assertEquals(playedPoints, 50)
-            Assert.assertEquals(points(), 250)
+            Assert.assertEquals(points(), 150)
         }
 
         Score(ScoreState.WON, ScoreState.WON, false, 100, "team").run {
-            Assert.assertEquals(points(), 500 )
+            Assert.assertEquals(points(), 200 )
         }
 
         Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, true, 100, "team").run {
