@@ -18,8 +18,8 @@ class GameViewModel @Inject constructor(private val repository: MatchRepository)
             .map { match ->
                 theGame = match.games.firstOrNull { it.uid == gameUid }
                 theGame?.run {
-                    val score1 = Score(score_1.tichu, score_1.bigTichu, score_1.doubleWin, score_1.playedPoints, match.match.team1)
-                    val score2 = Score(score_2.tichu, score_2.bigTichu, score_2.doubleWin, score_2.playedPoints, match.match.team2)
+                    val score1 = Score(score_1.tichu, score_1.grandTichu, score_1.doubleWin, score_1.playedPoints, match.match.team1)
+                    val score2 = Score(score_2.tichu, score_2.grandTichu, score_2.doubleWin, score_2.playedPoints, match.match.team2)
                     Game(matchUid, match.match.team1, match.match.team2, score1, score2)
                 } ?: run {
                     // game doesn't exist -> create an empty one
@@ -56,7 +56,7 @@ class GameViewModel @Inject constructor(private val repository: MatchRepository)
         com.onegravity.tichucount.db.Score(
             scoreUid,
             score.tichu,
-            score.bigTichu,
+            score.grandTichu,
             score.doubleWin,
             score.playedPoints,
             score.points()

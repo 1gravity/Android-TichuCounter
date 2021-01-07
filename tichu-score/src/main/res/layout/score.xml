@@ -45,31 +45,31 @@
         </RadioGroup>
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/score_big_tichu_title"
+            android:id="@+id/score_grand_tichu_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/score_big_ticku"
+            android:text="@string/score_grand_ticku"
             style="@style/Theme.DialogHeader"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/score_tichu_win_loss" />
 
         <RadioGroup
-            android:id="@+id/score_big_tichu_win_loss"
+            android:id="@+id/score_grand_tichu_win_loss"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/score_big_tichu_title">
+            app:layout_constraintTop_toBottomOf="@id/score_grand_tichu_title">
 
             <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/score_big_tichu_win"
+                android:id="@+id/score_grand_tichu_win"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/score_win"
                 style="@style/Theme.DialogText" />
 
             <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/score_big_tichu_loss"
+                android:id="@+id/score_grand_tichu_loss"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/score_loss"
@@ -84,7 +84,7 @@
             android:text="@string/score_double_win"
             style="@style/Theme.DialogText"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/score_big_tichu_win_loss" />
+            app:layout_constraintTop_toBottomOf="@id/score_grand_tichu_win_loss" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/score_number_title"

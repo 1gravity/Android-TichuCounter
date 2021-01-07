@@ -40,14 +40,14 @@ class ScoreController(args: Bundle): BaseController() {
     private fun bindView() {
         // initialization of the ui
         update(ScoreType.TICHU)
-        update(ScoreType.BIG_TICHU)
+        update(ScoreType.GRAND_TICHU)
         update(ScoreType.DOUBLE_WIN)
         update(ScoreType.PLAYED_POINTS)
 
         score.changes().subscribe { update(it) }
 
         bindTichu(binding.scoreTichuWin, binding.scoreTichuLoss) { score.tichu = it }
-        bindTichu(binding.scoreBigTichuWin, binding.scoreBigTichuLoss) { score.bigTichu = it }
+        bindTichu(binding.scoreGrandTichuWin, binding.scoreGrandTichuLoss) { score.grandTichu = it }
         bindDoubleWin()
         bindPlayedPoints()
     }
@@ -58,9 +58,9 @@ class ScoreController(args: Bundle): BaseController() {
                 binding.scoreTichuWin.isChecked = score.tichu == ScoreState.WON
                 binding.scoreTichuLoss.isChecked = score.tichu == ScoreState.LOST
             }
-            ScoreType.BIG_TICHU -> {
-                binding.scoreBigTichuWin.isChecked = score.bigTichu == ScoreState.WON
-                binding.scoreBigTichuLoss.isChecked = score.bigTichu == ScoreState.LOST
+            ScoreType.GRAND_TICHU -> {
+                binding.scoreGrandTichuWin.isChecked = score.grandTichu == ScoreState.WON
+                binding.scoreGrandTichuLoss.isChecked = score.grandTichu == ScoreState.LOST
             }
             ScoreType.DOUBLE_WIN -> binding.scoreDoubleWin.isChecked = score.doubleWin
             ScoreType.PLAYED_POINTS -> numberPicker.setValue(score.playedPoints)

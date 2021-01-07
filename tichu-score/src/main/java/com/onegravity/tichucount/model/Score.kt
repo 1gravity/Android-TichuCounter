@@ -11,7 +11,7 @@ import java.io.Serializable
 
 data class Score(
     private val initialTichu: ScoreState,
-    private val initialBigTichu: ScoreState,
+    private val initialGrandTichu: ScoreState,
     private val initialDoubleWin: Boolean,
     private val initialPlayedPoints: Int,
     val teamName: String
@@ -31,39 +31,39 @@ data class Score(
         set(value) {
             if (field != value) {
                 field = value
-                logger.d(LOGGER_TAG, "${teamName}: TICHU changed to $value")
+                logger.d(LOGGER_TAG, "${teamName}: ${field.name} changed to $value")
                 validateTichu(value)
                 changeDone(ScoreType.TICHU)
             }
         }
 
     private fun validateTichu(value: ScoreState) {
-        // a team can't win both the Tichu and the Big Tichu
-        if (value == ScoreState.WON &&  bigTichu == ScoreState.WON) {
-            bigTichu = ScoreState.NOT_PLAYED
+        // a team can't win both the Tichu and the Grand Tichu
+        if (value == ScoreState.WON &&  grandTichu == ScoreState.WON) {
+            grandTichu = ScoreState.NOT_PLAYED
         }
-        // if a team loses the Tichu and the Big Tichu it can't have a double win
-        if (value == ScoreState.LOST &&  bigTichu == ScoreState.LOST) {
+        // if a team loses the Tichu and the Grand Tichu it can't have a double win
+        if (value == ScoreState.LOST &&  grandTichu == ScoreState.LOST) {
             doubleWin = false
         }
     }
 
-    var bigTichu = initialBigTichu
+    var grandTichu = initialGrandTichu
         set(value) {
             if (field != value) {
                 field = value
-                logger.d(LOGGER_TAG, "${teamName}: BIG_TICHU changed to $value")
-                validateBigTichu(value)
-                changeDone(ScoreType.BIG_TICHU)
+                logger.d(LOGGER_TAG, "${teamName}: ${field.name} changed to $value")
+                validateGrandTichu(value)
+                changeDone(ScoreType.GRAND_TICHU)
             }
         }
 
-    private fun validateBigTichu(value: ScoreState) {
-        // a team can't win both the Tichu and the Big Tichu
+    private fun validateGrandTichu(value: ScoreState) {
+        // a team can't win both the Tichu and the Grand Tichu
         if (value == ScoreState.WON &&  tichu == ScoreState.WON) {
             tichu = ScoreState.NOT_PLAYED
         }
-        // if a team loses the Tichu and the Big Tichu it can't have a double win
+        // if a team loses the Tichu and the Grand Tichu it can't have a double win
         if (value == ScoreState.LOST &&  tichu == ScoreState.LOST) {
             doubleWin = false
         }
@@ -81,10 +81,10 @@ data class Score(
 
     private fun validateDoubleWin(value: Boolean) {
         if (value) {
-            if (tichu == ScoreState.LOST && bigTichu == ScoreState.LOST) tichu = ScoreState.NOT_PLAYED
+            if (tichu == ScoreState.LOST && grandTichu == ScoreState.LOST) tichu = ScoreState.NOT_PLAYED
             playedPoints = 0
         } else {
-            if (tichu == ScoreState.WON && bigTichu == ScoreState.WON) tichu = ScoreState.NOT_PLAYED
+            if (tichu == ScoreState.WON && grandTichu == ScoreState.WON) tichu = ScoreState.NOT_PLAYED
         }
     }
 
@@ -113,8 +113,8 @@ data class Score(
 
         if (tichu == ScoreState.WON) points += 100
         if (tichu == ScoreState.LOST) points -= 100
-        if (bigTichu == ScoreState.WON) points += 200
-        if (bigTichu == ScoreState.LOST) points -= 200
+        if (grandTichu == ScoreState.WON) points += 200
+        if (grandTichu == ScoreState.LOST) points -= 200
         if (doubleWin) points += 200
 
         points + playedPoints
@@ -122,7 +122,7 @@ data class Score(
 
     init {
         validateTichu(tichu)
-        validateBigTichu(bigTichu)
+        validateGrandTichu(grandTichu)
         validateDoubleWin(doubleWin)
         validatePlayedPoints(playedPoints)
     }

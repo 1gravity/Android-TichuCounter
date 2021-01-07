@@ -42,9 +42,9 @@ data class Game(
     private fun resolveDependencies(sourceValve: AtomicBoolean, source: Score, dest: Score) {
         sourceValve.set(false)
 
-        if (source.tichu == ScoreState.WON || source.bigTichu == ScoreState.WON || source.doubleWin) {
+        if (source.tichu == ScoreState.WON || source.grandTichu == ScoreState.WON || source.doubleWin) {
             if (dest.tichu == ScoreState.WON) dest.tichu = ScoreState.NOT_PLAYED
-            if (dest.bigTichu == ScoreState.WON) dest.bigTichu = ScoreState.NOT_PLAYED
+            if (dest.grandTichu == ScoreState.WON) dest.grandTichu = ScoreState.NOT_PLAYED
             dest.doubleWin = false
         }
 

@@ -18,7 +18,7 @@
 
     <!-- Game Screen -->
     <string name="score_ticku">Tichu</string>
-    <string name="score_big_ticku">Big Tichu</string>
+    <string name="score_grand_ticku">Grand Tichu</string>
     <string name="score_double_win">Double</string>
     <string name="score_win">Won</string>
     <string name="score_loss">Lost</string>
