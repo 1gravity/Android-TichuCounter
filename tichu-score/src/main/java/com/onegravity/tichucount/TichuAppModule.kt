@@ -11,7 +11,7 @@ import com.onegravity.tichucount.viewmodel.MatchViewModel
 import com.onegravity.tichucount.viewmodel.MatchesViewModel
 import toothpick.config.Module
 
-class TichuAppModule(application: Application) : Module() {
+class TichuAppModule(application: Application, loggingEnabled: Boolean = false) : Module() {
 
     init {
         val context = application.applicationContext
@@ -22,7 +22,7 @@ class TichuAppModule(application: Application) : Module() {
         ).build()
 
         bind(Context::class.java).toInstance(context)
-        bind(Logger::class.java).toInstance(LoggerImpl)
+        bind(Logger::class.java).toInstance(LoggerImpl(loggingEnabled))
         bind(TichuDatabase::class.java).toInstance(tichuDB)
         bind(MatchRepository::class.java).to(MatchRepository::class.java).singleton()
         bind(MatchesViewModel::class.java).to(MatchesViewModel::class.java).singleton()

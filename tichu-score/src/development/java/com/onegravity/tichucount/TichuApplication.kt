@@ -9,6 +9,6 @@ class TichuApplication: TichuApplicationBase() {
         Stetho.initializeWithDefaults(application)
     }
 
-    override fun appModule(application: Application) = TichuAppModule(application)
+    override fun appModule(application: Application) = TichuAppModule(application, true)
 
 }
