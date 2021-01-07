@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Tichu Count</string>
+    <string name="app_name">Tichu Score</string>
 
     <!-- Matches Screen -->
     <string name="matches_title">Tichu Matches</string>

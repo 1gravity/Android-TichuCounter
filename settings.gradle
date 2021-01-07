@@ -1,2 +1,2 @@
-include ':app'
-rootProject.name = "TichuCount"
+include ':tichu-score'
+rootProject.name = "TichuScore"

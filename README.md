@@ -1,1 +1,1 @@
-# Android-TichuCounter
+# Android-Tichu-Score
