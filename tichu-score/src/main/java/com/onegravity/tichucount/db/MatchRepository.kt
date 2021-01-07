@@ -46,7 +46,7 @@ class MatchRepository @Inject constructor(
 
     fun createMatch(team1: String, team2: String): Single<Int> = Single.create { emitter ->
         try {
-            val match = Match(0, team1, team2, 0, 0)
+            val match = Match(0, team1, team2, 1000,    0, 0)
             val uid = db.match().upsert(match)
             emitter.onSuccess(uid.toInt())
         } catch (e: Exception) {

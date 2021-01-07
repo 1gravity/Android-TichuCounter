@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "cb3aa9133c51bc2f2c10444ea29328b3",
+    "identityHash": "d39c6773cb204e62d56caa5abb99898f",
     "entities": [
       {
         "tableName": "match",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name_team_1` TEXT NOT NULL, `name_team_2` TEXT NOT NULL, `score_team_1` INTEGER NOT NULL, `score_team_2` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name_team_1` TEXT NOT NULL, `name_team_2` TEXT NOT NULL, `target_score` INTEGER NOT NULL, `score_team_1` INTEGER NOT NULL, `score_team_2` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "uid",
@@ -24,6 +24,12 @@
             "fieldPath": "team2",
             "columnName": "name_team_2",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "targetScore",
+            "columnName": "target_score",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -226,7 +232,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cb3aa9133c51bc2f2c10444ea29328b3')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd39c6773cb204e62d56caa5abb99898f')"
     ]
   }
 }

@@ -23,7 +23,7 @@ class NewMatchDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?) = context?.run {
         KTP.openRootScope().openSubScope(APP_SCOPE).inject(this@NewMatchDialog)
 
-        val layout = LayoutInflater.from(this).inflate(R.layout.match_names, null)
+        val layout = LayoutInflater.from(this).inflate(R.layout.new_match, null)
 
         AlertDialog.Builder(this)
             .setTitle(R.string.new_match_title)

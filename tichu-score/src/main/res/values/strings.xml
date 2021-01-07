@@ -8,7 +8,7 @@
     <string name="score">Score</string>
     <string name="name_team_2">Team 2</string>
     <string name="action_delete_matches">Delete all</string>
-    <string name="new_match_title">Team names</string>
+    <string name="new_match_title">New Match</string>
 
     <!-- Match Screen -->
     <string name="game_load_error">Failed to load match with uid %s</string>
