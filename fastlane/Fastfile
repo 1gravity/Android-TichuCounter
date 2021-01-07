@@ -17,22 +17,24 @@ default_platform(:android)
 
 platform :android do
   desc "Runs all the tests"
-  lane :test do
-    gradle(task: "test")
+  lane :tests do
+    gradle(task: "testProductionReleaseUnitTest")
   end
 
-  desc "Submit a new Beta Build to Crashlytics Beta"
-  lane :beta do
-    gradle(task: "clean assembleRelease")
-    crashlytics
-  
-    # sh "your_script.sh"
-    # You can also use other beta testing services here
+  desc "Build a new production version (signed)"
+  lane :build do
+    gradle(task: "clean")
+    gradle(
+      task: 'bundleProduction',
+      build_type: 'Release'
+    )
   end
 
-  desc "Deploy a new version to the Google Play"
-  lane :deploy do
-    gradle(task: "clean assembleRelease")
-    upload_to_play_store
+  desc "Build and deploy a new production version to the internal testing track"
+  lane :playstore do
+    tests
+    build
+    upload_to_play_store(track: 'internal')
   end
+
 end

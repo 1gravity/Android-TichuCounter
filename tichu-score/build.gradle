@@ -11,7 +11,7 @@ android {
         applicationId "com.onegravity.tichucount"
         minSdkVersion 18
         targetSdkVersion 30
-        versionCode 2
+        versionCode 3
         versionName "1.0"
 
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
@@ -27,6 +27,15 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        release {
+            storeFile file(ONEGRAVITY_KEYSTORE_FILE)
+            storePassword ONEGRAVITY_KEYSTORE_PASSWORD
+            keyAlias ONEGRAVITY_TICHUSCORE_KEY_ALIAS
+            keyPassword ONEGRAVITY_TICHUSCORE_KEY_PASSWORD
+        }
+    }
+
     buildTypes {
         debug {
             debuggable true
@@ -38,6 +47,7 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
