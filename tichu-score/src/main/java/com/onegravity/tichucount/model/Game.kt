@@ -26,34 +26,58 @@ data class Game(
         score1.changes().filter { valve1.get() }
             .subscribe {
                 logger.d(LOGGER_TAG, "${score1.teamName}: $it changed")
-                resolveDependencies(valve2, score1, score2)
+                resolveDependencies(it, valve2, score1, score2)
             }
 
         score2.changes().filter { valve2.get() }
             .subscribe {
                 logger.d(LOGGER_TAG, "${score2.teamName}: $it changed")
-                resolveDependencies(valve1, score2, score1)
+                resolveDependencies(it, valve1, score2, score1)
             }
 
         // initial/one-time dependency resolution
-        resolveDependencies(valve1, score1, score2)
+        resolveDependencies(ScoreType.TICHU, valve1, score1, score2)
+        resolveDependencies(ScoreType.GRAND_TICHU, valve1, score1, score2)
+        resolveDependencies(ScoreType.DOUBLE_WIN, valve1, score1, score2)
+
+        resolveDependencies(ScoreType.TICHU, valve2, score2, score1)
+        resolveDependencies(ScoreType.GRAND_TICHU, valve2, score2, score1)
+        resolveDependencies(ScoreType.DOUBLE_WIN, valve2, score2, score1)
+
+        if (! score1.doubleWin && ! score2.doubleWin) {
+            resolveDependencies(ScoreType.PLAYED_POINTS, valve1, score1, score2)
+            resolveDependencies(ScoreType.PLAYED_POINTS, valve2, score2, score1)
+        }
     }
 
-    private fun resolveDependencies(sourceValve: AtomicBoolean, source: Score, dest: Score) {
+    private fun resolveDependencies(scoreType: ScoreType, sourceValve: AtomicBoolean, source: Score, dest: Score) {
         sourceValve.set(false)
 
-        if (source.tichu == ScoreState.WON || source.grandTichu == ScoreState.WON || source.doubleWin) {
-            if (dest.tichu == ScoreState.WON) dest.tichu = ScoreState.NOT_PLAYED
-            if (dest.grandTichu == ScoreState.WON) dest.grandTichu = ScoreState.NOT_PLAYED
-            dest.doubleWin = false
-        }
-
-        dest.playedPoints = when (source.doubleWin) {
-            true ->  0
-            false -> 100 - source.playedPoints
+        when (scoreType) {
+            ScoreType.TICHU ->
+                if (source.tichu == ScoreState.WON) {
+                    sourceWon(dest)
+                    if (! source.doubleWin) dest.playedPoints = 100 - source.playedPoints
+                }
+            ScoreType.GRAND_TICHU ->
+                if (source.grandTichu == ScoreState.WON) {
+                    sourceWon(dest)
+                    if (! source.doubleWin) dest.playedPoints = 100 - source.playedPoints
+                }
+            ScoreType.DOUBLE_WIN -> if (source.doubleWin) {
+                sourceWon(dest)
+                dest.playedPoints = 0
+            }
+            ScoreType.PLAYED_POINTS -> dest.playedPoints = 100 - source.playedPoints
         }
 
         sourceValve.set(true)
+    }
+
+    private fun sourceWon(dest: Score) {
+        if (dest.tichu == ScoreState.WON) dest.tichu = ScoreState.NOT_PLAYED
+        if (dest.grandTichu == ScoreState.WON) dest.grandTichu = ScoreState.NOT_PLAYED
+        dest.doubleWin = false
     }
 
 }

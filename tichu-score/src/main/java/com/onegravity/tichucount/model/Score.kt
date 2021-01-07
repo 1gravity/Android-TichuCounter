@@ -30,8 +30,8 @@ data class Score(
     var tichu = initialTichu
         set(value) {
             if (field != value) {
+                logger.d(LOGGER_TAG, "${teamName}: TICHU changed from $field to $value")
                 field = value
-                logger.d(LOGGER_TAG, "${teamName}: ${field.name} changed to $value")
                 validateTichu(value)
                 changeDone(ScoreType.TICHU)
             }
@@ -51,8 +51,8 @@ data class Score(
     var grandTichu = initialGrandTichu
         set(value) {
             if (field != value) {
+                logger.d(LOGGER_TAG, "${teamName}: GRAND_TICHU changed from $field to $value")
                 field = value
-                logger.d(LOGGER_TAG, "${teamName}: ${field.name} changed to $value")
                 validateGrandTichu(value)
                 changeDone(ScoreType.GRAND_TICHU)
             }
@@ -72,8 +72,8 @@ data class Score(
     var doubleWin = initialDoubleWin
         set(value) {
             if (field != value) {
+                logger.d(LOGGER_TAG, "${teamName}: DOUBLE_WIN changed from $field to $value")
                 field = value
-                logger.d(LOGGER_TAG, "${teamName}: DOUBLE_WIN changed to $value")
                 validateDoubleWin(value)
                 changeDone(ScoreType.DOUBLE_WIN)
             }
@@ -91,8 +91,8 @@ data class Score(
     var playedPoints = initialPlayedPoints
         set(value) {
             if (field != value) {
+                logger.d(LOGGER_TAG, "${teamName}: PLAYED_POINTS changed from $field to $value")
                 field = value
-                logger.d(LOGGER_TAG, "${teamName}: PLAYED_POINTS changed to $value")
                 validatePlayedPoints(value)
                 changeDone(ScoreType.PLAYED_POINTS)
             }
