@@ -21,12 +21,11 @@ class TichuActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(LayoutInflater.from(this)).run {
             binding = this
             setContentView(root)
-        }
 
-        val container = binding.controllerContainer
-        router = attachRouter(this, container, savedInstanceState)
-        if (! router.hasRootController()) {
-            router.setRoot(RouterTransaction.with(MatchesController()))
+            router = attachRouter(this@TichuActivity, controllerContainer, savedInstanceState)
+            if (! router.hasRootController()) {
+                router.setRoot(RouterTransaction.with(MatchesController()))
+            }
         }
     }
 
