@@ -13,13 +13,10 @@ class TichuActivity : AppCompatActivity() {
 
     private lateinit var router: Router
 
-    private lateinit var binding: ActivityMainBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         ActivityMainBinding.inflate(LayoutInflater.from(this)).run {
-            binding = this
             setContentView(root)
 
             router = attachRouter(this@TichuActivity, controllerContainer, savedInstanceState)
