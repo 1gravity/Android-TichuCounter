@@ -13,6 +13,8 @@ pipelines:
           script:
             # create the keystore file and the google play api key file
             - mkdir keys
+            - echo $ONEGRAVITY_KEYSTORE_FILE_BASE64
+            - echo $ONEGRAVITY_GOOGLE_PLAY_API_KEY_BASE64
             - echo $ONEGRAVITY_KEYSTORE_FILE_BASE64 | base64 --decode > keys/$ONEGRAVITY_KEYSTORE_FILE
             - echo $ONEGRAVITY_GOOGLE_PLAY_API_KEY_BASE64 | base64 --decode > keys/$ONEGRAVITY_GOOGLE_PLAY_API_KEY
           artifacts:
