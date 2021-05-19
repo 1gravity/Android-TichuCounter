@@ -1,0 +1,1 @@
+Tichu Score allows you to keep track of your Tichu scores

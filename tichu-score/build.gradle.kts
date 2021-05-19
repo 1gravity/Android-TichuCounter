@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
+    id("com.github.triplet.play")
 }
 
 android {
@@ -131,4 +132,10 @@ dependencies {
     testImplementation("androidx.test:core:1.3.0")
     testImplementation("com.github.stephanenicolas.toothpick:toothpick-testing-junit5:3.1.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
+}
+
+play {
+    val apiKeyFile = project.property("ONEGRAVITY_GOOGLE_PLAY_API_KEY").toString()
+    serviceAccountCredentials.set(file(apiKeyFile))
+    track.set("internal")
 }
