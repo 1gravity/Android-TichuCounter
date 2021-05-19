@@ -63,7 +63,7 @@ pipelines:
                          -PONEGRAVITY_TICHUSCORE_KEY_PASSWORD=$ONEGRAVITY_TICHUSCORE_KEY_PASSWORD
                          -PONEGRAVITY_GOOGLE_PLAY_API_KEY=../keys/$ONEGRAVITY_GOOGLE_PLAY_API_KEY
                          -PBUILD_NUMBER=$BITBUCKET_BUILD_NUMBER
-                         clean :tichu-score:publishReleaseBundle --stacktrace"
+                         clean :tichu-score:publishProductionReleaseBundle --stacktrace"
           artifacts:
             - sudoku-10k/build/outputs/
       - step:
@@ -80,4 +80,4 @@ pipelines:
                          -PONEGRAVITY_TICHUSCORE_KEY_PASSWORD=$ONEGRAVITY_TICHUSCORE_KEY_PASSWORD
                          -PONEGRAVITY_GOOGLE_PLAY_API_KEY=../keys/$ONEGRAVITY_GOOGLE_PLAY_API_KEY
                          -PBUILD_NUMBER=$BITBUCKET_BUILD_NUMBER
-                         promoteReleaseArtifact --from-track internal --promote-track production --release-status completed"
+                         promoteProductionReleaseArtifact --from-track internal --promote-track production --release-status completed"
