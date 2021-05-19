@@ -50,34 +50,34 @@ pipelines:
               artifacts:
                 - tichu-score/build/outputs/**
                 - tichu-score/build/reports/**
-          - step:
-              name: Build & deploy
-              caches:
-                - gradle
-              script:
-                # publish the aab file to the internal testing channel
-                - export GRADLE_OPTS='-XX:+UseG1GC -XX:MaxGCPauseMillis=1000 -Dorg.gradle.jvmargs="-Xmx2048m -XX:MaxPermSize=1024m -XX:ReservedCodeCacheSize=440m -XX:+UseCompressedOops -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8" -Dorg.gradle.parallel=false -Dorg.gradle.daemon=false -Dorg.gradle.configureondemand=true'
-                - "./gradlew -PONEGRAVITY_KEYSTORE_FILE=../keys/$ONEGRAVITY_KEYSTORE_FILE
-                             -PONEGRAVITY_KEYSTORE_PASSWORD=$ONEGRAVITY_KEYSTORE_PASSWORD
-                             -PONEGRAVITY_SUDOKU10k_KEY_ALIAS=$ONEGRAVITY_TICHUSCORE_KEY_ALIAS
-                             -PONEGRAVITY_SUDOKU10k_KEY_PASSWORD=$ONEGRAVITY_TICHUSCORE_KEY_PASSWORD
-                             -PONEGRAVITY_GOOGLE_PLAY_API_KEY=../keys/$ONEGRAVITY_GOOGLE_PLAY_API_KEY
-                             -PBUILD_NUMBER=$BITBUCKET_BUILD_NUMBER
-                             clean :tichu-score:publishReleaseBundle --stacktrace"
-              artifacts:
-                - sudoku-10k/build/outputs/
-          - step:
-              name: Promote
-              trigger: manual
-              caches:
-                - gradle
-              script:
-                # promote the app from the internal testing channel to the production channel
-                - export GRADLE_OPTS='-XX:+UseG1GC -XX:MaxGCPauseMillis=1000 -Dorg.gradle.jvmargs="-Xmx2048m -XX:MaxPermSize=1024m -XX:ReservedCodeCacheSize=440m -XX:+UseCompressedOops -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8" -Dorg.gradle.parallel=false -Dorg.gradle.daemon=false -Dorg.gradle.configureondemand=true'
-                - "./gradlew -PONEGRAVITY_KEYSTORE_FILE=../keys/$ONEGRAVITY_KEYSTORE_FILE
-                             -PONEGRAVITY_KEYSTORE_PASSWORD=$ONEGRAVITY_KEYSTORE_PASSWORD
-                             -PONEGRAVITY_SUDOKU10k_KEY_ALIAS=$ONEGRAVITY_TICHUSCORE_KEY_ALIAS
-                             -PONEGRAVITY_SUDOKU10k_KEY_PASSWORD=$ONEGRAVITY_TICHUSCORE_KEY_PASSWORD
-                             -PONEGRAVITY_GOOGLE_PLAY_API_KEY=../keys/$ONEGRAVITY_GOOGLE_PLAY_API_KEY
-                             -PBUILD_NUMBER=$BITBUCKET_BUILD_NUMBER
-                              promoteReleaseArtifact --from-track internal --promote-track production --release-status completed"
+        - step:
+            name: Build & deploy
+            caches:
+              - gradle
+            script:
+              # publish the aab file to the internal testing channel
+              - export GRADLE_OPTS='-XX:+UseG1GC -XX:MaxGCPauseMillis=1000 -Dorg.gradle.jvmargs="-Xmx2048m -XX:MaxPermSize=1024m -XX:ReservedCodeCacheSize=440m -XX:+UseCompressedOops -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8" -Dorg.gradle.parallel=false -Dorg.gradle.daemon=false -Dorg.gradle.configureondemand=true'
+              - "./gradlew -PONEGRAVITY_KEYSTORE_FILE=../keys/$ONEGRAVITY_KEYSTORE_FILE
+                           -PONEGRAVITY_KEYSTORE_PASSWORD=$ONEGRAVITY_KEYSTORE_PASSWORD
+                           -PONEGRAVITY_SUDOKU10k_KEY_ALIAS=$ONEGRAVITY_TICHUSCORE_KEY_ALIAS
+                           -PONEGRAVITY_SUDOKU10k_KEY_PASSWORD=$ONEGRAVITY_TICHUSCORE_KEY_PASSWORD
+                           -PONEGRAVITY_GOOGLE_PLAY_API_KEY=../keys/$ONEGRAVITY_GOOGLE_PLAY_API_KEY
+                           -PBUILD_NUMBER=$BITBUCKET_BUILD_NUMBER
+                           clean :tichu-score:publishReleaseBundle --stacktrace"
+            artifacts:
+              - sudoku-10k/build/outputs/
+        - step:
+            name: Promote
+            trigger: manual
+            caches:
+              - gradle
+            script:
+              # promote the app from the internal testing channel to the production channel
+              - export GRADLE_OPTS='-XX:+UseG1GC -XX:MaxGCPauseMillis=1000 -Dorg.gradle.jvmargs="-Xmx2048m -XX:MaxPermSize=1024m -XX:ReservedCodeCacheSize=440m -XX:+UseCompressedOops -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8" -Dorg.gradle.parallel=false -Dorg.gradle.daemon=false -Dorg.gradle.configureondemand=true'
+              - "./gradlew -PONEGRAVITY_KEYSTORE_FILE=../keys/$ONEGRAVITY_KEYSTORE_FILE
+                           -PONEGRAVITY_KEYSTORE_PASSWORD=$ONEGRAVITY_KEYSTORE_PASSWORD
+                           -PONEGRAVITY_SUDOKU10k_KEY_ALIAS=$ONEGRAVITY_TICHUSCORE_KEY_ALIAS
+                           -PONEGRAVITY_SUDOKU10k_KEY_PASSWORD=$ONEGRAVITY_TICHUSCORE_KEY_PASSWORD
+                           -PONEGRAVITY_GOOGLE_PLAY_API_KEY=../keys/$ONEGRAVITY_GOOGLE_PLAY_API_KEY
+                           -PBUILD_NUMBER=$BITBUCKET_BUILD_NUMBER
+                           promoteReleaseArtifact --from-track internal --promote-track production --release-status completed"
