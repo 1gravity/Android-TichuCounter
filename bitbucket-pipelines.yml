@@ -68,7 +68,6 @@ pipelines:
             - sudoku-10k/build/outputs/
       - step:
           name: Promote
-          trigger: manual
           caches:
             - gradle
           script:
