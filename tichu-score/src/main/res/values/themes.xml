@@ -24,12 +24,12 @@
     <style name="Theme.TichuCount.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="Theme.DialogHeader" parent="TextAppearance.AppCompat">
-        <item name="android:textSize">14dp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="Theme.DialogText" parent="TextAppearance.AppCompat">
-        <item name="android:textSize">14dp</item>
+        <item name="android:textSize">14sp</item>
 <!--        <item name="android:textStyle">bold</item>-->
     </style>
 

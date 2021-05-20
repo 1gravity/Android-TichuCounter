@@ -6,13 +6,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion(30)
-    buildToolsVersion("30.0.3")
+    compileSdk = 30
+    buildToolsVersion = "30.0.3"
 
     defaultConfig {
         applicationId = "com.onegravity.tichucount"
-        minSdkVersion(18)
-        targetSdkVersion(30)
+        minSdk = 18
+        targetSdk = 30
         val props = project.properties
         versionCode = if (props.containsKey("BUILD_NUMBER")) props["BUILD_NUMBER"].toString().toInt() else 5
         versionName = "1.2"
@@ -44,14 +44,14 @@ android {
 
     buildTypes {
         getByName("debug") {
-            debuggable(true)
-            minifyEnabled(false)
+            isDebuggable = true
+            isMinifyEnabled = false
             isShrinkResources = false
             signingConfig = signingConfigs.getByName(name)
         }
         getByName("release") {
-            debuggable(false)
-            minifyEnabled(true)
+            isDebuggable = false
+            isMinifyEnabled = true
             isShrinkResources = true
             signingConfig = signingConfigs.getByName(name)
 
@@ -61,7 +61,7 @@ android {
         }
     }
 
-    flavorDimensions("default")
+    flavorDimensions.add("default")
 
     productFlavors {
         // The actual release version
@@ -94,7 +94,7 @@ dependencies {
     implementation("androidx.multidex:multidex:2.0.1")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.0")
     implementation("androidx.core:core-ktx:1.6.0-beta01")
-    implementation("androidx.appcompat:appcompat:1.2.0")
+    implementation("androidx.appcompat:appcompat:1.3.0")
     implementation("com.google.android.material:material:1.3.0")
     implementation("androidx.recyclerview:recyclerview:1.2.0")
     implementation("androidx.constraintlayout:constraintlayout:2.0.4")

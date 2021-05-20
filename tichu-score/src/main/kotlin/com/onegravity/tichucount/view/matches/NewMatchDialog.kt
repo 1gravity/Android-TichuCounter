@@ -43,6 +43,6 @@ class NewMatchDialog : DialogFragment() {
             }
             .setNegativeButton(android.R.string.cancel) { _, _ -> dismiss()}
             .create()
-    } ?: Dialog(context!!)
+    } ?: Dialog(requireContext())
 
 }

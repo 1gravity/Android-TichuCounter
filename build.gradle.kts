@@ -5,9 +5,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:4.2.1")
+        classpath("com.android.tools.build:gradle:7.0.0-beta01")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.0")
-        classpath("com.github.triplet.gradle:play-publisher:3.4.0-agp4.2")
+        classpath("com.github.triplet.gradle:play-publisher:3.4.0-agp7.0")
     }
 }
 

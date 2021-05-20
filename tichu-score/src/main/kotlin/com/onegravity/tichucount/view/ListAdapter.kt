@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.onegravity.tichucount.databinding.ListEntryBinding
 import com.onegravity.tichucount.databinding.ListEntryFooterBinding
 import com.onegravity.tichucount.databinding.ListEntryHeaderBinding
-import java.util.*
 
 abstract class ListEntry(val header: Boolean, val footer: Boolean) {
     abstract fun onClick()
@@ -44,7 +43,7 @@ abstract class ListAdapter<E : ListEntry>(private val entries: List<E>) :
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val row = position.div(nrOfColumns())
         entries[row].let { entry ->
-            val text = itemText(entry, position.rem(nrOfColumns())).capitalize(Locale.ROOT)
+            val text = itemText(entry, position.rem(nrOfColumns())).replaceFirstChar { Character.toUpperCase(it) }
             when (holder) {
                 is EntryViewHolderHeader -> holder.binding.entryText
                 is EntryViewHolderFooter -> holder.binding.entryText
