@@ -2,6 +2,8 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
+    id("com.funnydevs.hilt-conductor.plugin")
+    id("dagger.hilt.android.plugin")
     id("com.github.triplet.play")
 }
 
@@ -11,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.onegravity.tichucount"
-        minSdk = 18
+        minSdk = 21
         targetSdk = 30
         val props = project.properties
         versionCode = if (props.containsKey("BUILD_NUMBER")) props["BUILD_NUMBER"].toString().toInt() else 5
@@ -102,15 +104,18 @@ dependencies {
     // Conductor
     implementation("com.bluelinelabs:conductor:3.0.0")
     implementation("com.bluelinelabs:conductor-viewpager2:3.0.0")
+    implementation("com.bluelinelabs:conductor-archlifecycle:3.0.0")
 
     // RxJava
     implementation("io.reactivex.rxjava3:rxjava:3.0.7")
     implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
     implementation("com.github.akarnokd:rxjava3-extensions:3.0.1")
 
-    // Toothpick
-    implementation("com.github.stephanenicolas.toothpick:ktp:3.1.0")
-    kapt("com.github.stephanenicolas.toothpick:toothpick-compiler:3.1.0")
+    // Hilt
+    implementation("com.google.dagger:hilt-android:2.35")
+    kapt("com.google.dagger:hilt-android-compiler:2.35")
+    implementation("io.github.funnydevs:hilt-conductor:0.2.0")
+    kapt("io.github.funnydevs:hilt-conductor-processor:0.2.0")
 
     // Room
     implementation("androidx.room:room-runtime:2.4.0-alpha02")
@@ -127,13 +132,15 @@ dependencies {
     // Testing
     val testImplementation by configurations
     val androidTestImplementation by configurations
-    testImplementation("junit:junit:4.13.1")
+    testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:3.6.28")
     testImplementation("androidx.test:core:1.3.0")
-    testImplementation("com.github.stephanenicolas.toothpick:toothpick-testing-junit5:3.1.0")
+    kaptTest("com.google.dagger:hilt-android-compiler:2.35")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
+    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.35")
 }
 
+// Gradle Play Publisher
 play {
     val apiKeyFile = project.property("ONEGRAVITY_GOOGLE_PLAY_API_KEY").toString()
     serviceAccountCredentials.set(file(apiKeyFile))

@@ -1,12 +1,9 @@
 package com.onegravity.tichucount.model
 
-import com.onegravity.tichucount.APP_SCOPE
 import com.onegravity.tichucount.util.LOGGER_TAG
 import com.onegravity.tichucount.util.Logger
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
-import toothpick.ktp.KTP
-import toothpick.ktp.delegate.inject
 import java.io.Serializable
 
 data class Score(
@@ -14,14 +11,9 @@ data class Score(
     private val initialGrandTichu: ScoreState,
     private val initialDoubleWin: Boolean,
     private val initialPlayedPoints: Int,
-    val teamName: String
+    val teamName: String,
+    private val logger: Logger
 ) : Serializable {
-
-    private val logger: Logger by inject()
-
-    init {
-        KTP.openRootScope().openSubScope(APP_SCOPE).inject(this)
-    }
 
     private val changed = BehaviorSubject.create<ScoreType>()
 

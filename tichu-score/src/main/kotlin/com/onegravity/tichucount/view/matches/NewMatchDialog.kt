@@ -6,23 +6,24 @@ import android.view.LayoutInflater
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import com.onegravity.tichucount.APP_SCOPE
 import com.onegravity.tichucount.R
 import com.onegravity.tichucount.util.LOGGER_TAG
 import com.onegravity.tichucount.util.Logger
 import com.onegravity.tichucount.viewmodel.MatchesViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import toothpick.ktp.KTP
-import toothpick.ktp.delegate.inject
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class NewMatchDialog : DialogFragment() {
 
-    private val viewModel: MatchesViewModel by inject()
-    private val logger: Logger by inject()
+    @Inject
+    lateinit var logger: Logger
+
+    @Inject
+    lateinit var viewModel: MatchesViewModel
 
     override fun onCreateDialog(savedInstanceState: Bundle?) = context?.run {
-        KTP.openRootScope().openSubScope(APP_SCOPE).inject(this@NewMatchDialog)
-
         val layout = LayoutInflater.from(this).inflate(R.layout.new_match, null)
 
         AlertDialog.Builder(this)

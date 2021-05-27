@@ -3,23 +3,15 @@ package com.onegravity.tichucount
 import com.onegravity.tichucount.model.Score
 import com.onegravity.tichucount.model.ScoreState
 import com.onegravity.tichucount.model.ScoreType
+import com.onegravity.tichucount.util.LoggerTestImpl
 import org.junit.Assert
-import org.junit.Before
 import org.junit.Test
-import toothpick.ktp.KTP
 
 class ScoreUnitTest {
 
-    @Before
-    fun prepare() {
-        if (! KTP.isScopeOpen(APP_SCOPE)) {
-            KTP.openScope(APP_SCOPE).installTestModules(AppTestModule).inject(this)
-        }
-    }
-
     @Test
     fun testBasic() {
-        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "team").run {
+        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "team", LoggerTestImpl).run {
             Assert.assertEquals(tichu, ScoreState.NOT_PLAYED)
             Assert.assertEquals(grandTichu, ScoreState.NOT_PLAYED)
             Assert.assertEquals(doubleWin, false)
@@ -27,7 +19,7 @@ class ScoreUnitTest {
             Assert.assertEquals(points(), 0)
         }
 
-        Score(ScoreState.WON, ScoreState.LOST, false, 50, "team").run {
+        Score(ScoreState.WON, ScoreState.LOST, false, 50, "team", LoggerTestImpl).run {
             Assert.assertEquals(tichu, ScoreState.WON)
             Assert.assertEquals(grandTichu, ScoreState.LOST)
             Assert.assertEquals(doubleWin, false)
@@ -35,7 +27,7 @@ class ScoreUnitTest {
             Assert.assertEquals(points(), -50)
         }
 
-        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, true, 50, "team").run {
+        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, true, 50, "team", LoggerTestImpl).run {
             Assert.assertEquals(tichu, ScoreState.NOT_PLAYED)
             Assert.assertEquals(grandTichu, ScoreState.NOT_PLAYED)
             Assert.assertEquals(doubleWin, true)
@@ -47,7 +39,7 @@ class ScoreUnitTest {
     @Test
     fun testTiuchu() {
         // check all Tichu states
-        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "team").run {
+        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "team", LoggerTestImpl).run {
             tichu = ScoreState.WON
 
             Assert.assertEquals(tichu, ScoreState.WON)
@@ -74,19 +66,19 @@ class ScoreUnitTest {
         }
 
         // won Tichu -> 100 points
-        Score(ScoreState.WON, ScoreState.NOT_PLAYED, false, 0, "team").run {
+        Score(ScoreState.WON, ScoreState.NOT_PLAYED, false, 0, "team", LoggerTestImpl).run {
             Assert.assertEquals(tichu, ScoreState.WON)
             Assert.assertEquals(points(),   100)
         }
 
         // lost Tichu -> -100 points
-        Score(ScoreState.LOST, ScoreState.NOT_PLAYED, false, 0, "team").run {
+        Score(ScoreState.LOST, ScoreState.NOT_PLAYED, false, 0, "team", LoggerTestImpl).run {
             Assert.assertEquals(tichu, ScoreState.LOST)
             Assert.assertEquals(points(),   -100)
         }
 
         // check the event stream for the Tichu field
-        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "team").run {
+        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "team", LoggerTestImpl).run {
             changes().test().run {
                 assertEmpty()
                 assertValueCount(0)
@@ -113,7 +105,7 @@ class ScoreUnitTest {
     @Test
     fun testGrandTichu() {
         // test all GrandTichu states
-        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "team").run {
+        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "team", LoggerTestImpl).run {
             grandTichu = ScoreState.WON
 
             Assert.assertEquals(tichu, ScoreState.NOT_PLAYED)
@@ -140,19 +132,19 @@ class ScoreUnitTest {
         }
 
         // won GrandTichu -> 200 points
-        Score(ScoreState.NOT_PLAYED, ScoreState.WON, false, 0, "team").run {
+        Score(ScoreState.NOT_PLAYED, ScoreState.WON, false, 0, "team", LoggerTestImpl).run {
             Assert.assertEquals(grandTichu, ScoreState.WON)
             Assert.assertEquals(points(),   200)
         }
 
         // lost GrandTichu -> -200 points
-        Score(ScoreState.NOT_PLAYED, ScoreState.LOST, false, 0, "team").run {
+        Score(ScoreState.NOT_PLAYED, ScoreState.LOST, false, 0, "team", LoggerTestImpl).run {
             Assert.assertEquals(grandTichu, ScoreState.LOST)
             Assert.assertEquals(points(),   -200)
         }
 
         // check the event stream for the GrandTichu field
-        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "team").run {
+        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "team", LoggerTestImpl).run {
             changes().test().run {
                 assertEmpty()
                 assertValueCount(0)
@@ -178,7 +170,7 @@ class ScoreUnitTest {
 
     @Test
     fun testDoubleWin() {
-        Score(ScoreState.WON, ScoreState.WON, true, 100, "team").run {
+        Score(ScoreState.WON, ScoreState.WON, true, 100, "team", LoggerTestImpl).run {
             // maximum points (grand tichu, double win)
             Assert.assertEquals(tichu, ScoreState.WON)
             Assert.assertEquals(grandTichu, ScoreState.NOT_PLAYED)
@@ -187,7 +179,7 @@ class ScoreUnitTest {
             Assert.assertEquals(points(), 300)
         }
 
-        Score(ScoreState.NOT_PLAYED, ScoreState.WON, true, 0, "team").run {
+        Score(ScoreState.NOT_PLAYED, ScoreState.WON, true, 0, "team", LoggerTestImpl).run {
             // maximum points (grand tichu, double win)
             Assert.assertEquals(tichu, ScoreState.NOT_PLAYED)
             Assert.assertEquals(grandTichu, ScoreState.WON)
@@ -263,7 +255,7 @@ class ScoreUnitTest {
         }
 
         // check double win event stream for grand tichu state changes
-        Score(ScoreState.WON, ScoreState.NOT_PLAYED, false, 0, "team").run {
+        Score(ScoreState.WON, ScoreState.NOT_PLAYED, false, 0, "team", LoggerTestImpl).run {
             changes().test().run {
                 assertEmpty()
                 assertValueCount(0)
@@ -287,7 +279,7 @@ class ScoreUnitTest {
         }
 
         // check double win event stream for tichu state changes
-        Score(ScoreState.NOT_PLAYED, ScoreState.WON, false, 0, "team").run {
+        Score(ScoreState.NOT_PLAYED, ScoreState.WON, false, 0, "team", LoggerTestImpl).run {
             changes().test().run {
                 assertEmpty()
                 assertValueCount(0)
@@ -311,7 +303,7 @@ class ScoreUnitTest {
         }
 
         // check double win event stream for tichu and grand tichu state changes
-        Score(ScoreState.NOT_PLAYED, ScoreState.WON, true, 0, "team").run {
+        Score(ScoreState.NOT_PLAYED, ScoreState.WON, true, 0, "team", LoggerTestImpl).run {
             changes().test().run {
                 assertEmpty()
                 assertValueCount(0)
@@ -333,7 +325,7 @@ class ScoreUnitTest {
 
     @Test
     fun testPlayedPoints() {
-        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 10, "team").run {
+        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 10, "team", LoggerTestImpl).run {
             Assert.assertEquals(playedPoints, 10)
 
             playedPoints = 20
@@ -359,7 +351,7 @@ class ScoreUnitTest {
             Assert.assertEquals(playedPoints, 0)
         }
 
-        Score(ScoreState.NOT_PLAYED, ScoreState.WON, true, -25, "team").run {
+        Score(ScoreState.NOT_PLAYED, ScoreState.WON, true, -25, "team", LoggerTestImpl).run {
             Assert.assertEquals(tichu, ScoreState.NOT_PLAYED)
             Assert.assertEquals(grandTichu, ScoreState.WON)
             Assert.assertEquals(doubleWin, true)
@@ -367,7 +359,7 @@ class ScoreUnitTest {
             Assert.assertEquals(points(), 400)
         }
 
-        Score(ScoreState.WON, ScoreState.WON, false, 100, "team").run {
+        Score(ScoreState.WON, ScoreState.WON, false, 100, "team", LoggerTestImpl).run {
             Assert.assertEquals(tichu, ScoreState.WON)
             Assert.assertEquals(grandTichu, ScoreState.NOT_PLAYED)
             Assert.assertEquals(doubleWin, false)
@@ -375,7 +367,7 @@ class ScoreUnitTest {
             Assert.assertEquals(points(), 200)
         }
 
-        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, true, 100, "team").run {
+        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, true, 100, "team", LoggerTestImpl).run {
             Assert.assertEquals(tichu, ScoreState.NOT_PLAYED)
             Assert.assertEquals(grandTichu, ScoreState.NOT_PLAYED)
             Assert.assertEquals(doubleWin, true)
@@ -383,7 +375,7 @@ class ScoreUnitTest {
             Assert.assertEquals(points(), 200)
         }
 
-        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 40, "team").run {
+        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 40, "team", LoggerTestImpl).run {
             changes().test().run {
                 assertEmpty()
                 assertValueCount(0)
@@ -409,7 +401,7 @@ class ScoreUnitTest {
 
     @Test
     fun testTotalPoints() {
-        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 10, "team").run {
+        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 10, "team", LoggerTestImpl).run {
             Assert.assertEquals(points(), 10)
 
             playedPoints = 20
@@ -432,7 +424,7 @@ class ScoreUnitTest {
             Assert.assertEquals(points(), 250)
         }
 
-        Score(ScoreState.WON, ScoreState.WON, true, -25, "team").run {
+        Score(ScoreState.WON, ScoreState.WON, true, -25, "team", LoggerTestImpl).run {
             Assert.assertEquals(points(), 300)
 
             playedPoints = 50
@@ -443,11 +435,11 @@ class ScoreUnitTest {
             Assert.assertEquals(points(), 150)
         }
 
-        Score(ScoreState.WON, ScoreState.WON, false, 100, "team").run {
+        Score(ScoreState.WON, ScoreState.WON, false, 100, "team", LoggerTestImpl).run {
             Assert.assertEquals(points(), 200 )
         }
 
-        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, true, 100, "team").run {
+        Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, true, 100, "team", LoggerTestImpl).run {
             Assert.assertEquals(points(), 200 )
         }
     }

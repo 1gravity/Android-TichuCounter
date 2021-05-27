@@ -1,10 +1,7 @@
 package com.onegravity.tichucount.model
 
-import com.onegravity.tichucount.APP_SCOPE
 import com.onegravity.tichucount.util.LOGGER_TAG
 import com.onegravity.tichucount.util.Logger
-import toothpick.ktp.KTP
-import toothpick.ktp.delegate.inject
 import java.util.concurrent.atomic.AtomicBoolean
 
 data class Game(
@@ -12,17 +9,14 @@ data class Game(
     val name1: String,
     val name2: String,
     val score1: Score,
-    val score2: Score
+    val score2: Score,
+    private val logger: Logger
 ) {
 
     private var valve1 = AtomicBoolean(true)
     private var valve2 = AtomicBoolean(true)
 
-    private val logger: Logger by inject()
-
     init {
-        KTP.openRootScope().openSubScope(APP_SCOPE).inject(this)
-
         score1.changes().filter { valve1.get() }
             .subscribe {
                 logger.d(LOGGER_TAG, "${score1.teamName}: $it changed")

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import com.funnydevs.hilt_conductor.annotations.ConductorEntryPoint
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.onegravity.tichucount.R
@@ -13,19 +14,25 @@ import com.onegravity.tichucount.databinding.ScoresBinding
 import com.onegravity.tichucount.model.Game
 
 import com.onegravity.tichucount.util.LOGGER_TAG
+import com.onegravity.tichucount.util.Logger
 import com.onegravity.tichucount.view.BaseController
 import com.onegravity.tichucount.view.match.MATCH_UID
 import com.onegravity.tichucount.viewmodel.GameViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import toothpick.ktp.delegate.inject
+import javax.inject.Inject
 
 const val GAME_UID = "GAME_UID"
 
-open class GameController(args: Bundle): BaseController() {
+@ConductorEntryPoint
+class GameController(args: Bundle) : BaseController() {
 
     private lateinit var binding: ScoresBinding
 
-    private val viewModel: GameViewModel by inject()
+    @Inject
+    lateinit var logger: Logger
+
+    @Inject
+    lateinit var viewModel: GameViewModel
 
     private val matchUid = args.getInt(MATCH_UID)
     private val gameUid = args.getInt(GAME_UID)
@@ -36,7 +43,6 @@ open class GameController(args: Bundle): BaseController() {
         container: ViewGroup,
         savedViewState: Bundle?
     ) = ScoresBinding.inflate(inflater).run {
-        scope.inject(this@GameController)
         binding = this
         root
     }

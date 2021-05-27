@@ -8,7 +8,9 @@ import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.onegravity.tichucount.databinding.ActivityMainBinding
 import com.onegravity.tichucount.view.matches.MatchesController
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class TichuActivity : AppCompatActivity() {
 
     private lateinit var router: Router

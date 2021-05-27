@@ -15,7 +15,9 @@ object DeleteMatches : MatchesViewModelEvent()
 object NewMatch : MatchesViewModelEvent()
 data class OpenMatch(val matchUid: Int) : MatchesViewModelEvent()
 
-class MatchesViewModel @Inject constructor(private val repository: MatchRepository) {
+class MatchesViewModel @Inject constructor(
+    private val repository: MatchRepository
+) {
 
     private val events = PublishSubject.create<MatchesViewModelEvent>()
 

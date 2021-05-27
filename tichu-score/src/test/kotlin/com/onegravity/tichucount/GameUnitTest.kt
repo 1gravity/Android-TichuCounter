@@ -3,25 +3,18 @@ package com.onegravity.tichucount
 import com.onegravity.tichucount.model.Score
 import com.onegravity.tichucount.model.ScoreState
 import com.onegravity.tichucount.model.Game
+import com.onegravity.tichucount.util.LoggerTestImpl
 import org.junit.Assert
-import org.junit.Before
 import org.junit.Test
-import toothpick.ktp.KTP
 
 class GameUnitTest {
-
-    @Before
-    fun prepare() {
-        if (! KTP.isScopeOpen(APP_SCOPE)) {
-            KTP.openScope(APP_SCOPE).installTestModules(AppTestModule).inject(this)
-        }
-    }
 
     @Test
     fun basicTests() {
         val game = Game(0, "Team 1", "Team 2",
-            Score(ScoreState.WON, ScoreState.NOT_PLAYED, false, 0, "Team 1"),
-            Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "Team 2")
+            Score(ScoreState.WON, ScoreState.NOT_PLAYED, false, 0, "Team 1", LoggerTestImpl),
+            Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "Team 2", LoggerTestImpl),
+            LoggerTestImpl
         )
 
         game.score1.run {
@@ -142,8 +135,9 @@ class GameUnitTest {
     @Test
     fun complexTests() {
         Game(0, "Team 1", "Team 2",
-            Score(ScoreState.WON, ScoreState.WON, true, 0, "Team 1"),
-            Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "Team 2")
+            Score(ScoreState.WON, ScoreState.WON, true, 0, "Team 1", LoggerTestImpl),
+            Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "Team 2", LoggerTestImpl),
+            LoggerTestImpl
         ).run {
             score1.run {
                 Assert.assertEquals(tichu, ScoreState.WON)
@@ -181,8 +175,9 @@ class GameUnitTest {
         }
 
         Game(0, "Team 1", "Team 2",
-            Score(ScoreState.WON, ScoreState.WON, true, 0, "Team 1"),
-            Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "Team 2")
+            Score(ScoreState.WON, ScoreState.WON, true, 0, "Team 1", LoggerTestImpl),
+            Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "Team 2", LoggerTestImpl),
+            LoggerTestImpl
         ).run {
             score2.tichu = ScoreState.WON
 
@@ -204,8 +199,9 @@ class GameUnitTest {
         }
 
         Game(0, "Team 1", "Team 2",
-            Score(ScoreState.WON, ScoreState.WON, true, 0, "Team 1"),
-            Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "Team 2")
+            Score(ScoreState.WON, ScoreState.WON, true, 0, "Team 1", LoggerTestImpl),
+            Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "Team 2", LoggerTestImpl),
+            LoggerTestImpl
         ).run {
             score2.grandTichu = ScoreState.WON
 
@@ -230,8 +226,9 @@ class GameUnitTest {
     @Test
     fun pointTests() {
         Game(0, "Team 1", "Team 2",
-            Score(ScoreState.WON, ScoreState.WON, true, 0, "Team 1"),
-            Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "Team 2")
+            Score(ScoreState.WON, ScoreState.WON, true, 0, "Team 1", LoggerTestImpl),
+            Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "Team 2", LoggerTestImpl),
+            LoggerTestImpl
         ).run {
             score1.playedPoints = 45
 
@@ -271,8 +268,9 @@ class GameUnitTest {
         }
 
         Game(0, "Team 1", "Team 2",
-            Score(ScoreState.WON, ScoreState.WON, true, 0, "Team 1"),
-            Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "Team 2")
+            Score(ScoreState.WON, ScoreState.WON, true, 0, "Team 1", LoggerTestImpl),
+            Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, "Team 2", LoggerTestImpl),
+            LoggerTestImpl
         ).run {
             score2.playedPoints = 40
 

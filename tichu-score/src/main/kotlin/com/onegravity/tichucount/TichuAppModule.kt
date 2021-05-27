@@ -1,32 +1,43 @@
 package com.onegravity.tichucount
 
-import android.app.Application
 import android.content.Context
 import androidx.room.Room
-import com.onegravity.tichucount.db.MatchRepository
+import com.funnydevs.hilt_conductor.ControllerComponent
+import com.funnydevs.hilt_conductor.annotations.ControllerScoped
 import com.onegravity.tichucount.db.TichuDatabase
 import com.onegravity.tichucount.util.Logger
 import com.onegravity.tichucount.util.LoggerImpl
-import com.onegravity.tichucount.viewmodel.MatchViewModel
-import com.onegravity.tichucount.viewmodel.MatchesViewModel
-import toothpick.config.Module
+import dagger.Provides
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-class TichuAppModule(application: Application, loggingEnabled: Boolean = false) : Module() {
+@Module
+@InstallIn(SingletonComponent::class)
+object ApplicationModule {
 
-    init {
-        val context = application.applicationContext
-
-        val tichuDB = Room.databaseBuilder(
-            context,
-            TichuDatabase::class.java, "tichu-db"
-        ).build()
-
-        bind(Context::class.java).toInstance(context)
-        bind(Logger::class.java).toInstance(LoggerImpl(loggingEnabled))
-        bind(TichuDatabase::class.java).toInstance(tichuDB)
-        bind(MatchRepository::class.java).to(MatchRepository::class.java).singleton()
-        bind(MatchesViewModel::class.java).to(MatchesViewModel::class.java).singleton()
-        bind(MatchViewModel::class.java).to(MatchViewModel::class.java).singleton()
+    @Provides
+    @Singleton
+    fun provideDatabase(@ApplicationContext context: Context): TichuDatabase {
+        return Room
+            .databaseBuilder(context, TichuDatabase::class.java, "tichu-db")
+            .build()
     }
+
+    @Provides
+    @Singleton
+    fun provideLogger(): Logger = LoggerImpl(true)
+
+}
+
+@Module
+@InstallIn(ControllerComponent::class)
+object ControllerModule {
+
+    @Provides
+    @ControllerScoped
+    fun provideContext(@ApplicationContext context: Context): Context = context
 
 }

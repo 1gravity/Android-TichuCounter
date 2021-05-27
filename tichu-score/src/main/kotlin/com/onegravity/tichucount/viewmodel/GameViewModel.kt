@@ -4,12 +4,16 @@ import com.onegravity.tichucount.db.MatchRepository
 import com.onegravity.tichucount.model.Game
 import com.onegravity.tichucount.model.Score
 import com.onegravity.tichucount.model.ScoreState
+import com.onegravity.tichucount.util.Logger
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
-class GameViewModel @Inject constructor(private val repository: MatchRepository) {
+class GameViewModel @Inject constructor(
+    private val logger: Logger,
+    private val repository: MatchRepository
+) {
 
     private var theGame: com.onegravity.tichucount.db.Game? = null
 
@@ -18,14 +22,14 @@ class GameViewModel @Inject constructor(private val repository: MatchRepository)
             .map { match ->
                 theGame = match.games.firstOrNull { it.uid == gameUid }
                 theGame?.run {
-                    val score1 = Score(score_1.tichu, score_1.grandTichu, score_1.doubleWin, score_1.playedPoints, match.match.team1)
-                    val score2 = Score(score_2.tichu, score_2.grandTichu, score_2.doubleWin, score_2.playedPoints, match.match.team2)
-                    Game(matchUid, match.match.team1, match.match.team2, score1, score2)
+                    val score1 = Score(score_1.tichu, score_1.grandTichu, score_1.doubleWin, score_1.playedPoints, match.match.team1, logger)
+                    val score2 = Score(score_2.tichu, score_2.grandTichu, score_2.doubleWin, score_2.playedPoints, match.match.team2, logger)
+                    Game(matchUid, match.match.team1, match.match.team2, score1, score2, logger)
                 } ?: run {
                     // game doesn't exist -> create an empty one
-                    val score1 = Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, match.match.team1)
-                    val score2 = Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, match.match.team2)
-                    Game(matchUid, match.match.team1, match.match.team2, score1, score2)
+                    val score1 = Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, match.match.team1, logger)
+                    val score2 = Score(ScoreState.NOT_PLAYED, ScoreState.NOT_PLAYED, false, 0, match.match.team2, logger)
+                    Game(matchUid, match.match.team1, match.match.team2, score1, score2, logger)
                 }
             }
             .subscribeOn(Schedulers.io())

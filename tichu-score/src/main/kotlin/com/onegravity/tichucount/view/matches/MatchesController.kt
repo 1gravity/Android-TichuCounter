@@ -5,32 +5,41 @@ import android.os.Bundle
 import android.view.*
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.funnydevs.hilt_conductor.annotations.ConductorEntryPoint
 import com.onegravity.tichucount.R
 import com.onegravity.tichucount.databinding.MainBinding
 import com.onegravity.tichucount.db.MatchWithGames
 import com.onegravity.tichucount.util.LOGGER_TAG
+import com.onegravity.tichucount.util.Logger
 import com.onegravity.tichucount.view.BaseController
 import com.onegravity.tichucount.view.match.MATCH_UID
 import com.onegravity.tichucount.view.match.MatchController
 import com.onegravity.tichucount.viewmodel.*
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import toothpick.ktp.delegate.inject
+import javax.inject.Inject
 
+@ConductorEntryPoint
 class MatchesController : BaseController() {
 
     private lateinit var binding: MainBinding
 
-    private val viewModel: MatchesViewModel by inject()
+    @Inject
+    lateinit var logger: Logger
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?)
-            : View =
-        MainBinding.inflate(inflater).run {
-            scope.inject(this@MatchesController)
+    @Inject
+    lateinit var appContext: Context
+
+    @Inject
+    lateinit var viewModel: MatchesViewModel
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View {
+        return MainBinding.inflate(inflater).run {
             binding = this
             setToolbar(binding.toolbar)
             setHasOptionsMenu(true)
             root
         }
+    }
 
     override fun onAttach(view: View) {
         super.onAttach(view)
@@ -65,11 +74,11 @@ class MatchesController : BaseController() {
 
     private fun bind(context: Context, games: List<MatchWithGames>) {
         val header = MatchEntry(viewModel, true, 0,
-            getString(R.string.match_nr),
-            getString(R.string.name_team_1),
-            getString(R.string.score),
-            getString(R.string.name_team_2),
-            getString(R.string.score)
+            appContext.getString(R.string.match_nr),
+            appContext.getString(R.string.name_team_1),
+            appContext.getString(R.string.score),
+            appContext.getString(R.string.name_team_2),
+            appContext.getString(R.string.score)
         )
         val entries = games.foldIndexed(arrayListOf(header)) { pos, list, match ->
             val entry = MatchEntry(viewModel, false,

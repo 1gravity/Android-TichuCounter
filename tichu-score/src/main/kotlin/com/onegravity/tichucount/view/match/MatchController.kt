@@ -5,31 +5,40 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.os.Bundle
 import android.view.*
+import com.funnydevs.hilt_conductor.annotations.ConductorEntryPoint
 import com.onegravity.tichucount.R
 import com.onegravity.tichucount.databinding.MainBinding
 import com.onegravity.tichucount.db.MatchWithGames
 import com.onegravity.tichucount.util.LOGGER_TAG
+import com.onegravity.tichucount.util.Logger
 import com.onegravity.tichucount.view.BaseController
 import com.onegravity.tichucount.view.game.GAME_UID
 import com.onegravity.tichucount.view.game.GameController
 import com.onegravity.tichucount.viewmodel.*
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import toothpick.ktp.delegate.inject
+import javax.inject.Inject
 
 const val MATCH_UID = "MATCH_UID"
 
+@ConductorEntryPoint
 class MatchController(args: Bundle) : BaseController() {
 
     private lateinit var binding: MainBinding
 
-    private val viewModel: MatchViewModel by inject()
+    @Inject
+    lateinit var appContext: Context
+
+    @Inject
+    lateinit var logger: Logger
+
+    @Inject
+    lateinit var viewModel: MatchViewModel
 
     private val matchUid = args.getInt(MATCH_UID)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?)
             : View =
         MainBinding.inflate(inflater).run {
-            scope.inject(this@MatchController)
             binding = this
             setToolbar(binding.toolbar)
             setHasOptionsMenu(true)

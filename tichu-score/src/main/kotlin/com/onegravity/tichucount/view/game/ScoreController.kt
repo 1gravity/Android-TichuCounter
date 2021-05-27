@@ -13,7 +13,7 @@ import com.onegravity.tichucount.view.BaseController
 
 const val SCORE_ARG = "SCORE_ARG"
 
-class ScoreController(args: Bundle): BaseController() {
+class ScoreController(args: Bundle) : BaseController() {
 
     private val score = args.getSerializable(SCORE_ARG) as Score
 
@@ -26,7 +26,6 @@ class ScoreController(args: Bundle): BaseController() {
         container: ViewGroup,
         savedViewState: Bundle?
     ) = ScoreBinding.inflate(inflater).run {
-        scope.inject(this@ScoreController)
         binding = this
         numberPicker = NumberPicker(binding)
         root
