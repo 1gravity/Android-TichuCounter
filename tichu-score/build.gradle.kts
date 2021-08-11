@@ -95,11 +95,12 @@ dependencies {
     // base libraries
     implementation("androidx.multidex:multidex:2.0.1")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.0")
-    implementation("androidx.core:core-ktx:1.6.0-beta01")
-    implementation("androidx.appcompat:appcompat:1.3.0")
-    implementation("com.google.android.material:material:1.3.0")
+    implementation("androidx.core:core-ktx:1.6.0")
+    implementation("androidx.appcompat:appcompat:1.3.1")
+    implementation("com.google.android.material:material:1.4.0")
     implementation("androidx.recyclerview:recyclerview:1.2.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.0.4")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1")
 
     // Conductor
     implementation("com.bluelinelabs:conductor:3.0.0")
@@ -107,13 +108,13 @@ dependencies {
     implementation("com.bluelinelabs:conductor-archlifecycle:3.0.0")
 
     // RxJava
-    implementation("io.reactivex.rxjava3:rxjava:3.0.7")
+    implementation("io.reactivex.rxjava3:rxjava:3.1.0")
     implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
     implementation("com.github.akarnokd:rxjava3-extensions:3.0.1")
 
     // Hilt
-    implementation("com.google.dagger:hilt-android:2.35")
-    kapt("com.google.dagger:hilt-android-compiler:2.35")
+    implementation("com.google.dagger:hilt-android:2.38.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.38.1")
     implementation("io.github.funnydevs:hilt-conductor:0.2.0")
     kapt("io.github.funnydevs:hilt-conductor-processor:0.2.0")
 
