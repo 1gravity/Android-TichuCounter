@@ -94,16 +94,16 @@ android {
 dependencies {
     // base libraries
     implementation("androidx.multidex:multidex:2.0.1")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.0")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.21")
     implementation("androidx.core:core-ktx:1.6.0")
     implementation("androidx.appcompat:appcompat:1.3.1")
     implementation("com.google.android.material:material:1.4.0")
-    implementation("androidx.recyclerview:recyclerview:1.2.0")
+    implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1")
 
     // Conductor
-    implementation("com.bluelinelabs:conductor:3.0.0")
+    implementation("com.bluelinelabs:conductor:3.1.1")
     implementation("com.bluelinelabs:conductor-viewpager2:3.0.0")
     implementation("com.bluelinelabs:conductor-archlifecycle:3.0.0")
 
@@ -119,10 +119,10 @@ dependencies {
     kapt("io.github.funnydevs:hilt-conductor-processor:0.2.0")
 
     // Room
-    implementation("androidx.room:room-runtime:2.4.0-alpha02")
-    implementation("androidx.room:room-ktx:2.4.0-alpha02")
-    implementation("androidx.room:room-rxjava3:2.4.0-alpha02")
-    kapt("androidx.room:room-compiler:2.4.0-alpha02")
+    implementation("androidx.room:room-runtime:2.4.0-alpha04")
+    implementation("androidx.room:room-ktx:2.4.0-alpha04")
+    implementation("androidx.room:room-rxjava3:2.4.0-alpha04")
+    kapt("androidx.room:room-compiler:2.4.0-alpha04")
 
     // Stetho
     val developmentApi by configurations
@@ -135,10 +135,10 @@ dependencies {
     val androidTestImplementation by configurations
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:3.6.28")
-    testImplementation("androidx.test:core:1.3.0")
-    kaptTest("com.google.dagger:hilt-android-compiler:2.35")
-    androidTestImplementation("androidx.test.ext:junit:1.1.2")
-    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.35")
+    testImplementation("androidx.test:core:1.4.0")
+    kaptTest("com.google.dagger:hilt-android-compiler:2.38.1")
+    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.38.1")
 }
 
 // Gradle Play Publisher
