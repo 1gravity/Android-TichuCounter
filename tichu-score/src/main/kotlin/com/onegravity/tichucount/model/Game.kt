@@ -2,6 +2,10 @@ package com.onegravity.tichucount.model
 
 import com.onegravity.tichucount.util.LOGGER_TAG
 import com.onegravity.tichucount.util.Logger
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 
 data class Game(
@@ -17,17 +21,24 @@ data class Game(
     private var valve2 = AtomicBoolean(true)
 
     init {
-        score1.changes().filter { valve1.get() }
-            .subscribe {
-                logger.d(LOGGER_TAG, "${score1.teamName}: $it changed")
-                resolveDependencies(it, valve2, score1, score2)
+        GlobalScope.launch {
+            launch {
+                score1.changes()
+                    .filter { valve1.get() }
+                    .collect {
+                        logger.d(LOGGER_TAG, "${score1.teamName}: $it changed")
+                        resolveDependencies(it, valve2, score1, score2)
+                    }
             }
-
-        score2.changes().filter { valve2.get() }
-            .subscribe {
-                logger.d(LOGGER_TAG, "${score2.teamName}: $it changed")
-                resolveDependencies(it, valve1, score2, score1)
+            launch {
+                score2.changes()
+                    .filter { valve2.get() }
+                    .collect {
+                        logger.d(LOGGER_TAG, "${score2.teamName}: $it changed")
+                        resolveDependencies(it, valve1, score2, score1)
+                    }
             }
+        }
 
         // initial/one-time dependency resolution
         resolveDependencies(ScoreType.TICHU, valve1, score1, score2)

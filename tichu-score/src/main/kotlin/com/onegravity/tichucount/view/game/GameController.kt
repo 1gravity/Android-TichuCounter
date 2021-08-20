@@ -12,13 +12,12 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.onegravity.tichucount.R
 import com.onegravity.tichucount.databinding.ScoresBinding
 import com.onegravity.tichucount.model.Game
-
 import com.onegravity.tichucount.util.LOGGER_TAG
 import com.onegravity.tichucount.util.Logger
+import com.onegravity.tichucount.util.launch
 import com.onegravity.tichucount.view.BaseController
 import com.onegravity.tichucount.view.match.MATCH_UID
 import com.onegravity.tichucount.viewmodel.GameViewModel
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 const val GAME_UID = "GAME_UID"
@@ -55,18 +54,15 @@ class GameController(args: Bundle) : BaseController() {
 
         binding.btnDelete.visibility = if (isNewGame) View.GONE else View.VISIBLE
 
-        viewModel.getGame(matchUid, gameUid)
-            .doOnSubscribe { disposables.add(it) }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { game -> bind(game) },
-                { gameLoadError(it) }
-            )
-    }
-
-    private fun gameLoadError(error: Throwable) {
-        logger.e(LOGGER_TAG, "Failed to load game: ${error.message}")
-        router.popCurrentController()
+        viewModel.launch {
+            try {
+                val game = viewModel.getGame(matchUid, gameUid)
+                bind(game)
+            } catch (e: Exception) {
+                logger.e(LOGGER_TAG, "Failed to load game: ${e.message}")
+                router.popCurrentController()
+            }
+        }
     }
 
     private fun bind(game: Game) {
@@ -81,35 +77,29 @@ class GameController(args: Bundle) : BaseController() {
 
         binding.btnNegative.setOnClickListener { router.popCurrentController() }
 
-        binding.btnPositive.setOnClickListener { saveGame(game) }
+        binding.btnPositive.setOnClickListener { viewModel.launch { saveGame(game) } }
 
-        binding.btnDelete.setOnClickListener { deleteGame() }
+        binding.btnDelete.setOnClickListener { viewModel.launch { deleteGame() } }
     }
 
-    private fun saveGame(game: Game) {
-        viewModel.saveGame(game)
-            .doOnSubscribe { disposables.add(it) }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { router.popCurrentController() },
-                {
-                    logger.e(LOGGER_TAG, "Failed to save game", it)
-                    Toast.makeText(binding.btnNegative.context, "", Toast.LENGTH_SHORT).show()
-                }
-            )
+    private suspend fun saveGame(game: Game) {
+        try {
+            viewModel.saveGame(game)
+            router.popCurrentController()
+        } catch (e: Exception) {
+            logger.e(LOGGER_TAG, "Failed to save game", e)
+            Toast.makeText(binding.btnNegative.context, "", Toast.LENGTH_SHORT).show()
+        }
     }
 
-    private fun deleteGame() {
-        viewModel.deleteGame(matchUid, gameUid)
-            .doOnSubscribe { disposables.add(it) }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { router.popCurrentController() },
-                {
-                    logger.e(LOGGER_TAG, "Failed to delete game", it)
-                    Toast.makeText(binding.btnNegative.context, "", Toast.LENGTH_SHORT).show()
-                }
-            )
+    private suspend fun deleteGame() {
+        try {
+            viewModel.deleteGame(matchUid, gameUid)
+            router.popCurrentController()
+        } catch (e: Exception) {
+            logger.e(LOGGER_TAG, "Failed to delete game", e)
+            Toast.makeText(binding.btnNegative.context, "", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onDetach(view: View) {

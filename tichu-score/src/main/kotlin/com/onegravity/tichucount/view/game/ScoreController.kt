@@ -5,17 +5,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import androidx.lifecycle.viewModelScope
+import com.funnydevs.hilt_conductor.annotations.ConductorEntryPoint
 import com.onegravity.tichucount.databinding.ScoreBinding
 import com.onegravity.tichucount.model.Score
 import com.onegravity.tichucount.model.ScoreState
 import com.onegravity.tichucount.model.ScoreType
+import com.onegravity.tichucount.util.launch
 import com.onegravity.tichucount.view.BaseController
+import com.onegravity.tichucount.viewmodel.ScoreViewModel
+import kotlinx.coroutines.flow.collect
+import javax.inject.Inject
 
 const val SCORE_ARG = "SCORE_ARG"
 
+@ConductorEntryPoint
 class ScoreController(args: Bundle) : BaseController() {
 
     private val score = args.getSerializable(SCORE_ARG) as Score
+
+    @Inject
+    lateinit var viewModel: ScoreViewModel
 
     private lateinit var binding: ScoreBinding
 
@@ -27,7 +37,7 @@ class ScoreController(args: Bundle) : BaseController() {
         savedViewState: Bundle?
     ) = ScoreBinding.inflate(inflater).run {
         binding = this
-        numberPicker = NumberPicker(binding)
+        numberPicker = NumberPicker(binding, viewModel.viewModelScope)
         root
     }
 
@@ -43,12 +53,14 @@ class ScoreController(args: Bundle) : BaseController() {
         update(ScoreType.DOUBLE_WIN)
         update(ScoreType.PLAYED_POINTS)
 
-        score.changes().subscribe { update(it) }
+        viewModel.launch {
+            score.changes().collect { update(it) }
+        }
 
         bindTichu(binding.scoreTichuWin, binding.scoreTichuLoss) { score.tichu = it }
         bindTichu(binding.scoreGrandTichuWin, binding.scoreGrandTichuLoss) { score.grandTichu = it }
         bindDoubleWin()
-        bindPlayedPoints()
+        viewModel.launch { bindPlayedPoints() }
     }
 
     private fun update(type: ScoreType) {
@@ -84,10 +96,10 @@ class ScoreController(args: Bundle) : BaseController() {
             score.doubleWin = binding.scoreDoubleWin.isChecked
         }
 
-    private fun bindPlayedPoints() =
-        numberPicker.changed()
-            .subscribe {
-                score.playedPoints = numberPicker.getValue()
-            }
+    private suspend fun bindPlayedPoints() {
+        numberPicker
+            .changed()
+            .collect { score.playedPoints = numberPicker.getValue() }
+    }
 
 }

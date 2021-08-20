@@ -1,4 +1,4 @@
 - use Hilt instead of Toothpick - DONE
-- replace RxJava with Kotlin Coroutines and Flow
+- replace RxJava with Kotlin Coroutines and Flow - DONE
 - use fragments or views instead of Conductor?
 - use Jetpack Compose

@@ -3,16 +3,18 @@ package com.onegravity.tichucount.view.game
 import android.widget.EditText
 import androidx.core.view.children
 import com.onegravity.tichucount.databinding.ScoreBinding
-import io.reactivex.rxjava3.subjects.BehaviorSubject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 
-
-class NumberPicker(binding: ScoreBinding) {
+class NumberPicker(binding: ScoreBinding, scope: CoroutineScope) {
 
     private val nrPicker = binding.scoreNumber
 
     private var lastValue = 0
 
-    private val changed = BehaviorSubject.create<Boolean>()
+    private val changed = MutableStateFlow(false)
 
     init {
         nrPicker.minValue = 0
@@ -21,7 +23,7 @@ class NumberPicker(binding: ScoreBinding) {
         nrPicker.wrapSelectorWheel = false
         nrPicker.setOnValueChangedListener { _, _, newValue ->
             lastValue = newValue.minus(5).times(5)
-            changed.onNext(true)
+            scope.launch { changed.emit(true) }
         }
         nrPicker.setFormatter { value -> value.minus(5).times(5).toString() }
         initNumberPicker()
@@ -42,7 +44,7 @@ class NumberPicker(binding: ScoreBinding) {
         }
     }
 
-    fun changed(): BehaviorSubject<Boolean> = changed
+    fun changed(): Flow<Boolean> = changed
 
     fun getValue() = lastValue
 

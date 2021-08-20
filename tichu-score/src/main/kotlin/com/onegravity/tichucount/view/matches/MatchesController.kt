@@ -3,7 +3,6 @@ package com.onegravity.tichucount.view.matches
 import android.content.Context
 import android.os.Bundle
 import android.view.*
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.funnydevs.hilt_conductor.annotations.ConductorEntryPoint
@@ -17,15 +16,10 @@ import com.onegravity.tichucount.view.BaseController
 import com.onegravity.tichucount.view.match.MATCH_UID
 import com.onegravity.tichucount.view.match.MatchController
 import com.onegravity.tichucount.viewmodel.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.coroutines.coroutineContext
 
 @ConductorEntryPoint
 class MatchesController : BaseController() {
@@ -62,13 +56,13 @@ class MatchesController : BaseController() {
         }
     }
 
-    private suspend fun loadMatches(view: View) = coroutineScope {
+    private suspend fun loadMatches(view: View) {
         viewModel.matches()
             .catch { logger.e(LOGGER_TAG, "Failed to load matches", it) }
             .collect { bind(view.context, it) }
     }
 
-    private suspend fun processEvents() = coroutineScope {
+    private suspend fun processEvents() {
         viewModel.events()
             .catch { logger.e(LOGGER_TAG, "Failed to process events", it) }
             .collect { event -> dispatchEvents(event) }
@@ -115,7 +109,6 @@ class MatchesController : BaseController() {
             is DeleteMatches -> deleteMatches()
             is NewMatch -> newMatch()
             is OpenMatch -> openMatch(event.matchUid)
-            else -> { /* NOP */ }
         }
     }
 
@@ -134,13 +127,15 @@ class MatchesController : BaseController() {
         }
     }
 
-    private fun deleteMatches() =
-        viewModel.deleteMatches()
-            .doOnSubscribe { disposables.add(it) }
-            .subscribe(
-                { /* do nothing */ },
-                { logger.e(LOGGER_TAG, "Failed to delete matches", it) }
-            )
+    private fun deleteMatches() {
+        viewModel.launch {
+            try {
+                viewModel.deleteMatches()
+            } catch (e: Exception) {
+                logger.e(LOGGER_TAG, "Failed to delete matches", e)
+            }
+        }
+    }
 
     private fun newMatch() = showDialog(NewMatchDialog())
 

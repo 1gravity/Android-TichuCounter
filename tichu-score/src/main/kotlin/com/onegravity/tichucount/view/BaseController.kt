@@ -12,14 +12,9 @@ import com.bluelinelabs.conductor.ControllerChangeType
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
 import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
-import hu.akarnokd.rxjava3.util.CompositeSubscription
-import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 @Suppress("MemberVisibilityCanBePrivate")
 abstract class BaseController : Controller() {
-
-    protected val disposables by lazy { CompositeDisposable() }
-    protected val subscriptions by lazy { CompositeSubscription() }
 
     override fun onChangeStarted(
         changeHandler: ControllerChangeHandler,
@@ -59,13 +54,6 @@ abstract class BaseController : Controller() {
 
     @CallSuper
     protected open fun onExitEnded(view: View?) {}
-
-    @CallSuper
-    override fun onDetach(view: View) {
-        super.onDetach(view)
-        disposables.clear()
-        subscriptions.cancel()
-    }
 
     protected fun setToolbar(toolbar: Toolbar) {
         // yes very hacky but don't care at the moment

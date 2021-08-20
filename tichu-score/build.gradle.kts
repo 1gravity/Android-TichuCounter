@@ -108,21 +108,15 @@ dependencies {
     implementation("com.bluelinelabs:conductor-viewpager2:3.0.0")
     implementation("com.bluelinelabs:conductor-archlifecycle:3.0.0")
 
-    // RxJava
-    implementation("io.reactivex.rxjava3:rxjava:3.1.0")
-    implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
-    implementation("com.github.akarnokd:rxjava3-extensions:3.0.1")
-
     // Hilt
     implementation("com.google.dagger:hilt-android:2.38.1")
     kapt("com.google.dagger:hilt-android-compiler:2.38.1")
     implementation("io.github.funnydevs:hilt-conductor:0.2.0")
-    kapt("io.github.funnydevs:hilt-conductor-processor:0.2.0")
+    kapt("io.github.funnydevs:hilt-conductor-processor:0.3.0")
 
     // Room
     implementation("androidx.room:room-runtime:2.4.0-alpha04")
     implementation("androidx.room:room-ktx:2.4.0-alpha04")
-    implementation("androidx.room:room-rxjava3:2.4.0-alpha04")
     kapt("androidx.room:room-compiler:2.4.0-alpha04")
 
     // Stetho

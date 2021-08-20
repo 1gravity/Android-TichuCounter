@@ -11,11 +11,14 @@ import com.onegravity.tichucount.databinding.MainBinding
 import com.onegravity.tichucount.db.MatchWithGames
 import com.onegravity.tichucount.util.LOGGER_TAG
 import com.onegravity.tichucount.util.Logger
+import com.onegravity.tichucount.util.launch
 import com.onegravity.tichucount.view.BaseController
 import com.onegravity.tichucount.view.game.GAME_UID
 import com.onegravity.tichucount.view.game.GameController
 import com.onegravity.tichucount.viewmodel.*
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 const val MATCH_UID = "MATCH_UID"
@@ -50,21 +53,22 @@ class MatchController(args: Bundle) : BaseController() {
 
         setToolbar(binding.toolbar)
 
-        viewModel.match(matchUid)
-            .doOnSubscribe { disposables.add(it) }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { bind(view.context, it) },
-                { gameLoadError(it) }
-            )
+        viewModel.launch {
+            launch { loadMatch(view, matchUid) }
+            launch { processEvents() }
+        }
+    }
 
+    private suspend fun loadMatch(view: View, matchUid: Int) {
+        viewModel.match(matchUid)
+            .catch { gameLoadError(it) }
+            .collect { bind(view.context, it) }
+    }
+
+    private suspend fun processEvents() {
         viewModel.events()
-            .doOnSubscribe { disposables.add(it) }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { dispatchEvents(it) },
-                { logger.e(LOGGER_TAG, "Failed to process events", it) }
-            )
+            .catch { logger.e(LOGGER_TAG, "Failed to process events", it) }
+            .collect { event -> dispatchEvents(event) }
     }
 
     private fun gameLoadError(error: Throwable) {
@@ -134,14 +138,15 @@ class MatchController(args: Bundle) : BaseController() {
         }
     }
 
-    private fun deleteMatch() =
-        viewModel.deleteMatch(matchUid)
-            .doOnSubscribe { disposables.add(it) }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { /* do nothing because the bind operation will terminate the Controller when it can't find the match */ },
-                { logger.e(LOGGER_TAG, "Failed to delete match", it) }
-            )
+    private fun deleteMatch() {
+        viewModel.launch {
+            try {
+                viewModel.deleteMatch(matchUid)
+            } catch (e: Exception) {
+                logger.e(LOGGER_TAG, "Failed to delete match $matchUid", e)
+            }
+        }
+    }
 
     private fun openGame(gameUid: Int) {
         val args = Bundle().apply {
