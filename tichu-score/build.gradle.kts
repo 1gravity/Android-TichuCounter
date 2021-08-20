@@ -9,7 +9,7 @@ plugins {
 
 android {
     compileSdk = 30
-    buildToolsVersion = "30.0.3"
+    buildToolsVersion = "31.0.0"
 
     defaultConfig {
         applicationId = "com.onegravity.tichucount"
@@ -17,7 +17,7 @@ android {
         targetSdk = 30
         val props = project.properties
         versionCode = if (props.containsKey("BUILD_NUMBER")) props["BUILD_NUMBER"].toString().toInt() else 5
-        versionName = "1.2"
+        versionName = "1.3"
 
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
 
@@ -101,6 +101,7 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1")
+    implementation("androidx.fragment:fragment-ktx:1.3.6")
 
     // Conductor
     implementation("com.bluelinelabs:conductor:3.1.1")

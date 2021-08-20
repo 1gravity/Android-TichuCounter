@@ -72,7 +72,7 @@ abstract class BaseController : Controller() {
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
     }
 
-    protected fun shoWDialog(dialog: DialogFragment) {
+    protected fun showDialog(dialog: DialogFragment) {
         // again very hacky but don't care at the moment
         (activity as? FragmentActivity)?.let {
             dialog.show(it.supportFragmentManager, dialog::class.java.name)

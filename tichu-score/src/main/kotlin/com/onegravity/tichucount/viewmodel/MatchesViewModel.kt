@@ -1,41 +1,50 @@
 package com.onegravity.tichucount.viewmodel
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.onegravity.tichucount.db.MatchRepository
 import com.onegravity.tichucount.db.MatchWithGames
 import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
-import io.reactivex.rxjava3.subjects.PublishSubject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed class MatchesViewModelEvent
 
+object NOP : MatchesViewModelEvent()
 object DeleteMatches : MatchesViewModelEvent()
 object NewMatch : MatchesViewModelEvent()
 data class OpenMatch(val matchUid: Int) : MatchesViewModelEvent()
 
 class MatchesViewModel @Inject constructor(
     private val repository: MatchRepository
-) {
+): ViewModel() {
 
-    private val events = PublishSubject.create<MatchesViewModelEvent>()
+    private val events = MutableStateFlow<MatchesViewModelEvent>(NOP)
 
-    fun events(): Observable<MatchesViewModelEvent> = events
+    fun events(): Flow<MatchesViewModelEvent> = events
 
-    fun matches(): Observable<List<MatchWithGames>> = repository.getMatches()
-        .subscribeOn(Schedulers.io())
+    fun matches(): Flow<List<MatchWithGames>> = repository.getMatches()
 
     fun createMatch(team1: String, team2: String): Single<Int> =
         repository.createMatch(team1, team2)
             .subscribeOn(Schedulers.io())
-            .doOnSuccess { events.onNext(OpenMatch(it)) }
+            .doOnSuccess {
+                viewModelScope.launch {
+                    events.emit(OpenMatch(it))
+                }
+            }
 
     fun deleteMatches(): Completable = repository.deleteMatches()
         .subscribeOn(Schedulers.io())
 
     fun matchSelected(matchUid: Int) {
-        events.onNext(OpenMatch(matchUid))
+        viewModelScope.launch {
+            events.emit(OpenMatch(matchUid))
+        }
     }
 
 }

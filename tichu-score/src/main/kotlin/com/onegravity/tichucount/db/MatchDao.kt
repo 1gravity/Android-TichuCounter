@@ -2,13 +2,18 @@ package com.onegravity.tichucount.db
 
 import androidx.room.*
 import io.reactivex.rxjava3.core.Flowable
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MatchDao {
 
     @Transaction
     @Query("SELECT * FROM 'match'")
-    fun getMatchesWithGames(): Flowable<List<MatchWithGames>>
+    fun getMatchesWithGamesOld(): Flowable<List<MatchWithGames>>
+
+    @Transaction
+    @Query("SELECT * FROM 'match'")
+    fun getMatchesWithGames(): Flow<List<MatchWithGames>>
 
     /**
      * Delete all matches + games

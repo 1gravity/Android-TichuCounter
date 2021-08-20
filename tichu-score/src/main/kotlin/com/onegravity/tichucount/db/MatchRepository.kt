@@ -5,36 +5,45 @@ import com.onegravity.tichucount.util.Logger
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.BehaviorSubject
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import java.lang.Exception
 import javax.inject.Inject
 
+@DelicateCoroutinesApi
 class MatchRepository @Inject constructor(
     private val db: TichuDatabase,
     private val logger: Logger
 ) {
 
-    private val matches = BehaviorSubject.create<List<MatchWithGames>>()
+    private val matchesOld = BehaviorSubject.create<List<MatchWithGames>>()
+
+    private val matches = MutableStateFlow<List<MatchWithGames>>(emptyList())
 
     private val matchesByUid = HashMap<Int, MatchWithGames>()
 
     init {
-        db.match().getMatchesWithGames()
-            .doOnNext { listOfMatches ->
-                matchesByUid.clear()
-                listOfMatches.forEach { matchesByUid[it.match.uid] = it }
-
-                matches.onNext(listOfMatches)
-            }
-            .subscribeOn(Schedulers.io())
-            .doOnError {
-                logger.e(LOGGER_TAG, "error while retrieving matches, it")
-            }
-            .subscribe()
+        GlobalScope.launch {
+            db.match()
+                .getMatchesWithGames()
+                .flowOn(Dispatchers.IO)
+                .catch {
+                    logger.e(LOGGER_TAG, "error while retrieving matches, it")
+                }
+                .collect { listOfMatches ->
+                    logger.d(LOGGER_TAG, "Retrieved matches $listOfMatches")
+                    matchesByUid.clear()
+                    listOfMatches.forEach { matchesByUid[it.match.uid] = it }
+                    matchesOld.onNext(listOfMatches)
+                    matches.emit(listOfMatches)
+                }
+        }
     }
 
-    fun getMatches(): Observable<List<MatchWithGames>> = matches
+    fun getMatches(): Flow<List<MatchWithGames>> = matches
+
+    fun getMatchesOld(): Observable<List<MatchWithGames>> = matchesOld
 
     fun getMatch(matchUid: Int): Single<MatchWithGames> = Single.create { emitter ->
         matchesByUid[matchUid]?.run {

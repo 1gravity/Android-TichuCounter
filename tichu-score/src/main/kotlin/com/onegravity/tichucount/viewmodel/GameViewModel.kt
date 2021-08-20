@@ -1,5 +1,6 @@
 package com.onegravity.tichucount.viewmodel
 
+import androidx.lifecycle.ViewModel
 import com.onegravity.tichucount.db.MatchRepository
 import com.onegravity.tichucount.model.Game
 import com.onegravity.tichucount.model.Score
@@ -13,7 +14,7 @@ import javax.inject.Inject
 class GameViewModel @Inject constructor(
     private val logger: Logger,
     private val repository: MatchRepository
-) {
+): ViewModel() {
 
     private var theGame: com.onegravity.tichucount.db.Game? = null
 

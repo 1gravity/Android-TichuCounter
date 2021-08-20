@@ -3,6 +3,7 @@ package com.onegravity.tichucount.view.matches
 import android.content.Context
 import android.os.Bundle
 import android.view.*
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.funnydevs.hilt_conductor.annotations.ConductorEntryPoint
@@ -11,12 +12,20 @@ import com.onegravity.tichucount.databinding.MainBinding
 import com.onegravity.tichucount.db.MatchWithGames
 import com.onegravity.tichucount.util.LOGGER_TAG
 import com.onegravity.tichucount.util.Logger
+import com.onegravity.tichucount.util.launch
 import com.onegravity.tichucount.view.BaseController
 import com.onegravity.tichucount.view.match.MATCH_UID
 import com.onegravity.tichucount.view.match.MatchController
 import com.onegravity.tichucount.viewmodel.*
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
 
 @ConductorEntryPoint
 class MatchesController : BaseController() {
@@ -47,29 +56,22 @@ class MatchesController : BaseController() {
         binding.toolbarLayout.title = appContext.getString((R.string.matches_title))
         binding.fab.setOnClickListener { newMatch() }
 
-        viewModel.matches()
-            .doOnSubscribe { disposables.add(it) }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { bind(view.context, it) },
-                { logger.e(LOGGER_TAG, "Failed to load matches", it) }
-            )
-
-        viewModel.events()
-            .doOnSubscribe { disposables.add(it) }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { dispatchEvents(it) },
-                { logger.e(LOGGER_TAG, "Failed to process events", it) }
-            )
+        viewModel.launch {
+            launch { loadMatches(view) }
+            launch { processEvents() }
+        }
     }
 
-    private fun dispatchEvents(event: MatchesViewModelEvent) {
-        when (event) {
-            is DeleteMatches -> deleteMatches()
-            is NewMatch -> newMatch()
-            is OpenMatch -> openMatch(event.matchUid)
-        }
+    private suspend fun loadMatches(view: View) = coroutineScope {
+        viewModel.matches()
+            .catch { logger.e(LOGGER_TAG, "Failed to load matches", it) }
+            .collect { bind(view.context, it) }
+    }
+
+    private suspend fun processEvents() = coroutineScope {
+        viewModel.events()
+            .catch { logger.e(LOGGER_TAG, "Failed to process events", it) }
+            .collect { event -> dispatchEvents(event) }
     }
 
     private fun bind(context: Context, games: List<MatchWithGames>) {
@@ -108,6 +110,15 @@ class MatchesController : BaseController() {
         }
     }
 
+    private fun dispatchEvents(event: MatchesViewModelEvent) {
+        when (event) {
+            is DeleteMatches -> deleteMatches()
+            is NewMatch -> newMatch()
+            is OpenMatch -> openMatch(event.matchUid)
+            else -> { /* NOP */ }
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_matches, menu)
@@ -131,7 +142,7 @@ class MatchesController : BaseController() {
                 { logger.e(LOGGER_TAG, "Failed to delete matches", it) }
             )
 
-    private fun newMatch() = shoWDialog(NewMatchDialog())
+    private fun newMatch() = showDialog(NewMatchDialog())
 
     private fun openMatch(matchUid: Int) {
         val args = Bundle().apply { putInt(MATCH_UID, matchUid) }
