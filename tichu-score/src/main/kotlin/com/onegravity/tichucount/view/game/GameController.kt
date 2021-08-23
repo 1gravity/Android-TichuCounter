@@ -60,7 +60,7 @@ class GameController(args: Bundle) : BaseController() {
                 bind(game)
             } catch (e: Exception) {
                 logger.e(LOGGER_TAG, "Failed to load game: ${e.message}")
-                router.popCurrentController()
+                router.popController(this@GameController)
             }
         }
     }
@@ -75,7 +75,7 @@ class GameController(args: Bundle) : BaseController() {
             tab.text = if (position == 0) game.name1 else game.name2
         }.attach()
 
-        binding.btnNegative.setOnClickListener { router.popCurrentController() }
+        binding.btnNegative.setOnClickListener { router.popController(this@GameController) }
 
         binding.btnPositive.setOnClickListener { viewModel.launch { saveGame(game) } }
 
@@ -85,7 +85,7 @@ class GameController(args: Bundle) : BaseController() {
     private suspend fun saveGame(game: Game) {
         try {
             viewModel.saveGame(game)
-            router.popCurrentController()
+            router.popController(this@GameController)
         } catch (e: Exception) {
             logger.e(LOGGER_TAG, "Failed to save game", e)
             Toast.makeText(binding.btnNegative.context, "", Toast.LENGTH_SHORT).show()
@@ -95,7 +95,7 @@ class GameController(args: Bundle) : BaseController() {
     private suspend fun deleteGame() {
         try {
             viewModel.deleteGame(matchUid, gameUid)
-            router.popCurrentController()
+            router.popController(this@GameController)
         } catch (e: Exception) {
             logger.e(LOGGER_TAG, "Failed to delete game", e)
             Toast.makeText(binding.btnNegative.context, "", Toast.LENGTH_SHORT).show()

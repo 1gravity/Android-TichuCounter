@@ -3,10 +3,7 @@ package com.onegravity.tichucount.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.onegravity.tichucount.db.MatchRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,7 +11,6 @@ sealed class MatchViewModelEvent
 
 object NewGame : MatchViewModelEvent()
 data class OpenGame(val gameUid: Int) : MatchViewModelEvent()
-data class DeleteGame(val gameUid: Int) : MatchViewModelEvent()
 
 class MatchViewModel @Inject constructor(
     private val repository: MatchRepository

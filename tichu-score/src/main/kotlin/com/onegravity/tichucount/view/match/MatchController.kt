@@ -68,19 +68,18 @@ class MatchController(args: Bundle) : BaseController() {
     private suspend fun processEvents() {
         viewModel.events()
             .catch { logger.e(LOGGER_TAG, "Failed to process events", it) }
-            .collect { event -> dispatchEvents(event) }
+            .collect { dispatchEvents(it) }
     }
 
     private fun gameLoadError(error: Throwable) {
         logger.e(LOGGER_TAG, "Failed to load match: ${error.message}")
-        router.popCurrentController()
+        router.popController(this)
     }
 
     private fun dispatchEvents(event: MatchViewModelEvent) {
         when (event) {
             is NewGame -> newGame()
             is OpenGame -> openGame(event.gameUid)
-            is DeleteGame -> { /* todo */ }
         }
     }
 
@@ -142,6 +141,7 @@ class MatchController(args: Bundle) : BaseController() {
         viewModel.launch {
             try {
                 viewModel.deleteMatch(matchUid)
+                /* do nothing because the bind operation will terminate the Controller when it can't find the match */
             } catch (e: Exception) {
                 logger.e(LOGGER_TAG, "Failed to delete match $matchUid", e)
             }
