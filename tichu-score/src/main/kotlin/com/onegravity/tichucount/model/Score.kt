@@ -2,11 +2,11 @@ package com.onegravity.tichucount.model
 
 import com.onegravity.tichucount.util.LOGGER_TAG
 import com.onegravity.tichucount.util.Logger
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.launch
 import java.io.Serializable
+
+interface ScoreListener {
+    fun onChanged(type: ScoreType)
+}
 
 data class Score(
     private val initialTichu: ScoreState,
@@ -14,13 +14,18 @@ data class Score(
     private val initialDoubleWin: Boolean,
     private val initialPlayedPoints: Int,
     val teamName: String,
-    private val logger: Logger,
-    private val scope: CoroutineScope
+    private val logger: Logger
 ) : Serializable {
 
-    private val changed = MutableSharedFlow<ScoreType>(replay = 0)
+    private val listeners = ArrayList<ScoreListener>()
 
-    fun changes(): Flow<ScoreType> = changed
+    fun addListener(listener: ScoreListener) {
+        listeners.add(listener)
+    }
+
+    fun removeListener(listener: ScoreListener) {
+        listeners.remove(listener)
+    }
 
     var tichu = initialTichu
         set(value) {
@@ -28,7 +33,7 @@ data class Score(
                 logger.d(LOGGER_TAG, "${teamName}: TICHU changed from $field to $value")
                 field = value
                 validateTichu(value)
-                scope.launch { changeDone(ScoreType.TICHU) }
+                listeners.forEach { it.onChanged(ScoreType.TICHU) }
             }
         }
 
@@ -49,7 +54,7 @@ data class Score(
                 logger.d(LOGGER_TAG, "${teamName}: GRAND_TICHU changed from $field to $value")
                 field = value
                 validateGrandTichu(value)
-                scope.launch { changeDone(ScoreType.GRAND_TICHU) }
+                listeners.forEach { it.onChanged(ScoreType.GRAND_TICHU) }
             }
         }
 
@@ -70,7 +75,7 @@ data class Score(
                 logger.d(LOGGER_TAG, "${teamName}: DOUBLE_WIN changed from $field to $value")
                 field = value
                 validateDoubleWin(value)
-                scope.launch { changeDone(ScoreType.DOUBLE_WIN) }
+                listeners.forEach { it.onChanged(ScoreType.DOUBLE_WIN) }
             }
         }
 
@@ -89,7 +94,7 @@ data class Score(
                 logger.d(LOGGER_TAG, "${teamName}: PLAYED_POINTS changed from $field to $value")
                 field = value
                 validatePlayedPoints(value)
-                scope.launch { changeDone(ScoreType.PLAYED_POINTS) }
+                listeners.forEach { it.onChanged(ScoreType.PLAYED_POINTS) }
             }
         }
 
@@ -97,10 +102,6 @@ data class Score(
         if (value != 0) {
             doubleWin = false
         }
-    }
-
-    private suspend fun changeDone(scoreType: ScoreType) {
-        changed.emit(scoreType)
     }
 
     fun points() = let {

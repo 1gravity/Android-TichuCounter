@@ -14,14 +14,8 @@ class MatchRepository @Inject constructor(
     suspend fun getMatches() = flow {
         db.match()
             .getMatchesWithGames()
-            .flowOn(Dispatchers.IO)
-            .catch {
-                logger.e(LOGGER_TAG, "error while retrieving matches", it)
-            }
-            .collect { listOfMatches ->
-                logger.d(LOGGER_TAG, "Retrieved matches $listOfMatches")
-                emit(listOfMatches)
-            }
+            .catch { logger.e(LOGGER_TAG, "error while retrieving matches", it) }
+            .collect { emit(it) }
     }
 
     suspend fun getMatch(matchUid: Int) = coroutineScope {

@@ -28,8 +28,7 @@ class GameViewModel @Inject constructor(
                 score_1.doubleWin,
                 score_1.playedPoints,
                 match.match.team1,
-                logger,
-                viewModelScope
+                logger
             )
             val score2 = Score(
                 score_2.tichu,
@@ -37,8 +36,7 @@ class GameViewModel @Inject constructor(
                 score_2.doubleWin,
                 score_2.playedPoints,
                 match.match.team2,
-                logger,
-                viewModelScope
+                logger
             )
             Game(matchUid, match.match.team1, match.match.team2, score1, score2, logger)
         } ?: run {
@@ -49,8 +47,7 @@ class GameViewModel @Inject constructor(
                 false,
                 0,
                 match.match.team1,
-                logger,
-                viewModelScope
+                logger
             )
             val score2 = Score(
                 ScoreState.NOT_PLAYED,
@@ -58,8 +55,7 @@ class GameViewModel @Inject constructor(
                 false,
                 0,
                 match.match.team2,
-                logger,
-                viewModelScope
+                logger
             )
             Game(matchUid, match.match.team1, match.match.team2, score1, score2, logger)
         }

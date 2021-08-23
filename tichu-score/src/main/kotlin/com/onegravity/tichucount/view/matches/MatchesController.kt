@@ -59,7 +59,9 @@ class MatchesController : BaseController() {
     private suspend fun loadMatches(view: View) {
         viewModel.matches()
             .catch { logger.e(LOGGER_TAG, "Failed to load matches", it) }
-            .collect { bind(view.context, it) }
+            .collect {
+                bind(view.context, it)
+            }
     }
 
     private suspend fun processEvents() {

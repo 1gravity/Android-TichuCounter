@@ -17,7 +17,7 @@ android {
         targetSdk = 30
         val props = project.properties
         versionCode = if (props.containsKey("BUILD_NUMBER")) props["BUILD_NUMBER"].toString().toInt() else 5
-        versionName = "1.3"
+        versionName = "1.4"
 
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
 
@@ -131,6 +131,9 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:3.6.28")
     testImplementation("androidx.test:core:1.4.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1")
+    testImplementation("app.cash.turbine:turbine:0.6.0")
+
     kaptTest("com.google.dagger:hilt-android-compiler:2.38.1")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.38.1")
