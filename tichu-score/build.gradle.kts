@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    compileSdk = 30
+    compileSdk = 31
     buildToolsVersion = "31.0.0"
 
     defaultConfig {
@@ -94,13 +94,13 @@ android {
 dependencies {
     // base libraries
     implementation("androidx.multidex:multidex:2.0.1")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.21")
-    implementation("androidx.core:core-ktx:1.6.0")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.31")
+    implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.appcompat:appcompat:1.3.1")
     implementation("com.google.android.material:material:1.4.0")
     implementation("androidx.recyclerview:recyclerview:1.2.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
     implementation("androidx.fragment:fragment-ktx:1.3.6")
 
     // Conductor
@@ -111,27 +111,27 @@ dependencies {
     // Hilt
     implementation("com.google.dagger:hilt-android:2.38.1")
     kapt("com.google.dagger:hilt-android-compiler:2.38.1")
-    implementation("io.github.funnydevs:hilt-conductor:0.2.0")
-    kapt("io.github.funnydevs:hilt-conductor-processor:0.3.0")
+    implementation("io.github.funnydevs:hilt-conductor:0.4.0")
+    kapt("io.github.funnydevs:hilt-conductor-processor:0.4.0")
 
     // Room
-    implementation("androidx.room:room-runtime:2.4.0-alpha04")
-    implementation("androidx.room:room-ktx:2.4.0-alpha04")
-    kapt("androidx.room:room-compiler:2.4.0-alpha04")
+    implementation("androidx.room:room-runtime:2.4.0-beta01")
+    implementation("androidx.room:room-ktx:2.4.0-beta01")
+    kapt("androidx.room:room-compiler:2.4.0-beta01")
 
     // Stetho
     val developmentApi by configurations
     val developmentImplementation by configurations
-    developmentApi("com.facebook.stetho:stetho:1.5.1")
-    developmentImplementation("com.facebook.stetho:stetho-js-rhino:1.5.1")
+    developmentApi("com.facebook.stetho:stetho:1.6.0")
+    developmentImplementation("com.facebook.stetho:stetho-js-rhino:1.6.0")
 
     // Testing
     val testImplementation by configurations
     val androidTestImplementation by configurations
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:3.6.28")
+    testImplementation("org.mockito:mockito-core:3.12.4")
     testImplementation("androidx.test:core:1.4.0")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2")
     testImplementation("app.cash.turbine:turbine:0.6.0")
 
     kaptTest("com.google.dagger:hilt-android-compiler:2.38.1")
