@@ -9,14 +9,15 @@ plugins {
 
 android {
     compileSdk = 31
-    buildToolsVersion = "31.0.0"
+    buildToolsVersion = "32.0.0"
 
     defaultConfig {
         applicationId = "com.onegravity.tichucount"
         minSdk = 21
         targetSdk = 30
-        val props = project.properties
-        versionCode = if (props.containsKey("BUILD_NUMBER")) props["BUILD_NUMBER"].toString().toInt() else 5
+        versionCode = project.properties["BUILD_NUMBER"]
+            ?.toString()?.toInt()?.minus(1643908089)
+            ?: 124
         versionName = "1.4"
 
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
@@ -93,50 +94,50 @@ android {
 
 dependencies {
     // base libraries
-    implementation("androidx.multidex:multidex:2.0.1")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.31")
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.appcompat:appcompat:1.3.1")
-    implementation("com.google.android.material:material:1.4.0")
-    implementation("androidx.recyclerview:recyclerview:1.2.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
-    implementation("androidx.fragment:fragment-ktx:1.3.6")
+    implementation(AndroidX.multidex)
+    implementation(Kotlin.stdlib)
+    implementation(AndroidX.core.ktx)
+    implementation(AndroidX.appCompat)
+    implementation(Google.android.material)
+    implementation(AndroidX.recyclerView)
+    implementation(AndroidX.constraintLayout)
+    implementation(KotlinX.coroutines.android)
+    implementation(AndroidX.fragment.ktx)
 
     // Conductor
-    implementation("com.bluelinelabs:conductor:3.1.1")
-    implementation("com.bluelinelabs:conductor-viewpager2:3.0.0")
-    implementation("com.bluelinelabs:conductor-archlifecycle:3.0.0")
+    implementation("com.bluelinelabs:conductor:_")
+    implementation("com.bluelinelabs:conductor-viewpager2:_")
+    implementation("com.bluelinelabs:conductor-archlifecycle:_")
 
     // Hilt
-    implementation("com.google.dagger:hilt-android:2.38.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.38.1")
-    implementation("io.github.funnydevs:hilt-conductor:0.4.0")
-    kapt("io.github.funnydevs:hilt-conductor-processor:0.4.0")
+    implementation(Google.dagger.hilt.android)
+    kapt(Google.dagger.hilt.android.compiler)
+    implementation("io.github.funnydevs:hilt-conductor:_")
+    kapt("io.github.funnydevs:hilt-conductor-processor:_")
 
     // Room
-    implementation("androidx.room:room-runtime:2.4.0-beta01")
-    implementation("androidx.room:room-ktx:2.4.0-beta01")
-    kapt("androidx.room:room-compiler:2.4.0-beta01")
+    implementation(AndroidX.room.runtime)
+    implementation(AndroidX.room.ktx)
+    kapt(AndroidX.room.compiler)
 
     // Stetho
     val developmentApi by configurations
     val developmentImplementation by configurations
-    developmentApi("com.facebook.stetho:stetho:1.6.0")
-    developmentImplementation("com.facebook.stetho:stetho-js-rhino:1.6.0")
+    developmentApi("com.facebook.stetho:stetho:_")
+    developmentImplementation("com.facebook.stetho:stetho-js-rhino:_")
 
     // Testing
     val testImplementation by configurations
     val androidTestImplementation by configurations
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:3.12.4")
-    testImplementation("androidx.test:core:1.4.0")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2")
-    testImplementation("app.cash.turbine:turbine:0.6.0")
+    testImplementation(Testing.junit4)
+    testImplementation(Testing.mockito.core)
+    testImplementation(AndroidX.test.core)
+    testImplementation(KotlinX.coroutines.test)
+    testImplementation(CashApp.turbine)
 
-    kaptTest("com.google.dagger:hilt-android-compiler:2.38.1")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.38.1")
+    kaptTest(Google.dagger.hilt.android.compiler)
+    androidTestImplementation(AndroidX.test.ext.junit)
+    kaptAndroidTest(Google.dagger.hilt.android.compiler)
 }
 
 // Gradle Play Publisher

@@ -5,11 +5,11 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.0.3")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.21")
-        classpath("com.github.triplet.gradle:play-publisher:3.6.0")
-        classpath("com.google.dagger:hilt-android-gradle-plugin:2.40")
-        classpath("io.github.funnydevs:hilt-conductor-plugin:0.4.0")
+        classpath(Android.tools.build.gradlePlugin)
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:_")
+        classpath("com.github.triplet.gradle:play-publisher:_")
+        classpath(Google.dagger.hilt.android.gradlePlugin)
+        classpath("io.github.funnydevs:hilt-conductor-plugin:_")
     }
 }
 
