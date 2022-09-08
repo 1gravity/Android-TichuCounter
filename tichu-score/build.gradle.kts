@@ -8,13 +8,13 @@ plugins {
 }
 
 android {
-    compileSdk = 31
-    buildToolsVersion = "32.0.0"
+    compileSdk = 33
+    buildToolsVersion = "33.0.0"
 
     defaultConfig {
         applicationId = "com.onegravity.tichucount"
         minSdk = 21
-        targetSdk = 30
+        targetSdk = 33
         versionCode = project.properties["BUILD_NUMBER"]
             ?.toString()?.toInt()?.minus(1643908089)
             ?: 124
