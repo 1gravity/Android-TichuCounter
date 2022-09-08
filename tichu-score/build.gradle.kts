@@ -18,7 +18,7 @@ android {
         versionCode = project.properties["BUILD_NUMBER"]
             ?.toString()?.toInt()?.minus(1643908089)
             ?: 124
-        versionName = "1.4"
+        versionName = "1.5"
 
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
 
